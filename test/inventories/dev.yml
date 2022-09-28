@@ -2,6 +2,8 @@ vagrant:
   hosts:
     127.0.0.1:
       ansible_user: vagrant
-      ansible_port: 2222
+      ansible_port: 2200
       ansible_python_interpreter: /usr/bin/python3
       ansible_ssh_private_key_file: ~/.ssh/ota-vagrant
+      app_config_path: ../config/config.json
+      ota_collection_name: vagrant
