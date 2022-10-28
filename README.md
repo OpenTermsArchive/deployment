@@ -185,3 +185,10 @@ all:
           ansible_ssh_port: 2200
           […]
 ```
+
+---
+
+## License
+
+The code for this software is distributed under the European Union Public Licence (EUPL) v1.2.
+Contact the author if you have any specific need or question regarding licensing.
