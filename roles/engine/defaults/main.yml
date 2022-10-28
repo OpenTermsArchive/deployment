@@ -2,4 +2,4 @@ declarations_branch: main
 snapshots_branch: main
 versions_branch: main
 
-declarations_directory: "{{ota_collection_name}}"
+declarations_directory: "{{ ota_collection_name }}"

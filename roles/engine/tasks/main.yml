@@ -1,10 +1,10 @@
 - name: Install services declarations
-  git:
+  ansible.builtin.git:
     repo: '{{ app_config.services.repository }}'
     dest: '/home/{{ ansible_user }}/{{ declarations_directory }}'
     version: '{{ declarations_branch }}'
-    force: yes
-    accept_hostkey: yes
+    force: true
+    accept_hostkey: true
     key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
     depth: 1
   tags:
@@ -13,7 +13,7 @@
     - update-declarations
 
 - name: Install services declarations dependencies
-  command:
+  ansible.builtin.command:
     cmd: npm install --production
     chdir: '/home/{{ ansible_user }}/{{ declarations_directory }}'
   tags:
@@ -22,21 +22,21 @@
     - update-declarations
 
 - name: Add .env file
-  copy:
+  ansible.builtin.copy:
     src: .env
     dest: '/home/{{ ansible_user }}/{{ declarations_directory }}/.env'
   tags:
     - setup
 
 - name: Add pm2 config file
-  copy:
+  ansible.builtin.copy:
     src: pm2.config.cjs
     dest: '/home/{{ ansible_user }}/{{ declarations_directory }}/pm2.config.cjs'
   tags:
     - setup
 
 - name: Stop Open Terms Archive schedulers
-  command:
+  ansible.builtin.command:
     cmd: pm2 stop pm2.config.cjs
     chdir: '/home/{{ ansible_user }}/{{ declarations_directory }}'
   tags:
@@ -44,8 +44,8 @@
     - update
     - update-declarations
 
-- include_tasks: database.yml
-  name: Setup snapshots git repository
+- name: Setup snapshots git repository
+  ansible.builtin.include_tasks: database.yml
   when: app_config.recorder.snapshots.storage.git.repository is defined
   vars:
     name: snapshots
@@ -56,8 +56,8 @@
     - setup
     - update
 
-- include_tasks: database.yml
-  name: Setup versions git repository
+- name: Setup versions git repository
+  ansible.builtin.include_tasks: database.yml
   when: app_config.recorder.versions.storage.git.repository is defined
   vars:
     name: versions
@@ -69,7 +69,7 @@
     - update
 
 - name: Start Open Terms Archive schedulers
-  command:
+  ansible.builtin.command:
     cmd: pm2 startOrRestart pm2.config.cjs
     chdir: '/home/{{ ansible_user }}/{{ declarations_directory }}'
   environment:

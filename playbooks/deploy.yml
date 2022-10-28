@@ -3,31 +3,31 @@
   hosts: all
   tasks:
     - name: Load OTA app config
-      include_vars:
+      ansible.builtin.include_vars:
         name: app_config
-        file: "{{inventory_dir}}/{{ app_config_path }}"
+        file: "{{ inventory_dir }}/{{ app_config_path }}"
       tags: always
 
     - name: Print OTA app config
       ansible.builtin.debug:
         var: app_config
       tags: debug
-    
+
     - name: Print OTA collection name
       ansible.builtin.debug:
         var: ota_collection_name
       tags: debug
 
     - name: Set up infrastructure
-      include_role:
+      ansible.builtin.include_role:
         name: infra
         apply:
-          become: yes
+          become: true
           tags: infra
       tags: always
-      
+
     - name: Set up engine
-      include_role:
+      ansible.builtin.include_role:
         name: engine
         apply:
           tags: engine
