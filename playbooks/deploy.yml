@@ -2,13 +2,13 @@
 - name: Set up Open Terms Archive infrastructure and engine
   hosts: all
   tasks:
-    - name: Load OTA app config
+    - name: Load OTA engine config
       ansible.builtin.include_vars:
         name: app_config
         file: "{{ inventory_dir }}/{{ ota_config_path }}"
       tags: always
 
-    - name: Print OTA app config
+    - name: Print OTA engine config
       ansible.builtin.debug:
         var: app_config
       tags: debug
