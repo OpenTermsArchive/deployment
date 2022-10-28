@@ -28,6 +28,16 @@ Once installed, the `deploy` playbook can be used using the `ansible-playbook` c
 
 See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more information about ansible collections.
 
+### Configuration
+
+Available variables are listed below, along with default values:
+
+- `ota_config_path`: Path to the engine config file related to the inventory file. Default: `../config/production.json`.
+- `ota_declarations_branch`: Git branch of the declarations repository to use. Default: `main`.
+- `ota_snapshots_branch`: Git branch of the snapshots repository to use. Default: `main`.
+- `ota_versions_branch`: Git branch of the versions repository to use. Default: `main`.
+- `ota_declarations_directory`: Directory path where the code will be deploy on the server. Default: the value declared in the `name` key in the engine config file.
+
 ### Commands
 
 - To set up a full [(phoenix)](https://martinfowler.com/bliki/PhoenixServer.html) server:
@@ -112,9 +122,9 @@ You can then deploy the code to the running machine with all the options describ
 
 To test locally your changes to the collection before opening a pull request:
 
-- Remove all traces of previous tests to ensure that your changes do not work by coincidence: `vagrant destroy && vagrant up`.
-- Start by applying your changes on the virtual machine: `ansible-playbook playbooks/deploy.yml`.
-- Connect through SSH to the virtual machine and check that everything works as intended: `vagrant ssh`, `pm2 logs`…
+- `vagrant destroy && vagrant up`: Remove all traces of previous tests to ensure that your changes do not work by coincidence.
+- `ansible-playbook ../playbooks/deploy.yml`: Start by applying your changes on the virtual machine.
+- `vagrant ssh`, `pm2 logs`…: Connect through SSH to the virtual machine and check that everything works as intended.
 
 ### Vagrant quick reference
 
