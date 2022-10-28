@@ -94,7 +94,11 @@ ansible-playbook ota.deployment.deploy --tags stop
 
 ## Usage
 
-For testing this collection, a virtual machine description file is provided to be used with [Vagrant](https://www.vagrantup.com).
+For testing this collection, a virtual machine description file is provided, inside the `tests` folder, to be used with [Vagrant](https://www.vagrantup.com).
+
+All following commands must be executed from the `tests` folder:
+
+    cd tests
 
 ### Launch VM
 
