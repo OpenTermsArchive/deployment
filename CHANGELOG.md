@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Fix some lintint errors and warnings
+- Commit `galaxy.yml` in the release process
+
 ## 0.0.1 - 2022-10-28
 ### Added
 - Automate publishing with GitHub Actions
