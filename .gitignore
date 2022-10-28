@@ -1,0 +1,4 @@
+.DS_Store
+.vagrant
+vault.key
+*.tar.gz

@@ -1,9 +1,4 @@
 ---
-- name: Load app config
-  ansible.builtin.include_vars:
-    name: app_config
-    file: '../config/{{ config_file_name }}.json'
-
 - name: Install common required packages
   apt:
     pkg:

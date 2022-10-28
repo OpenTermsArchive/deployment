@@ -1,46 +1,3 @@
-- name: Clone Open Terms Archive engine
-  git:
-    repo: '{{ ota_repository }}'
-    dest: '/home/{{ ansible_user }}/{{ ota_directory }}'
-    version: '{{ ota_branch }}'
-    force: yes
-    accept_hostkey: yes
-    key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
-    depth: 1
-  tags:
-    - setup
-    - update
-
-- name: Install dependencies
-  command:
-    cmd: npm ci --production
-    chdir: '/home/{{ ansible_user }}/{{ ota_directory }}'
-  tags:
-    - setup
-    - update
-
-- name: Add .env file
-  copy:
-    src: .env
-    dest: '/home/{{ ansible_user }}/{{ ota_directory }}/.env'
-  tags:
-    - setup
-
-- name: Load app config
-  ansible.builtin.include_vars:
-    name: app_config
-    file: '../config/{{ config_file_name }}.json'
-  tags:
-    - setup
-    - update
-    - update-declarations
-
-- name: Make config available to app
-  ansible.builtin.file:
-    src: '/home/{{ ansible_user }}/{{ ota_directory }}/config/{{ config_file_name }}.json'
-    dest: '/home/{{ ansible_user }}/{{ ota_directory }}/config/local.json'
-    state: link
-
 - name: Install services declarations
   git:
     repo: '{{ app_config.services.repository }}'
@@ -64,10 +21,24 @@
     - update
     - update-declarations
 
+- name: Add .env file
+  copy:
+    src: .env
+    dest: '/home/{{ ansible_user }}/{{ declarations_directory }}/.env'
+  tags:
+    - setup
+
+- name: Add pm2 config file
+  copy:
+    src: pm2.config.cjs
+    dest: '/home/{{ ansible_user }}/{{ declarations_directory }}/pm2.config.cjs'
+  tags:
+    - setup
+
 - name: Stop Open Terms Archive schedulers
   command:
     cmd: pm2 stop pm2.config.cjs
-    chdir: '/home/{{ ansible_user }}/{{ ota_directory }}'
+    chdir: '/home/{{ ansible_user }}/{{ declarations_directory }}'
   tags:
     - stop
     - update
@@ -80,7 +51,7 @@
     name: snapshots
     repository: '{{ app_config.recorder.snapshots.storage.git.repository }}'
     branch: '{{ snapshots_branch }}'
-    directory: '{{ snapshots_directory }}'
+    directory: '/home/{{ ansible_user }}/{{ declarations_directory }}/{{ app_config.recorder.snapshots.storage.git.path }}'
   tags:
     - setup
     - update
@@ -92,7 +63,7 @@
     name: versions
     repository: '{{ app_config.recorder.versions.storage.git.repository }}'
     branch: '{{ versions_branch }}'
-    directory: '{{ versions_directory }}'
+    directory: '/home/{{ ansible_user }}/{{ declarations_directory }}/{{ app_config.recorder.versions.storage.git.path }}'
   tags:
     - setup
     - update
@@ -100,7 +71,7 @@
 - name: Start Open Terms Archive schedulers
   command:
     cmd: pm2 startOrRestart pm2.config.cjs
-    chdir: '/home/{{ ansible_user }}/{{ ota_directory }}'
+    chdir: '/home/{{ ansible_user }}/{{ declarations_directory }}'
   environment:
     NODE_ENV: production
   tags:
