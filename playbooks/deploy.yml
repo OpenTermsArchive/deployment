@@ -5,7 +5,7 @@
     - name: Load OTA app config
       ansible.builtin.include_vars:
         name: app_config
-        file: "{{ inventory_dir }}/{{ app_config_path }}"
+        file: "{{ inventory_dir }}/{{ ota_config_path }}"
       tags: always
 
     - name: Print OTA app config
