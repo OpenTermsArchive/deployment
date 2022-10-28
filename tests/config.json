@@ -1,4 +1,5 @@
 {
+  "name": "vagrant",
   "services": {
     "repository": "https://github.com/OpenTermsArchive/contrib-declarations.git"
   },
