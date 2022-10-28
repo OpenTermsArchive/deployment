@@ -5,5 +5,4 @@ vagrant:
       ansible_port: 2200
       ansible_python_interpreter: /usr/bin/python3
       ansible_ssh_private_key_file: ~/.ssh/ota-vagrant
-      app_config_path: ../config/config.json
-      ota_collection_name: vagrant
+      ota_config_path: ./config.json
