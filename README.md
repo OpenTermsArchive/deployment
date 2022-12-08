@@ -1,6 +1,6 @@
 # Open Terms Archive Ansible Collection
 
-This repository contains the `ota.deployment` Ansible Collection. This ansible collection provides roles and playbooks to set up the infrastructure of and deploy Open Terms Archive.
+This repository contains the `opentermsarchive.deployment` Ansible Collection. This ansible collection provides roles and playbooks to set up the infrastructure of and deploy Open Terms Archive.
 
 ## Usage
 
@@ -8,23 +8,29 @@ This repository contains the `ota.deployment` Ansible Collection. This ansible c
 
 This collection can be installed from Ansible Galaxy manually with the `ansible-galaxy` command-line tool:
 
-    ansible-galaxy collection install ota.deployment
+```sh
+ansible-galaxy collection install opentermsarchive.deployment
+```
 
 It can also be included in a `requirements.yml` file using the format:
 
 ```yaml
 ---
 collections:
-- name: ota.deployment
+- name: opentermsarchive.deployment
 ```
 
 And installed with the command:
 
-    ansible-galaxy collection install -r requirements.yml
+```sh
+ansible-galaxy collection install -r requirements.yml
+```
 
 Once installed, the `deploy` playbook can be used using the `ansible-playbook` command-line tool:
 
-    ansible-playbook ota.deployment.deploy
+```sh
+ansible-playbook opentermsarchive.deployment.deploy
+```
 
 See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more information about ansible collections.
 
@@ -42,7 +48,7 @@ Available variables are listed below, along with default values:
 
 - To set up a full [(phoenix)](https://martinfowler.com/bliki/PhoenixServer.html) server:
 ```
-ansible-playbook ota.deployment.deploy
+ansible-playbook opentermsarchive.deployment.deploy
 ```
 
 Some [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html) are available to refine what will happen, use them with `--tags`:
@@ -62,33 +68,33 @@ Some [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.ht
 #### Refined commands examples
 
 - To setup the infrastructure only:
-```
-ansible-playbook ota.deployment.deploy --tags infra
+```sh
+ansible-playbook opentermsarchive.deployment.deploy --tags infra
 ```
 
 - To setup the `Open Terms Archive` engine only:
-```
-ansible-playbook ota.deployment.deploy --tags engine
+```sh
+ansible-playbook opentermsarchive.deployment.deploy --tags engine
 ```
 
 - Check deployment without actually applying changes:
-```
-ansible-playbook ota.deployment.deploy --check --diff
+```sh
+ansible-playbook opentermsarchive.deployment.deploy --check --diff
 ```
 
 - Update the Open Terms Archive engine only, without applying changes to the infrastructure:
-```
-ansible-playbook ota.deployment.deploy --tags update
+```sh
+ansible-playbook opentermsarchive.deployment.deploy --tags update
 ```
 
 - Update services declarations only:
-```
-ansible-playbook ota.deployment.deploy --tags update-declarations
+```sh
+ansible-playbook opentermsarchive.deployment.deploy --tags update-declarations
 ```
 
 - Stop the Open Terms Archive engine only:
-```
-ansible-playbook ota.deployment.deploy --tags stop
+```sh
+ansible-playbook opentermsarchive.deployment.deploy --tags stop
 ```
 
 ## Development
@@ -97,10 +103,10 @@ ansible-playbook ota.deployment.deploy --tags stop
 
 1. Install [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html).
 2. Install [Vagrant](https://www.vagrantup.com/downloads).
-3. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) to manage virtual machines. If you prefer Docker, or have an Apple Silicon machine, install [Docker](https://docs.docker.com/get-docker/) instead.
+3. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) to manage virtual machines. If Docker is prefered, or on an Apple Silicon machine, install [Docker](https://docs.docker.com/get-docker/) instead.
 4. Create a dedicated SSH key with no password: `ssh-keygen -f ~/.ssh/ota-vagrant -q -N ""`. This key will be automatically used by Vagrant.
 
-> VirtualBox is not compatible with Apple Silicon (M1…) processors. If you have such a machine, you will need to use the Docker provider. Since MongoDB cannot be installed on ARM, it is skipped in the infrastructure installation process. This means you cannot test the MongoDB storage repository with Vagrant with an Apple Silicon processor.
+> VirtualBox is not compatible with Apple Silicon (M1…) processors. To use vagrant on this kind of machine, specifying the Docker provider will be required. Since MongoDB cannot be installed on ARM, it is skipped in the infrastructure installation process. This means the MongoDB storage repository cannot be tested with Vagrant with an Apple Silicon processor.
 
 ## Usage
 
@@ -112,92 +118,51 @@ All following commands must be executed from the `tests` folder:
 
 ### Launch VM
 
-If you’re on an Apple Silicon processor or want to use Docker instead of VirtualBox, use `vagrant up --provider=docker`.
+```sh
+vagrant up
+```
 
-In all other cases, use `vagrant up` 🙂
+> With an Apple Silicon processor or to use Docker instead of VirtualBox, use `vagrant up --provider=docker`.
 
-You can then deploy the code to the running machine with all the options described before.
+Then the code can be deployed to the running machine with all the options described before.
 
 ### Test collection
 
-To test locally your changes to the collection before opening a pull request:
+Test locally the changes to the collection before opening a pull request:
 
-- `vagrant destroy && vagrant up`: Remove all traces of previous tests to ensure that your changes do not work by coincidence.
-- `ansible-playbook ../playbooks/deploy.yml`: Start by applying your changes on the virtual machine.
-- `vagrant ssh`, `pm2 logs`…: Connect through SSH to the virtual machine and check that everything works as intended.
+Remove all traces of previous tests to ensure that changes do not work by coincidence:
+```sh
+vagrant destroy
+vagrant up
+```
+
+Start by applying changes on the virtual machine:
+
+```sh
+ansible-playbook ../playbooks/deploy.yml
+```
+
+Connect through SSH to the virtual machine and check that everything works as intended:
+```sh
+vagrant ssh
+pm2 logs
+```
 
 ### Vagrant quick reference
 
 #### Connect to the virtual machine
 
-```
+```sh
 vagrant up
 vagrant ssh  # use "vagrant" as password
 ```
 
 #### Start again with a clean virtual machine
 
-```
+```sh
 vagrant halt  # stop machine
 vagrant destroy  # remove machine
 vagrant up
-```
-
-#### Troubleshooting
-
-##### Remote host identification has changed
-
-In case you get that kind of error:
-
-```
-fatal: [127.0.0.1]: UNREACHABLE! => changed=false
-  msg: |-
-    Failed to connect to the host via ssh: @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
-    …
-  unreachable: true
-```
-
-It may be because you already have a `known_host` registered with the same IP and port. To solve this, remove it from the entries using `ssh-keygen -R [127.0.0.1]:2222`.
-
-##### Connection refused
-
-If you have the following error:
-
-```
-Failed to connect to the host via ssh: ssh: connect to host 127.0.0.1 port 2222: Connection refused
-```
-
-You may have a collision on the default port `2222` used by Vagrant to forward SSH commands.
-Run the following command to know which ports are forwarded for the virtual machine:
-
-```
-vagrant port
-```
-
-It should display something like that:
-
-```
-The forwarded ports for the machine are listed below. Please note that
-these values may differ from values configured in the Vagrantfile if the
-provider supports automatic port collision detection and resolution.
-
-    22 (guest) => 2200 (host)
-```
-
-Modify the Ansible SSH options in the `ops/inventories/dev.yml` file with the proper `ansible_ssh_port`:
-
-```
-all:
-  children:
-    vagrant:
-      hosts:
-        127.0.0.1:
-          […]
-          ansible_ssh_port: 2200
-          […]
 ```
 
 ---

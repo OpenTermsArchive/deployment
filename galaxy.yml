@@ -1,4 +1,4 @@
-namespace: ota
+namespace: opentermsarchive
 name: deployment
 version: 0.0.3
 readme: README.md
@@ -11,8 +11,8 @@ license:
   - EUPL-1.2
 tags: []
 dependencies: {}
-repository: https://github.com/OpenTermsArchive/ansible-deployment.git
-documentation: https://github.com/OpenTermsArchive/ansible-deployment.git
-homepage: https://github.com/OpenTermsArchive/ansible-deployment.git
-issues: https://github.com/OpenTermsArchive/ansible-deployment/issues
+repository: https://github.com/OpenTermsArchive/deployment.git
+documentation: https://github.com/OpenTermsArchive/deployment.git
+homepage: https://github.com/OpenTermsArchive/deployment.git
+issues: https://github.com/OpenTermsArchive/deployment/issues
 build_ignore: []
