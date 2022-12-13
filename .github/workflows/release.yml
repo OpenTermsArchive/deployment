@@ -47,12 +47,6 @@ jobs:
           version: ${{ env.NEW_VERSION }}
           operation: release
 
-      - name: Build and Deploy Collection
-        uses: artis3n/ansible_galaxy_collection@v2
-        with:
-          api_key: '${{ secrets.GALAXY_API_KEY }}'
-          galaxy_version: '${{ env.NEW_VERSION }}'
-
       - name: Commit CHANGELOG.md and create tag
         run: |
           git add "CHANGELOG.md"
@@ -80,3 +74,9 @@ jobs:
           body: ${{ steps.get-changelog.outputs.changelog }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Deploy Collection
+        uses: artis3n/ansible_galaxy_collection@v2
+        with:
+          api_key: '${{ secrets.GALAXY_API_KEY }}'
+          galaxy_version: '${{ env.NEW_VERSION }}'
