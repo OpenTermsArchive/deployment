@@ -2,7 +2,7 @@
   ansible.builtin.git:
     repo: '{{ repository }}'
     version: '{{ branch }}'
-    dest: '/home/{{ ansible_user }}/{{ directory }}'
+    dest: '{{ directory }}'
     clone: false
     update: false
     accept_hostkey: true
@@ -18,7 +18,7 @@
   ansible.builtin.git:
     repo: '{{ repository }}'
     version: '{{ branch }}'
-    dest: '/home/{{ ansible_user }}/{{ directory }}'
+    dest: '{{ directory }}'
     accept_hostkey: true
     key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
   when: existing_repository.before is defined and not existing_repository.before # if existing_repository.before is null, then the repository is new
@@ -27,7 +27,7 @@
 
 - name: Remove existing locks in {{ name }}
   ansible.builtin.file:
-    path: '/home/{{ ansible_user }}/{{ directory }}/.git/index.lock'
+    path: '{{ directory }}/.git/index.lock'
     state: absent
   tags:
     - restart
@@ -37,7 +37,7 @@
 - name: Get latest data from {{ repository }}
   ansible.builtin.command:
     cmd: git fetch origin
-    chdir: '/home/{{ ansible_user }}/{{ directory }}'
+    chdir: '{{ directory }}'
   tags:
     - restart
     - start
@@ -47,7 +47,7 @@
 - name: Clean {{ name }} local copy
   ansible.builtin.command:
     cmd: git reset --hard origin/{{ branch }}
-    chdir: '/home/{{ ansible_user }}/{{ directory }}'
+    chdir: '{{ directory }}'
   tags:
     - restart
     - start
@@ -57,7 +57,7 @@
 - name: Ensure {{ name }} is on branch {{ branch }}
   ansible.builtin.command:
     cmd: git checkout {{ branch }}
-    chdir: '/home/{{ ansible_user }}/{{ directory }}'
+    chdir: '{{ directory }}'
   tags:
     - restart
     - start
