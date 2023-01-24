@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased [minor]
 ### Added
-- Schedule dataset release. Expect to have a npm command `dataset:schedule` define in the declarations package
+- Schedule dataset release. Expect to have a npm command `dataset:schedule` defined in the declarations package
 
 ## 0.0.7 - 2023-01-26
 ### Fixed
