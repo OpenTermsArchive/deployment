@@ -9,7 +9,7 @@ module.exports = {
       restart_delay: 15 * 60 * 1000,
     },
     {
-      name: 'ota',
+      name: 'ota-release',
       script: 'npm',
       args: 'run dataset:schedule',
       max_restarts: 2,
