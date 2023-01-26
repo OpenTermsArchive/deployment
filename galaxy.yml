@@ -1,6 +1,6 @@
 namespace: opentermsarchive
 name: deployment
-version: 0.0.6
+version: 0.0.7
 readme: README.md
 authors:
   - contact@opentermsarchive.org
@@ -9,7 +9,14 @@ description: >-
   Terms Archive collections.
 license:
   - EUPL-1.2
-tags: [open_terms_archive, archive, terms, terms_and_conditions, tos, database, history]
+tags:
+  - open_terms_archive
+  - archive
+  - terms
+  - terms_and_conditions
+  - tos
+  - database
+  - history
 dependencies: {}
 repository: https://github.com/OpenTermsArchive/deployment.git
 documentation: https://github.com/OpenTermsArchive/deployment.git
