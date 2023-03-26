@@ -7,7 +7,9 @@
     update: false
     accept_hostkey: true
     key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
-  register: existing_repository # the `before` property of the return value can tell us if the repository has been cloned already or not, see <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html#return-values>
+  register: existing_repository 
+  # the `before` property of the return value can tell us if the repository has been cloned already or not,
+  # see <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html#return-values>
   tags:
     - restart
     - start
