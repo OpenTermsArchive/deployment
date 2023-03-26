@@ -6,16 +6,16 @@
     executable: /bin/bash
 
 - name: Create an apt list file for MongoDB — Debian
-  ansible.builtin.shell:  
-    set -o pipefail && echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/5.0 main" | 
+  ansible.builtin.shell:
+    set -o pipefail && echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/5.0 main" |
     sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
   when: ansible_distribution == 'Debian'
   args:
     executable: /bin/bash
 
 - name: Create an apt list file for MongoDB — Ubuntu
-  ansible.builtin.shell: 
-    set -o pipefail && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | 
+  ansible.builtin.shell:
+    set -o pipefail && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" |
     sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
   when: ansible_distribution == 'Ubuntu'
   args:
