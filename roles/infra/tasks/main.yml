@@ -36,6 +36,7 @@
   ansible.builtin.copy:
     src: .gitconfig
     dest: '/home/{{ ansible_user }}/.gitconfig'
+    mode: "0644"
 
 - name: Add GitHub bot account SSH key
   ansible.builtin.copy:
