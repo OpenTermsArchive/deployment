@@ -16,6 +16,8 @@
   ansible.builtin.command:
     cmd: npm install --production
     chdir: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}'
+  register: npm_install
+  changed_when: npm_install.msg | regex_search("added [0-9]+ packages")
   tags:
     - setup
     - update
@@ -39,6 +41,8 @@
   ansible.builtin.command:
     cmd: pm2 stop pm2.config.cjs
     chdir: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}'
+  register: pm2
+  changed_when: pm2.msg != ""
   tags:
     - stop
     - update
@@ -72,6 +76,8 @@
   ansible.builtin.command:
     cmd: pm2 startOrRestart pm2.config.cjs
     chdir: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}'
+  register: pm2
+  changed_when: pm2.msg != ""
   environment:
     NODE_ENV: production
   tags:

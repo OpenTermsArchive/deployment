@@ -40,6 +40,8 @@
   ansible.builtin.command:
     cmd: git fetch origin
     chdir: '{{ directory }}'
+  register: fetch
+  changed_when: fetch.msg != ''
   tags:
     - restart
     - start
@@ -50,6 +52,8 @@
   ansible.builtin.command:
     cmd: git reset --hard origin/{{ branch }}
     chdir: '{{ directory }}'
+  register: reset
+  changed_when: reset.msg != ""
   tags:
     - restart
     - start
@@ -60,6 +64,8 @@
   ansible.builtin.command:
     cmd: git checkout {{ branch }}
     chdir: '{{ directory }}'
+  register: checkout
+  changed_when: checkout.msg != ""
   tags:
     - restart
     - start
