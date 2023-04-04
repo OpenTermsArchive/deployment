@@ -11,8 +11,6 @@
 
 - name: Add the NodeSource repository to the system
   ansible.builtin.shell: set -o pipefail && curl -sL https://deb.nodesource.com/setup_16.x | sudo bash -
-  register: nodesource_repo
-  changed_when: nodesource_repo.msg !=""
   args:
     executable: /bin/bash
 
@@ -24,13 +22,9 @@
 
 - name: Update NPM to latest version
   ansible.builtin.command: npm install -g npm
-  register: npm_update
-  changed_when: npm_update.msg != ""
 
 - name: Install pm2
   ansible.builtin.command: npm install -g pm2 --production=true
-  register: pm2_install
-  changed_when: pm2_install.msg != ""
 
 - name: Add global git config
   ansible.builtin.copy:
