@@ -6,13 +6,17 @@
     executable: /bin/bash
 
 - name: Create an apt list file for MongoDB — Debian
-  ansible.builtin.shell: set -o pipefail && echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/5.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+  ansible.builtin.shell:
+    set -o pipefail && echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/5.0 main" |
+    sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
   when: ansible_distribution == 'Debian'
   args:
     executable: /bin/bash
 
 - name: Create an apt list file for MongoDB — Ubuntu
-  ansible.builtin.shell: set -o pipefail && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+  ansible.builtin.shell:
+    set -o pipefail && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" |
+    sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
   when: ansible_distribution == 'Ubuntu'
   args:
     executable: /bin/bash
@@ -27,11 +31,13 @@
   ansible.builtin.copy:
     src: mongod.conf
     dest: '/etc/mongod.conf'
+    mode: "0644"
 
 - name: Create data directory
   ansible.builtin.file:
     path: /mnt/disk/mongodb
     state: directory
+    mode: "0644"
 
 - name: Set database files permissions
   ansible.builtin.file:

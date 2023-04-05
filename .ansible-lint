@@ -1,0 +1,6 @@
+warn_list:
+  - galaxy[version-incorrect]
+  - name[template]
+  - package-latest
+  - command-instead-of-module
+  - no-changed-when

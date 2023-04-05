@@ -25,6 +25,7 @@
   ansible.builtin.copy:
     src: .env
     dest: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/.env'
+    mode: "0644"
   tags:
     - setup
 
@@ -32,6 +33,7 @@
   ansible.builtin.copy:
     src: pm2.config.cjs
     dest: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/pm2.config.cjs'
+    mode: "0644"
   tags:
     - setup
 
