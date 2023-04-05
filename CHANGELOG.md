@@ -11,7 +11,7 @@ All changes that impact users of this module are documented in this file, in the
 
 ### Changed
 
- - Specification of changelog format is now in CONTRIBUTING
+- Specification of changelog format is now in CONTRIBUTING
 
 ## 0.0.8 - 2023-01-26
 ### Added
