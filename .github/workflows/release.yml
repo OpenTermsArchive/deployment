@@ -41,7 +41,7 @@ jobs:
           RELEASE_TYPE: ${{ github.event.inputs.release-type }}
 
       - name: Update changelog unreleased section with new version
-        uses: superfaceai/release-changelog-action@v1
+        uses: superfaceai/release-changelog-action@v2
         with:
           path-to-changelog: CHANGELOG.md
           version: ${{ env.NEW_VERSION }}
@@ -69,7 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Read version changelog
-        uses: superfaceai/release-changelog-action@v1
+        uses: superfaceai/release-changelog-action@v2
         id: get-changelog
         with:
           path-to-changelog: CHANGELOG.md
