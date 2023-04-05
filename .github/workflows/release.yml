@@ -46,6 +46,7 @@ jobs:
           path-to-changelog: CHANGELOG.md
           version: ${{ env.NEW_VERSION }}
           operation: release
+          format: markdownlint
 
       - name: Build Collection
         uses: artis3n/ansible_galaxy_collection@v2
