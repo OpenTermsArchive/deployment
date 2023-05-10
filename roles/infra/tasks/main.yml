@@ -77,3 +77,6 @@
     # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB.
     # See https://www.mongodb.com/docs/manual/installation/#supported-platforms
     - ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')
+
+- name: Install NGINX
+  ansible.builtin.include_tasks: nginx.yml
