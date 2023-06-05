@@ -6,8 +6,8 @@ All changes that impact users of this module are documented in this file, in the
 
 ### Added
 
-- Launch API server. Expect to have a npm command `start:api` defined in the declarations package
-- Install NGINX. Configure it as a reverse proxy to expose the API and apply a rate limiter to protect it.
+- Launch API server; expect to have a npm command `start:api` defined in the declarations package
+- Install NGINX as a reverse proxy to expose the API with a rate limiter
 
 ## 0.0.9 - 2023-04-05
 
@@ -24,7 +24,7 @@ All changes that impact users of this module are documented in this file, in the
 
 ### Added
 
-- Schedule dataset release. Expect to have a npm command `dataset:schedule` defined in the declarations package
+- Schedule dataset release; expect to have a npm command `dataset:schedule` defined in the declarations package
 
 ## 0.0.7 - 2023-01-26
 
