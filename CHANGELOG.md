@@ -2,7 +2,12 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## Unreleased [minor]
+
+### Added
+
+- Launch API server. Expect to have a npm command `start:api` defined in the declarations package
+- Install NGINX. Configure it as a reverse proxy to expose the API and apply a rate limiter to protect it.
 
 ## 0.0.9 - 2023-04-05
 
