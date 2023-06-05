@@ -5,7 +5,6 @@ include /etc/nginx/modules-enabled/*.conf;
 
 events {
 	worker_connections 768;
-	# multi_accept on;
 }
 
 http {
@@ -25,9 +24,6 @@ http {
 	# Disabling server_tokens can help to mitigate this risk by removing the NGINX
 	# version number from the response headers.
 	server_tokens off;
-
-	# server_names_hash_bucket_size 64;
-	# server_name_in_redirect off;
 
 	include /etc/nginx/mime.types;
 	default_type application/octet-stream;
@@ -52,13 +48,6 @@ http {
 
 	gzip on;
 
-	# gzip_vary on;
-	# gzip_proxied any;
-	# gzip_comp_level 6;
-	# gzip_buffers 16 8k;
-	# gzip_http_version 1.1;
-	# gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-
 	##
 	# Virtual Host Configs
 	##
@@ -80,25 +69,3 @@ http {
 	limit_req_status 429;
 	limit_req_log_level error;
 }
-
-
-#mail {
-#	# See sample authentication script at:
-#	# http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript
-#
-#	# auth_http localhost/auth.php;
-#	# pop3_capabilities "TOP" "USER";
-#	# imap_capabilities "IMAP4rev1" "UIDPLUS";
-#
-#	server {
-#		listen     localhost:110;
-#		protocol   pop3;
-#		proxy      on;
-#	}
-#
-#	server {
-#		listen     localhost:143;
-#		protocol   imap;
-#		proxy      on;
-#	}
-#}
