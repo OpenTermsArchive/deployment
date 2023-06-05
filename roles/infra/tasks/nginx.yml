@@ -1,18 +1,18 @@
 ---
 - name: Install NGINX package
-  apt:
+  ansible.builtin.apt:
     name: nginx
-    update_cache: yes
+    update_cache: true
     state: latest
 
 - name: Clean default NGINX site
-  file:
+  ansible.builtin.file:
     state: absent
     path: /etc/nginx/sites-enabled/default
   notify: Restart NGINX
 
 - name: Setup NGINX conf
-  template:
+  ansible.builtin.template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
     owner: root
@@ -21,16 +21,17 @@
   notify: Restart NGINX
 
 - name: Add engine API conf in NGINX sites-available
-  template:
+  ansible.builtin.template:
     src: proxy.j2
     dest: /etc/nginx/sites-available/engine-api
-    force: yes
+    force: true
+    mode: '0644'
   notify: Restart NGINX
 
 - name: Link engine API conf from sites-available to sites-enabled
-  file:
+  ansible.builtin.file:
     src: /etc/nginx/sites-available/engine-api
     dest: /etc/nginx/sites-enabled/engine-api
     state: link
-    force: yes
+    force: true
   notify: Restart NGINX
