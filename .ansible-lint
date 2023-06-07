@@ -4,3 +4,4 @@ warn_list:
   - package-latest
   - command-instead-of-module
   - no-changed-when
+  - var-naming[no-role-prefix]
