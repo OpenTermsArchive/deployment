@@ -1,71 +1,15 @@
-user www-data;
-worker_processes auto;
-pid /run/nginx.pid;
-include /etc/nginx/modules-enabled/*.conf;
+{{ ansible_managed | comment }}
 
-events {
-	worker_connections 768;
-}
+# By default, NGINX includes its version number in the response header, which
+# can give potential attackers information about the software and version being
+# used. This information can be useful for attackers to target specific
+# vulnerabilities or exploits that are present in specific versions.
+# Disabling server_tokens can help to mitigate this risk by removing the NGINX
+# version number from the response headers.
+server_tokens off;
 
-http {
+# Configure the rate limiting module to prevent DDoS attacks.
+limit_req_zone $binary_remote_addr zone=limited:10m rate=10r/s;
 
-	##
-	# Basic Settings
-	##
-
-	sendfile on;
-	tcp_nopush on;
-	types_hash_max_size 2048;
-
-	# By default, NGINX includes its version number in the response header, which
-	# can give potential attackers information about the software and version being
-	# used. This information can be useful for attackers to target specific
-	# vulnerabilities or exploits that are present in specific versions.
-	# Disabling server_tokens can help to mitigate this risk by removing the NGINX
-	# version number from the response headers.
-	server_tokens off;
-
-	include /etc/nginx/mime.types;
-	default_type application/octet-stream;
-
-	##
-	# SSL Settings
-	##
-
-	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
-	ssl_prefer_server_ciphers on;
-
-	##
-	# Logging Settings
-	##
-
-	access_log /var/log/nginx/access.log;
-	error_log /var/log/nginx/error.log;
-
-	##
-	# Gzip Settings
-	##
-
-	gzip on;
-
-	##
-	# Virtual Host Configs
-	##
-
-	include /etc/nginx/conf.d/*.conf;
-	include /etc/nginx/sites-enabled/*;
-
-	##
-	# Security Settings
-	##
-
-	# Limit the size of request headers
-	client_header_buffer_size 1k;
-	large_client_header_buffers 2 1k;
-
-	# Configure the rate limiting module to prevent DDoS attacks
-	# Create a rate limiting zone named `limited`. The zone is associated with the client's IP address (`$binary_remote_addr`) and has a size of 10 megabytes (`10m`). The rate limit is 10 requests per second (`10r/s`).
-	limit_req_zone $binary_remote_addr zone=limited:10m rate=10r/s;
-	limit_req_status 429;
-	limit_req_log_level error;
-}
+# Define HTTP response status code that is returned to clients when the rate limit is exceeded.
+limit_req_status 429;
