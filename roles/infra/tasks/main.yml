@@ -30,7 +30,7 @@
   ansible.builtin.copy:
     src: .gitconfig
     dest: '/home/{{ ansible_user }}/.gitconfig'
-    mode: "0644"
+    mode: "644"
 
 - name: Add GitHub bot account SSH key
   ansible.builtin.copy:
@@ -46,7 +46,7 @@
     dest: '/home/{{ ansible_user }}/.ssh/config'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
-    mode: 0644
+    mode: "644"
 
 - name: Install Chromium — Debian
   ansible.builtin.apt:
