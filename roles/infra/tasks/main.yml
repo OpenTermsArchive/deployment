@@ -38,7 +38,7 @@
     dest: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
-    mode: 0600
+    mode: "600"
 
 - name: Configure SSH to use GitHub bot account key on github.com
   ansible.builtin.template:
