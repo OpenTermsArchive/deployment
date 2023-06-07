@@ -1,8 +1,8 @@
-- name: Check if {{ name }} base data has already been obtained from {{ repository }}
+- name: Check if {{ engine_database_name }} base data has already been obtained from {{ engine_database_repository }}
   ansible.builtin.git:
-    repo: '{{ repository }}'
-    version: '{{ branch }}'
-    dest: '{{ directory }}'
+    repo: '{{ engine_database_repository }}'
+    version: '{{ engine_database_branch }}'
+    dest: '{{ engine_database_directory }}'
     clone: false
     update: false
     accept_hostkey: true
@@ -16,50 +16,50 @@
     - update
     - setup
 
-- name: Obtain {{ name }} initial data from branch {{ branch }} of {{ repository }}
+- name: Obtain {{ engine_database_name }} initial data from branch {{ engine_database_branch }} of {{ engine_database_repository }}
   ansible.builtin.git:
-    repo: '{{ repository }}'
-    version: '{{ branch }}'
-    dest: '{{ directory }}'
+    repo: '{{ engine_database_repository }}'
+    version: '{{ engine_database_branch }}'
+    dest: '{{ engine_database_directory }}'
     accept_hostkey: true
     key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
   when: existing_repository.before is defined and not existing_repository.before # if existing_repository.before is null, then the repository is new
   tags:
     - setup
 
-- name: Remove existing locks in {{ name }}
+- name: Remove existing locks in {{ engine_database_name }}
   ansible.builtin.file:
-    path: '{{ directory }}/.git/index.lock'
+    path: '{{ engine_database_directory }}/.git/index.lock'
     state: absent
   tags:
     - restart
     - start
     - update
 
-- name: Get latest data from {{ repository }}
+- name: Get latest data from {{ engine_database_repository }}
   ansible.builtin.command:
     cmd: git fetch origin
-    chdir: '{{ directory }}'
+    chdir: '{{ engine_database_directory }}'
   tags:
     - restart
     - start
     - update
     - setup
 
-- name: Clean {{ name }} local copy
+- name: Clean {{ engine_database_name }} local copy
   ansible.builtin.command:
-    cmd: git reset --hard origin/{{ branch }}
-    chdir: '{{ directory }}'
+    cmd: git reset --hard origin/{{ engine_database_branch }}
+    chdir: '{{ engine_database_directory }}'
   tags:
     - restart
     - start
     - update
     - setup
 
-- name: Ensure {{ name }} is on branch {{ branch }}
+- name: Ensure {{ engine_database_name }} is on branch {{ engine_database_branch }}
   ansible.builtin.command:
-    cmd: git checkout {{ branch }}
-    chdir: '{{ directory }}'
+    cmd: git checkout {{ engine_database_branch }}
+    chdir: '{{ engine_database_directory }}'
   tags:
     - restart
     - start

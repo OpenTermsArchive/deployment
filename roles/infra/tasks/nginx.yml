@@ -17,7 +17,7 @@
     dest: /etc/nginx/nginx.conf
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify: Restart NGINX
 
 - name: Add engine API conf in NGINX sites-available
@@ -25,7 +25,7 @@
     src: proxy.j2
     dest: /etc/nginx/sites-available/engine-api
     force: true
-    mode: '0644'
+    mode: "0644"
   notify: Restart NGINX
 
 - name: Link engine API conf from sites-available to sites-enabled
