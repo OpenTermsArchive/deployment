@@ -30,7 +30,7 @@
   ansible.builtin.copy:
     src: .gitconfig
     dest: '/home/{{ ansible_user }}/.gitconfig'
-    mode: "0644"
+    mode: "644"
 
 - name: Add GitHub bot account SSH key
   ansible.builtin.copy:
@@ -38,7 +38,7 @@
     dest: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
-    mode: 0600
+    mode: "600"
 
 - name: Configure SSH to use GitHub bot account key on github.com
   ansible.builtin.template:
@@ -46,7 +46,7 @@
     dest: '/home/{{ ansible_user }}/.ssh/config'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
-    mode: 0644
+    mode: "644"
 
 - name: Install Chromium — Debian
   ansible.builtin.apt:
@@ -77,3 +77,6 @@
     # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB.
     # See https://www.mongodb.com/docs/manual/installation/#supported-platforms
     - ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')
+
+- name: Install NGINX
+  ansible.builtin.include_tasks: nginx.yml

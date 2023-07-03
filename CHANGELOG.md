@@ -2,7 +2,12 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## Unreleased [minor]
+
+### Added
+
+- Launch API server; expect to have a npm command `start:api` defined in the declarations package
+- Install NGINX as a reverse proxy to expose the API with a rate limiter
 
 ## 0.0.9 - 2023-04-05
 
@@ -19,7 +24,7 @@ All changes that impact users of this module are documented in this file, in the
 
 ### Added
 
-- Schedule dataset release. Expect to have a npm command `dataset:schedule` defined in the declarations package
+- Schedule dataset release; expect to have a npm command `dataset:schedule` defined in the declarations package
 
 ## 0.0.7 - 2023-01-26
 

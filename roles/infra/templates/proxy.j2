@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+
+server {
+  listen 80 default_server;
+  server_name {{ inventory_hostname }};
+  
+  location / {
+    # Allowing for a `burst` of up to 5 requests beyond the specified rate limit. The `nodelay` parameter ensures that excessive requests beyond the burst limit are immediately rejected with a 429 error response instead of being queued. See https://www.nginx.com/blog/rate-limiting-nginx/.
+    limit_req zone=limited burst=5 nodelay;
+    proxy_pass http://localhost:3000;
+    proxy_redirect off;
+  }
+}
