@@ -6,7 +6,11 @@ All changes that impact users of this module are documented in this file, in the
 
 ### Changed
 
-- Make the publication process compatible with the protected branch.
+- Make the publication process compatible with the protected branch
+
+### Fixed
+
+- Ensure to update NPM to the latest version compatible with the version of Node installed
 
 ## 0.0.10 - 2023-07-03
 

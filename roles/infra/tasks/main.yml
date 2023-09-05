@@ -21,7 +21,7 @@
     state: latest
 
 - name: Update NPM to latest version
-  ansible.builtin.command: npm install -g npm
+  ansible.builtin.command: npm install -g npm@9 # The most recent major NPM version that is compatible with Node 16 is version 9
 
 - name: Install pm2
   ansible.builtin.command: npm install -g pm2 --production=true
