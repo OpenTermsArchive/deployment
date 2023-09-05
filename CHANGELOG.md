@@ -12,6 +12,10 @@ All changes that impact users of this module are documented in this file, in the
 
 - Ensure to update NPM to the latest version compatible with the version of Node installed
 
+### Removed
+
+- Remove Ansible linting with GitHub Actions
+
 ## 0.0.10 - 2023-07-03
 
 ### Added
