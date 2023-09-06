@@ -20,7 +20,7 @@
     update_cache: true
     state: latest # The major version of NodeJS is provided by the NodeSource repository defined in the task above
 
-- name: Update NPM to latest version
+- name: Update NPM to latest version 9
   ansible.builtin.command: npm install -g npm@9 # The most recent major NPM version that is compatible with Node 16 is version 9
 
 - name: Install pm2
