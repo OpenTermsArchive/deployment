@@ -4,9 +4,13 @@ All changes that impact users of this module are documented in this file, in the
 
 ## Unreleased [patch]
 
+### Fixed
+
+- Ensure NPM version is compatible with NodeJS version
+
 ### Changed
 
-- Make the publication process compatible with the protected branch.
+- Lock pm2 major version
 
 ## 0.0.10 - 2023-07-03
 
