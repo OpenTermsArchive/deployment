@@ -23,8 +23,8 @@
 - name: Update NPM to latest version 9
   ansible.builtin.command: npm install -g npm@9 # The most recent major NPM version that is compatible with Node 16 is version 9
 
-- name: Install pm2
-  ansible.builtin.command: npm install -g pm2 --production=true
+- name: Install pm2 to latest version 5
+  ansible.builtin.command: npm install -g pm2@5 --production=true
 
 - name: Add global git config
   ansible.builtin.copy:

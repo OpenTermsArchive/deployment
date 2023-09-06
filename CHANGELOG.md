@@ -8,6 +8,10 @@ All changes that impact users of this module are documented in this file, in the
 
 - Ensure NPM version is compatible with NodeJS version
 
+### Changed
+
+- Lock pm2 major version
+
 ## 0.0.10 - 2023-07-03
 
 ### Added
