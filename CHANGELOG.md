@@ -4,17 +4,9 @@ All changes that impact users of this module are documented in this file, in the
 
 ## Unreleased [patch]
 
-### Changed
-
-- Make the publication process compatible with the protected branch
-
 ### Fixed
 
-- Ensure to update NPM to the latest version compatible with the version of Node installed
-
-### Removed
-
-- Remove Ansible linting with GitHub Actions
+- Ensure NPM version is compatible with NodeJS version
 
 ## 0.0.10 - 2023-07-03
 
