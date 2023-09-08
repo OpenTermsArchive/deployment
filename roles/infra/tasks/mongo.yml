@@ -37,7 +37,7 @@
   ansible.builtin.file:
     path: /mnt/disk/mongodb
     state: directory
-    mode: "644"
+    mode: "744"
 
 - name: Set database files permissions
   ansible.builtin.file:
