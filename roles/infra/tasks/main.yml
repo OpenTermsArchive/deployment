@@ -4,27 +4,15 @@
     pkg:
       - build-essential
       - curl
+      - ca-certificates
+      - gnupg
       - git
       - zip
     update_cache: true
     state: latest
 
-- name: Add the NodeSource repository to the system
-  ansible.builtin.shell: set -o pipefail && curl -sL https://deb.nodesource.com/setup_16.x | sudo bash - # Remember to update the major version of NPM when updating the major version of Node
-  args:
-    executable: /bin/bash
-
-- name: Install NodeJS and NPM
-  ansible.builtin.apt:
-    name: nodejs
-    update_cache: true
-    state: latest # The major version of NodeJS is provided by the NodeSource repository defined in the task above
-
-- name: Update NPM to latest version 9
-  ansible.builtin.command: npm install -g npm@9 # The most recent major NPM version that is compatible with Node 16 is version 9
-
-- name: Install pm2 to latest version 5
-  ansible.builtin.command: npm install -g pm2@5 --production=true
+- name: Install NodeJS
+  ansible.builtin.include_tasks: node.yml
 
 - name: Add global git config
   ansible.builtin.copy:
