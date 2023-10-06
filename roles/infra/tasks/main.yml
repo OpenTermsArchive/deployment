@@ -14,6 +14,9 @@
 - name: Install NodeJS
   ansible.builtin.include_tasks: node.yml
 
+- name: Install PM2 to latest version 5
+  ansible.builtin.command: npm install -g pm2@5 --production=true
+
 - name: Configure Git and GitHub
   ansible.builtin.include_tasks: git.yml
 

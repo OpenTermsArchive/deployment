@@ -24,6 +24,3 @@
 
 - name: Update NPM to latest version 10
   ansible.builtin.command: npm install -g npm@10
-
-- name: Install pm2 to latest version 5
-  ansible.builtin.command: npm install -g pm2@5 --production=true
