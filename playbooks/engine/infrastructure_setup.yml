@@ -1,0 +1,26 @@
+---
+- name: Set up infrastructure
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Load OTA engine config
+      ansible.builtin.include_vars:
+        name: app_config
+        file: "{{ inventory_dir }}/{{ ota_config_path | default('../config/production.json') }}"
+      tags: always
+
+    - ansible.builtin.include_role:
+        name: infrastructure/mongo
+      when:
+        - (app_config.recorder.versions.storage.type is defined and app_config.recorder.versions.storage.type == 'mongo') or
+          (app_config.recorder.snapshots.storage.type is defined and app_config.recorder.snapshots.storage.type == 'mongo')
+        # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB.
+        # See https://www.mongodb.com/docs/manual/installation/#supported-platforms
+        - ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')
+
+  roles:
+    - role: infrastructure/git
+    - role: infrastructure/node
+    - role: infrastructure/nginx
+    - role: infrastructure/chromium
