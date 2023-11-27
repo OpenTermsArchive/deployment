@@ -1,0 +1,6 @@
+---
+- name: Deploy the Open Terms Archive federated API 
+  hosts: all
+
+  roles:
+    - role: federated-api
