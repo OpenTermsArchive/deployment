@@ -1,0 +1,55 @@
+- name: Clone federated API repository
+  ansible.builtin.git:
+    repo: '{{ ota_federated_api_repo }}'
+    dest: '/home/{{ ansible_user }}/{{ ota_federated_api_directory }}'
+    version: '{{ ota_federated_api_branch }}'
+    force: true
+    accept_hostkey: true
+    key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
+    depth: 1
+  tags:
+    - setup
+    - update
+
+- name: Install dependencies
+  ansible.builtin.command:
+    cmd: npm install --production
+    chdir: '/home/{{ ansible_user }}/{{ ota_federated_api_directory }}'
+  tags:
+    - setup
+    - update
+
+- name: Add .env file
+  ansible.builtin.copy:
+    src: .env
+    dest: '/home/{{ ansible_user }}/{{ ota_federated_api_directory }}/.env'
+    mode: "644"
+  tags:
+    - setup
+
+- name: Add pm2 config file
+  ansible.builtin.copy:
+    src: pm2.config.cjs
+    dest: '/home/{{ ansible_user }}/{{ ota_federated_api_directory }}/pm2.config.cjs'
+    mode: "644"
+  tags:
+    - setup
+
+- name: Stop federated API
+  ansible.builtin.command:
+    cmd: pm2 stop pm2.config.cjs
+    chdir: '/home/{{ ansible_user }}/{{ ota_federated_api_directory }}'
+  tags:
+    - stop
+    - update
+
+- name: Start federated API
+  ansible.builtin.command:
+    cmd: pm2 startOrRestart pm2.config.cjs
+    chdir: '/home/{{ ansible_user }}/{{ ota_federated_api_directory }}'
+  environment:
+    NODE_ENV: production
+  tags:
+    - restart
+    - start
+    - update
