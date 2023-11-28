@@ -8,8 +8,6 @@
     key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
     depth: 1
   tags:
-    - setup
-    - update
     - update-declarations
 
 - name: Install services declarations dependencies
@@ -17,8 +15,6 @@
     cmd: npm install --production
     chdir: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}'
   tags:
-    - setup
-    - update
     - update-declarations
 
 - name: Add .env file
@@ -26,16 +22,12 @@
     src: .env
     dest: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/.env'
     mode: "644"
-  tags:
-    - setup
 
 - name: Add pm2 config file
   ansible.builtin.copy:
     src: pm2.config.cjs
     dest: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/pm2.config.cjs'
     mode: "644"
-  tags:
-    - setup
 
 - name: Stop Open Terms Archive schedulers
   ansible.builtin.command:
@@ -43,7 +35,6 @@
     chdir: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}'
   tags:
     - stop
-    - update
     - update-declarations
 
 - name: Setup snapshots git repository
@@ -54,9 +45,6 @@
     engine_database_repository: '{{ app_config.recorder.snapshots.storage.git.repository }}'
     engine_database_branch: '{{ ota_snapshots_branch }}'
     engine_database_directory: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/{{ app_config.recorder.snapshots.storage.git.path }}'
-  tags:
-    - setup
-    - update
 
 - name: Setup versions git repository
   ansible.builtin.include_tasks: database.yml
@@ -66,9 +54,6 @@
     engine_database_repository: '{{ app_config.recorder.versions.storage.git.repository }}'
     engine_database_branch: '{{ ota_versions_branch }}'
     engine_database_directory: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/{{ app_config.recorder.versions.storage.git.path }}'
-  tags:
-    - setup
-    - update
 
 - name: Start Open Terms Archive schedulers
   ansible.builtin.command:
@@ -79,5 +64,4 @@
   tags:
     - restart
     - start
-    - update
     - update-declarations
