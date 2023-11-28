@@ -10,11 +10,6 @@
   # the `before` property of the return value can tell us if the repository has been cloned already or not,
   # see <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html#return-values>
   register: existing_repository
-  tags:
-    - restart
-    - start
-    - update
-    - setup
 
 - name: Obtain {{ engine_database_name }} initial data from branch {{ engine_database_branch }} of {{ engine_database_repository }}
   ansible.builtin.git:
@@ -24,44 +19,23 @@
     accept_hostkey: true
     key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
   when: existing_repository.before is defined and not existing_repository.before # if existing_repository.before is null, then the repository is new
-  tags:
-    - setup
 
 - name: Remove existing locks in {{ engine_database_name }}
   ansible.builtin.file:
     path: '{{ engine_database_directory }}/.git/index.lock'
     state: absent
-  tags:
-    - restart
-    - start
-    - update
 
 - name: Get latest data from {{ engine_database_repository }}
   ansible.builtin.command:
     cmd: git fetch origin
     chdir: '{{ engine_database_directory }}'
-  tags:
-    - restart
-    - start
-    - update
-    - setup
 
 - name: Clean {{ engine_database_name }} local copy
   ansible.builtin.command:
     cmd: git reset --hard origin/{{ engine_database_branch }}
     chdir: '{{ engine_database_directory }}'
-  tags:
-    - restart
-    - start
-    - update
-    - setup
 
 - name: Ensure {{ engine_database_name }} is on branch {{ engine_database_branch }}
   ansible.builtin.command:
     cmd: git checkout {{ engine_database_branch }}
     chdir: '{{ engine_database_directory }}'
-  tags:
-    - restart
-    - start
-    - update
-    - setup
