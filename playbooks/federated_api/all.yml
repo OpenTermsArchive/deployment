@@ -4,5 +4,3 @@
 
 - import_playbook: infrastructure.yml
 - import_playbook: application.yml
-
-
