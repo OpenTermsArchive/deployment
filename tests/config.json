@@ -25,5 +25,8 @@
   },
   "logger": {
     "sendMailOnError": false
+  },
+  "api": {
+    "port": 3003
   }
 }
