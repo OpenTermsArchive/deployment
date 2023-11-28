@@ -19,8 +19,13 @@
         # See https://www.mongodb.com/docs/manual/installation/#supported-platforms
         - ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')
 
+    - ansible.builtin.include_role:
+        name: infrastructure/nginx
+      vars:
+        host: '{{ inventory_hostname }}'
+        port: '{{ app_config.api.port }}'
+
   roles:
     - role: infrastructure/git
     - role: infrastructure/node
-    - role: infrastructure/nginx
     - role: infrastructure/chromium
