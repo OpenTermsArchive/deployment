@@ -1,8 +1,8 @@
 # Open Terms Archive Ansible Collection
 
-This repository contains the `opentermsarchive.deployment` Ansible Collection. This ansible collection provides roles and playbooks to set up the infrastructure of and deploy Open Terms Archive.
+This repository contains the `opentermsarchive.deployment` Ansible Collection. This ansible collection provides playbooks to set up the infrastructure of and deploy Open Terms Archive applications.
 
-## Usage
+## Installation
 
 [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) is required to use this collection.
 
@@ -26,76 +26,116 @@ And installed with the command:
 ansible-galaxy collection install -r requirements.yml
 ```
 
-Once installed, the `deploy` playbook can be used using the `ansible-playbook` command-line tool:
+## Usage
+
+Once installed, some playbooks are available to deploy the two main Open Terms Archive applications: [Engine](https://github.com/OpenTermsArchive/engine) and [Federated API](https://github.com/OpenTermsArchive/federated-api).
+
+Each playbook can be executed using the `ansible-playbook` command-line tool:
 
 ```sh
-ansible-playbook opentermsarchive.deployment.deploy
+ansible-playbook opentermsarchive.deployment.<playbook-name>
 ```
 
-See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more information about ansible collections.
+Refer to the application related sections below for a list of available playbooks.
 
-### Configuration
+_It is possible to check a playbook execution without actually applying changes with `check` and `diff` options:_
+
+```sh
+ansible-playbook opentermsarchive.deployment.<playbook-name> --check --diff
+```
+
+> See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more information about ansible collections.
+
+- - -
+
+### Engine application
+
+Available playbooks for the engine application:
+
+| Playbook name | Description | Command example |
+| --- | --- | --- |
+| `engine.infrastructure` | Set up and configure the infrastructure required by the Open Terms Archive engine | `ansible-playbook opentermsarchive.deployment.engine.infrastructure` |
+| `engine.application` | Deploy the Open Terms Archive engine | `ansible-playbook opentermsarchive.deployment.engine.application` |
+| `engine.all` | Set up infrastructure and deploy the Open Terms Archive engine | `ansible-playbook opentermsarchive.deployment.engine.all` |
+
+#### Configuration
+
+Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html) are listed below, along with default values:
+
+| Variable | Description | Default value |
+| --- | --- | --- |
+| `ota_engine_config_path` | Path to the engine config file related to the inventory file | `../config/production.json` |
+| `ota_engine_declarations_branch` | Git branch of the declarations repository to use | `main` |
+| `ota_engine_snapshots_branch` | Git branch of the snapshots repository to use | `main` |
+| `ota_engine_versions_branch` | Git branch of the versions repository to use | `main` |
+| `ota_engine_declarations_directory` | Directory path where the code will be deployed on the server | Value declared in the `name` key in the engine config file |
+
+These variable can be overriden in the inventory file, for example:
+
+```yml
+all:
+  hosts:
+    127.0.0.1:
+      ansible_user: debian
+      ota_engine_config_path: ./engine_config.json
+      ota_engine_declarations_branch: new-feature
+```
+
+#### Tags
+
+Available [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html) to refine what will happen, use them with `--tags`:
+
+| Tag | Description | Command example |
+| --- | --- | --- |
+| `start` | Start the engine | `ansible-playbook opentermsarchive.deployment.engine.application --tags start` |
+| `stop` | Stop the engine | `ansible-playbook opentermsarchive.deployment.engine.application --tags stop` |
+| `restart` | Restart the engine | `ansible-playbook opentermsarchive.deployment.engine.application --tags restart` |
+| `update-declarations` | Update service declarations (pull declarations, install dependencies, and restart engine) | `ansible-playbook opentermsarchive.deployment.engine.application --tags update-declarations` |
+
+- - -
+
+### Federated API application
+
+Available playbooks for the Federated API application:
+
+| Playbook name | Description | Command example |
+| --- | --- | --- |
+| `federated_api.infrastructure` | Set up and configure the infrastructure required by the Open Terms Archive federated API | `ansible-playbook opentermsarchive.deployment.federated_api.infrastructure` |
+| `federated_api.application` | Deploy the Open Terms Archive federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application` |
+| `federated_api.all` | Set up infrastructure and deploy the Open Terms Archive federated API | `ansible-playbook opentermsarchive.deployment.federated_api.all` |
+
+#### Configuration
 
 Available variables are listed below, along with default values:
 
-- `ota_config_path`: Path to the engine config file related to the inventory file. Default: `../config/production.json`.
-- `ota_declarations_branch`: Git branch of the declarations repository to use. Default: `main`.
-- `ota_snapshots_branch`: Git branch of the snapshots repository to use. Default: `main`.
-- `ota_versions_branch`: Git branch of the versions repository to use. Default: `main`.
-- `ota_declarations_directory`: Directory path where the code will be deploy on the server. Default: the value declared in the `name` key in the engine config file.
+| Variable | Description | Default value |
+| --- | --- | --- |
+| `ota_federated_api_repo` | Repository URL of the federated API code | `https://github.com/OpenTermsArchive/federated-api.git` |
+| `ota_federated_api_directory` | Directory path where the code will be deployed on the server | `federated-api` |
+| `ota_federated_api_branch` | Git branch of the federated API repository to use | `main` |
 
-### Commands
+These variables can be overridden in the inventory file, for example:
 
-- To set up a full [(phoenix)](https://martinfowler.com/bliki/PhoenixServer.html) server:
-```
-ansible-playbook opentermsarchive.deployment.deploy
-```
-
-Some [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html) are available to refine what will happen, use them with `--tags`:
-
-- **Server setup:**
-    - `infra`: to only setup the infrastructure
-    - `engine`: to only setup the `Open Terms Archive` engine (the infrastructure must have been put in place at least once before)
-- **Engine control:**
-    - `setup`: to only setup system dependencies required by the engine (cloning repo, installing engine dependencies, all config files, and so on…)
-    - `start`: to start the engine
-    - `stop`: to stop the engine
-    - `restart`: to restart the engine
-    - `update`: to update the engine (pull code, install dependencies and restart engine)
-    - `update-declarations`: to update services declarations (pull declarations, install dependencies and restart engine)
-
-
-#### Refined commands examples
-
-- To setup the infrastructure only:
-```sh
-ansible-playbook opentermsarchive.deployment.deploy --tags infra
+```yml
+all:
+  hosts:
+    127.0.0.1:
+      ansible_user: debian
+      ota_federated_api_repo: https://github.com/OpenTermsArchive/federated-api.git
+      ota_federated_api_branch: new-feature
 ```
 
-- To setup the `Open Terms Archive` engine only:
-```sh
-ansible-playbook opentermsarchive.deployment.deploy --tags engine
-```
+#### Tags
 
-- Check deployment without actually applying changes:
-```sh
-ansible-playbook opentermsarchive.deployment.deploy --check --diff
-```
+Available [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html) to refine what will happen, use them with `--tags`:
 
-- Update the Open Terms Archive engine only, without applying changes to the infrastructure:
-```sh
-ansible-playbook opentermsarchive.deployment.deploy --tags update
-```
+| Tag | Description | Command example |
+| --- | --- | --- |
+| `start` | To only start the Federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application --tags start` |
+| `stop` | To only stop the Federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application --tags stop` |
+| `restart` | To only restart the Federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application --tags restart` |
 
-- Update services declarations only:
-```sh
-ansible-playbook opentermsarchive.deployment.deploy --tags update-declarations
-```
-
-- Stop the Open Terms Archive engine only:
-```sh
-ansible-playbook opentermsarchive.deployment.deploy --tags stop
-```
+- - -
 
 ## Development
 
@@ -139,7 +179,7 @@ vagrant up
 Start by applying changes on the virtual machine:
 
 ```sh
-ansible-playbook ../playbooks/deploy.yml
+ansible-playbook ../playbooks/engine/all.yml
 ```
 
 Connect through SSH to the virtual machine and check that everything works as intended:
