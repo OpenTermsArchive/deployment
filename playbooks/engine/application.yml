@@ -6,7 +6,7 @@
     - name: Load the production config
       ansible.builtin.include_vars:
         name: app_config
-        file: "{{ inventory_dir }}/{{ ota_config_path | default('../config/production.json') }}"
+        file: "{{ inventory_dir }}/{{ ota_engine_config_path | default('../config/production.json') }}"
       tags: always
     
     - ansible.builtin.include_role:
