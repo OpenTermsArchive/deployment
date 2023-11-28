@@ -37,6 +37,24 @@
     - stop
     - update-declarations
 
+- name: Add conf in NGINX sites-available
+  become: true
+  ansible.builtin.template:
+    src: nginx-conf.j2
+    dest: '/etc/nginx/sites-available/engine-api'
+    force: true
+    mode: "644"
+  notify: Restart NGINX
+
+- name: Link conf from sites-available to sites-enabled
+  become: true
+  ansible.builtin.file:
+    src: '/etc/nginx/sites-available/engine-api'
+    dest: '/etc/nginx/sites-enabled/engine-api'
+    state: link
+    force: true
+  notify: Restart NGINX
+
 - name: Setup snapshots git repository
   ansible.builtin.include_tasks: database.yml
   when: app_config.recorder.snapshots.storage.git.repository is defined

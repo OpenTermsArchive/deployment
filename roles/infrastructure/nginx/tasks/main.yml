@@ -19,19 +19,3 @@
     group: root
     mode: "644"
   notify: Restart NGINX
-
-- name: Add engine API conf in NGINX sites-available
-  ansible.builtin.template:
-    src: proxy.j2
-    dest: /etc/nginx/sites-available/engine-api
-    force: true
-    mode: "644"
-  notify: Restart NGINX
-
-- name: Link engine API conf from sites-available to sites-enabled
-  ansible.builtin.file:
-    src: /etc/nginx/sites-available/engine-api
-    dest: /etc/nginx/sites-enabled/engine-api
-    state: link
-    force: true
-  notify: Restart NGINX
