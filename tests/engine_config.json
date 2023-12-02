@@ -7,7 +7,7 @@
     "versions": {
       "storage": {
         "git": {
-          "repository": "git@github.com:OpenTermsArchive/sandbox-versions.git",
+          "repository": "git@github.com:OpenTermsArchive/demo-versions.git",
           "path": "./data/versions",
           "publish": false
         }
@@ -16,7 +16,7 @@
     "snapshots": {
       "storage": {
         "git": {
-          "repository": "git@github.com:OpenTermsArchive/sandbox-snapshots.git",
+          "repository": "git@github.com:OpenTermsArchive/demo-snapshots.git",
           "path": "./data/snapshots",
           "publish": false
         }
