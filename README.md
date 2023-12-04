@@ -1,6 +1,6 @@
 # Open Terms Archive Ansible Collection
 
-This repository contains the `opentermsarchive.deployment` Ansible Collection. This ansible collection provides playbooks to set up the infrastructure of and deploy Open Terms Archive applications.
+This repository contains the `opentermsarchive.deployment` Ansible collection. This Ansible collection provides playbooks to set up the infrastructure of and deploy Open Terms Archive applications.
 
 ## Installation
 
@@ -44,7 +44,7 @@ _It is possible to check a playbook execution without actually applying changes 
 ansible-playbook opentermsarchive.deployment.<playbook-name> --check --diff
 ```
 
-> See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more information about ansible collections.
+> See “[Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html)” in Ansible’s user guide for more information about Ansible collections.
 
 - - -
 
@@ -68,9 +68,9 @@ Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/pla
 | `ota_engine_declarations_branch` | Git branch of the declarations repository to use | `main` |
 | `ota_engine_snapshots_branch` | Git branch of the snapshots repository to use | `main` |
 | `ota_engine_versions_branch` | Git branch of the versions repository to use | `main` |
-| `ota_engine_declarations_directory` | Directory path where the code will be deployed on the server | Value declared in the `name` key in the engine config file |
+| `ota_engine_declarations_directory` | Path of the directory where the code will be deployed on the server | Value declared in the `name` key in the engine config file |
 
-These variable can be overriden in the inventory file, for example:
+These variables can be overriden in the inventory file, for example:
 
 ```yml
 all:
@@ -111,7 +111,7 @@ Available variables are listed below, along with default values:
 | Variable | Description | Default value |
 | --- | --- | --- |
 | `ota_federated_api_repo` | Repository URL of the federated API code | `https://github.com/OpenTermsArchive/federated-api.git` |
-| `ota_federated_api_directory` | Directory path where the code will be deployed on the server | `federated-api` |
+| `ota_federated_api_directory` | Path of the directory where the code will be deployed on the server | `federated-api` |
 | `ota_federated_api_branch` | Git branch of the federated API repository to use | `main` |
 
 These variables can be overridden in the inventory file, for example:
