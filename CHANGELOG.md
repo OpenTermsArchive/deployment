@@ -2,9 +2,15 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased [minor]
+## Unreleased
+
+## 0.0.15 - 2023-12-04
 
 > Development of this release was [supported](https://nlnet.nl/project/TOSDR-OTA/) by the [NGI0 Entrust Fund](https://nlnet.nl/entrust), a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's [Next Generation Internet](https://www.ngi.eu) programme, under the aegis of DG CNECT under grant agreement N°101069594.
+
+### Added
+
+- Add playbook to setup and deploy the Open Terms Archive federated API
 
 ### Changed
 
@@ -21,10 +27,6 @@ All changes that impact users of this module are documented in this file, in the
 - **Breaking:** Remove tag `update`; use the application deployment playbook as replacement in your scripts `ansible-playbook opentermsarchive.deployment.engine.application`
 - **Breaking:** Remove tag `engine`; use the application deployment playbook as replacement in your scripts `ansible-playbook opentermsarchive.deployment.engine.application`
 - **Breaking:** Remove tag `infra`; use the infrastructure set up playbook as replacement in your scripts `ansible-playbook opentermsarchive.deployment.engine.infrastructure`
-
-### Added
-
-- Add playbook to setup and deploy the Open Terms Archive federated API
 
 ### Fixed
 
