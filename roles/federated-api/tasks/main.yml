@@ -10,11 +10,11 @@
 
 - name: Read the production config
   shell: cat '/home/{{ ansible_user }}/{{ ota_federated_api_directory }}/config/production.json'
-  register: cat_config
+  register: read_config
       
 - name: Save production config data into a variable
   set_fact: 
-    app_config: "{{ cat_config.stdout | from_json }}"
+    app_config: "{{ read_config.stdout | from_json }}"
 
 - name: Install dependencies
   ansible.builtin.command:
