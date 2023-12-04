@@ -3,4 +3,4 @@
   hosts: all
 
   roles:
-    - role: federated-api
+    - role: federated_api
