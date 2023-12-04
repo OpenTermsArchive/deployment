@@ -1,6 +1,6 @@
 namespace: opentermsarchive
 name: deployment
-version: 0.0.15
+version: 0.0.16
 readme: README.md
 authors:
   - contact@opentermsarchive.org
