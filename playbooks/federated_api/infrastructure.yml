@@ -1,0 +1,9 @@
+---
+- name: Set up infrastructure
+  hosts: all
+  become: true
+
+  roles:
+    - role: infrastructure/git
+    - role: infrastructure/node
+    - role: infrastructure/nginx

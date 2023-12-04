@@ -2,7 +2,33 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## Unreleased [minor]
+
+> Development of this release was [supported](https://nlnet.nl/project/TOSDR-OTA/) by the [NGI0 Entrust Fund](https://nlnet.nl/entrust), a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's [Next Generation Internet](https://www.ngi.eu) programme, under the aegis of DG CNECT under grant agreement N°101069594.
+
+### Changed
+
+- **Breaking:** Rename `deploy` playbook to setup the infrastructure and deploy engine to `engine.all`; update your scripts accordingly
+- **Breaking:** Rename variable `ota_config_path` to `ota_engine_config_path`; update your inventory file accordingly
+- **Breaking:** Rename variable `ota_declarations_directory` to `ota_engine_declarations_directory`; update your inventory file accordingly
+- **Breaking:** Rename variable `ota_declarations_branch` to `ota_engine_declarations_branch`; update your inventory file accordingly
+- **Breaking:** Rename variable `ota_snapshots_branch` to `ota_engine_snapshots_branch`; update your inventory file accordingly
+- **Breaking:** Rename variable `ota_versions_branch` to `ota_engine_versions_branch`; update your inventory file accordingly
+
+### Removed
+
+- **Breaking:** Remove tag `setup`; use the application deployment playbook as replacement in your scripts `ansible-playbook opentermsarchive.deployment.engine.application`
+- **Breaking:** Remove tag `update`; use the application deployment playbook as replacement in your scripts `ansible-playbook opentermsarchive.deployment.engine.application`
+- **Breaking:** Remove tag `engine`; use the application deployment playbook as replacement in your scripts `ansible-playbook opentermsarchive.deployment.engine.application`
+- **Breaking:** Remove tag `infra`; use the infrastructure set up playbook as replacement in your scripts `ansible-playbook opentermsarchive.deployment.engine.infrastructure`
+
+### Added
+
+- Add playbook to setup and deploy the Open Terms Archive federated API
+
+### Fixed
+
+- Ensure that the configuration for the port of the collection metadata API is successfully applied to the Nginx configuration
 
 ## 0.0.14 - 2023-10-11
 

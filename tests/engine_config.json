@@ -1,7 +1,7 @@
 {
   "name": "vagrant",
   "services": {
-    "repository": "https://github.com/OpenTermsArchive/contrib-declarations.git"
+    "repository": "https://github.com/OpenTermsArchive/sandbox-declarations.git"
   },
   "recorder": {
     "versions": {
@@ -25,5 +25,8 @@
   },
   "logger": {
     "sendMailOnError": false
+  },
+  "api": {
+    "port": 3003
   }
 }

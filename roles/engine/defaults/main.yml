@@ -1,4 +1,4 @@
-ota_declarations_directory: "{{ app_config.name }}"
-ota_declarations_branch: main
-ota_snapshots_branch: main
-ota_versions_branch: main
+ota_engine_declarations_directory: "{{ app_config.name }}"
+ota_engine_declarations_branch: main
+ota_engine_snapshots_branch: main
+ota_engine_versions_branch: main

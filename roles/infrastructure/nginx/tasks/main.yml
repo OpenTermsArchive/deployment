@@ -1,0 +1,21 @@
+---
+- name: Install NGINX package
+  ansible.builtin.apt:
+    name: nginx
+    update_cache: true
+    state: latest
+
+- name: Clean default NGINX site
+  ansible.builtin.file:
+    state: absent
+    path: /etc/nginx/sites-enabled/default
+  notify: Restart NGINX
+
+- name: Setup NGINX conf
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/conf.d/ota.conf
+    owner: root
+    group: root
+    mode: "644"
+  notify: Restart NGINX

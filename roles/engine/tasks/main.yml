@@ -1,50 +1,59 @@
 - name: Install services declarations
   ansible.builtin.git:
     repo: '{{ app_config.services.repository }}'
-    dest: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}'
-    version: '{{ ota_declarations_branch }}'
+    dest: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}'
+    version: '{{ ota_engine_declarations_branch }}'
     force: true
     accept_hostkey: true
     key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
     depth: 1
   tags:
-    - setup
-    - update
     - update-declarations
 
 - name: Install services declarations dependencies
   ansible.builtin.command:
-    cmd: npm install --production
-    chdir: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}'
+    cmd: npm install ci
+    chdir: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}'
   tags:
-    - setup
-    - update
     - update-declarations
 
 - name: Add .env file
   ansible.builtin.copy:
     src: .env
-    dest: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/.env'
+    dest: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/.env'
     mode: "644"
-  tags:
-    - setup
 
 - name: Add pm2 config file
   ansible.builtin.copy:
     src: pm2.config.cjs
-    dest: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/pm2.config.cjs'
+    dest: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/pm2.config.cjs'
     mode: "644"
-  tags:
-    - setup
 
 - name: Stop Open Terms Archive schedulers
   ansible.builtin.command:
     cmd: pm2 stop pm2.config.cjs
-    chdir: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}'
+    chdir: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}'
   tags:
     - stop
-    - update
     - update-declarations
+
+- name: Add conf in NGINX sites-available
+  become: true
+  ansible.builtin.template:
+    src: nginx-conf.j2
+    dest: '/etc/nginx/sites-available/ota-engine-api'
+    force: true
+    mode: "644"
+  notify: Restart NGINX
+
+- name: Link conf from sites-available to sites-enabled
+  become: true
+  ansible.builtin.file:
+    src: '/etc/nginx/sites-available/ota-engine-api'
+    dest: '/etc/nginx/sites-enabled/ota-engine-api'
+    state: link
+    force: true
+  notify: Restart NGINX
 
 - name: Setup snapshots git repository
   ansible.builtin.include_tasks: database.yml
@@ -52,11 +61,8 @@
   vars:
     engine_database_name: snapshots
     engine_database_repository: '{{ app_config.recorder.snapshots.storage.git.repository }}'
-    engine_database_branch: '{{ ota_snapshots_branch }}'
-    engine_database_directory: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/{{ app_config.recorder.snapshots.storage.git.path }}'
-  tags:
-    - setup
-    - update
+    engine_database_branch: '{{ ota_engine_snapshots_branch }}'
+    engine_database_directory: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/{{ app_config.recorder.snapshots.storage.git.path }}'
 
 - name: Setup versions git repository
   ansible.builtin.include_tasks: database.yml
@@ -64,20 +70,16 @@
   vars:
     engine_database_name: versions
     engine_database_repository: '{{ app_config.recorder.versions.storage.git.repository }}'
-    engine_database_branch: '{{ ota_versions_branch }}'
-    engine_database_directory: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}/{{ app_config.recorder.versions.storage.git.path }}'
-  tags:
-    - setup
-    - update
+    engine_database_branch: '{{ ota_engine_versions_branch }}'
+    engine_database_directory: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/{{ app_config.recorder.versions.storage.git.path }}'
 
 - name: Start Open Terms Archive schedulers
   ansible.builtin.command:
     cmd: pm2 startOrRestart pm2.config.cjs
-    chdir: '/home/{{ ansible_user }}/{{ ota_declarations_directory }}'
+    chdir: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}'
   environment:
     NODE_ENV: production
   tags:
     - restart
     - start
-    - update
     - update-declarations
