@@ -1,13 +1,13 @@
 {
   "name": "vagrant",
   "services": {
-    "repository": "https://github.com/OpenTermsArchive/demo-declarations.git"
+    "repository": "https://github.com/OpenTermsArchive/sandbox-declarations.git"
   },
   "recorder": {
     "versions": {
       "storage": {
         "git": {
-          "repository": "git@github.com:OpenTermsArchive/demo-versions.git",
+          "repository": "git@github.com:OpenTermsArchive/sandbox-versions.git",
           "path": "./data/versions",
           "publish": false
         }
@@ -16,7 +16,7 @@
     "snapshots": {
       "storage": {
         "git": {
-          "repository": "git@github.com:OpenTermsArchive/demo-snapshots.git",
+          "repository": "git@github.com:OpenTermsArchive/sandbox-snapshots.git",
           "path": "./data/snapshots",
           "publish": false
         }
