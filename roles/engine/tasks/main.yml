@@ -41,7 +41,7 @@
   become: true
   ansible.builtin.template:
     src: nginx-conf.j2
-    dest: '/etc/nginx/sites-available/engine-api'
+    dest: '/etc/nginx/sites-available/ota-engine-api'
     force: true
     mode: "644"
   notify: Restart NGINX
@@ -49,8 +49,8 @@
 - name: Link conf from sites-available to sites-enabled
   become: true
   ansible.builtin.file:
-    src: '/etc/nginx/sites-available/engine-api'
-    dest: '/etc/nginx/sites-enabled/engine-api'
+    src: '/etc/nginx/sites-available/ota-engine-api'
+    dest: '/etc/nginx/sites-enabled/ota-engine-api'
     state: link
     force: true
   notify: Restart NGINX

@@ -44,7 +44,7 @@
   become: true
   ansible.builtin.template:
     src: nginx-conf.j2
-    dest: '/etc/nginx/sites-available/federated-api'
+    dest: '/etc/nginx/sites-available/ota-federated-api'
     force: true
     mode: "644"
   notify: Restart NGINX
@@ -52,8 +52,8 @@
 - name: Link conf from sites-available to sites-enabled
   become: true
   ansible.builtin.file:
-    src: '/etc/nginx/sites-available/federated-api'
-    dest: '/etc/nginx/sites-enabled/federated-api'
+    src: '/etc/nginx/sites-available/ota-federated-api'
+    dest: '/etc/nginx/sites-enabled/ota-federated-api'
     state: link
     force: true
   notify: Restart NGINX
