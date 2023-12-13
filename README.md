@@ -112,7 +112,7 @@ Available variables are listed below, along with default values:
 | --- | --- | --- |
 | `ota_federated_api_repo` | Repository URL of the federated API code | `https://github.com/OpenTermsArchive/federated-api.git` |
 | `ota_federated_api_directory` | Path of the directory where the code will be deployed on the server | `federated-api` |
-| `ota_federated_api_branch` | Git branch of the federated API repository to use | `main` |
+| `ota_federated_api_branch` | Git branch or tag of the federated API repository to use | `main` |
 
 These variables can be overridden in the inventory file, for example:
 
