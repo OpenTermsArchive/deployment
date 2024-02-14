@@ -24,16 +24,10 @@
     state: absent
 
 - name: Get latest data from {{ engine_database_repository }}
-  ansible.builtin.command:
-    cmd: git fetch origin
-    chdir: '{{ engine_database_directory }}'
-
-- name: Clean {{ engine_database_name }} local copy
-  ansible.builtin.command:
-    cmd: git reset --hard origin/{{ engine_database_branch }}
-    chdir: '{{ engine_database_directory }}'
-
-- name: Ensure {{ engine_database_name }} is on branch {{ engine_database_branch }}
-  ansible.builtin.command:
-    cmd: git checkout {{ engine_database_branch }}
-    chdir: '{{ engine_database_directory }}'
+  ansible.builtin.git:
+    repo: '{{ engine_database_repository }}'
+    version: '{{ engine_database_branch }}'
+    dest: '{{ engine_database_directory }}'
+    update: true
+    force: true # discard any modified files
+    key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
