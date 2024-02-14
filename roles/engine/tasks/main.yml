@@ -18,9 +18,10 @@
     - update-declarations
 
 - name: Add .env file
-  ansible.builtin.copy:
+  ansible.builtin.template:
     src: .env
     dest: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/.env'
+    force: true
     mode: "644"
 
 - name: Add pm2 config file
