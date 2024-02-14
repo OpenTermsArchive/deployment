@@ -20,7 +20,6 @@
         - ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')
 
   roles:
-    - role: infrastructure/git
     - role: infrastructure/node
     - role: infrastructure/chromium
     - role: infrastructure/nginx

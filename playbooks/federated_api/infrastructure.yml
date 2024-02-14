@@ -4,6 +4,5 @@
   become: true
 
   roles:
-    - role: infrastructure/git
     - role: infrastructure/node
     - role: infrastructure/nginx

@@ -1,3 +1,11 @@
+- name: Add OTA-Bot SSH key
+  ansible.builtin.copy:
+    content: '{{ ota_engine_ota_bot_private_key }}'
+    dest: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: "600"
+
 - name: Install services declarations
   ansible.builtin.git:
     repo: '{{ app_config.services.repository }}'
