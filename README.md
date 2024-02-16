@@ -71,10 +71,10 @@ Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/pla
 | Variable | Description | Default value | Required |
 | --- | --- | --- | --- |
 | `ota_engine_ota_bot_private_key` | SSH private key of GitHub user with privileges on snapshots and versions repositories. | No default value | ✔︎ |
-| `ota_engine_smtp_password` | Password for the SMTP server used for sending errors notifications by email | No default value | - |
+| `ota_engine_smtp_password` | Password for the SMTP server used for sending error notifications by email | No default value | - |
 | `ota_engine_sendinblue_api_key` | SendInBlue API key used to send email notifications | No default value | - |
 | `ota_engine_github_token` | When defined, this authentication token enables GitHub issue creation on the declarations repository | No default value | - |
-| `ota_engine_config_path` | Path to the engine config file related to the inventory file | `../config/production.json` | - |
+| `ota_engine_config_path` | Path to the engine config file, relative to the inventory file | `../config/production.json` | - |
 | `ota_engine_declarations_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the declarations repository to use | `main` | - |
 | `ota_engine_snapshots_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the snapshots repository to use | `main` | - |
 | `ota_engine_versions_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the versions repository to use | `main` | - |
@@ -160,7 +160,7 @@ Certain configuration entries contain sensitive information that should be encry
 ansible-vault encrypt_string --name <sensitive-config-name> <sensitive-config-content>
 ```
 
-For example, to encrypt the OTA-Bot private key required by the engine:
+For example, to encrypt the GitHub bot private key used by the engine to push updates:
 
 ```sh
 ansible-vault encrypt_string --name 'ota_engine_ota_bot_private_key' '-----BEGIN OPENSSH PRIVATE KEY-----
@@ -204,6 +204,8 @@ all:
 ```
 
 Repeat the process for each sensitive configuration entry that needs encryption.
+
+Please note that the data will be stored unencrypted on the deployment server.
 
 - - -
 
