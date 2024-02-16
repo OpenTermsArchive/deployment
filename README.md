@@ -46,12 +46,6 @@ ansible-playbook opentermsarchive.deployment.<playbook-name> --check --diff
 
 > See “[Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html)” in Ansible’s user guide for more information about Ansible collections.
 
-### Versions compatibility
-
-| Deployment | Engine | Federated API |
-| --- | --- | --- |
-| 0.1.0 | >= 0.36.0 | >= 0.1.0 |
-
 - - -
 
 ### Engine application
