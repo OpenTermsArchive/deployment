@@ -5,7 +5,7 @@
     dest: '{{ engine_database_directory }}'
     clone: false
     update: false
-    key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
+    key_file: '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'
   # the `before` property of the return value can tell us if the repository has been cloned already or not,
   # see <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html#return-values>
   register: existing_repository
@@ -15,7 +15,7 @@
     repo: '{{ engine_database_repository }}'
     version: '{{ engine_database_branch }}'
     dest: '{{ engine_database_directory }}'
-    key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
+    key_file: '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'
   when: existing_repository.before is defined and not existing_repository.before # if existing_repository.before is null, then the repository is new
 
 - name: Remove existing locks in {{ engine_database_name }}
@@ -30,4 +30,4 @@
     dest: '{{ engine_database_directory }}'
     update: true
     force: true # discard any modified files
-    key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
+    key_file: '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'

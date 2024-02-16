@@ -1,7 +1,7 @@
-- name: Add OTA-Bot SSH key
+- name: Add GitHub Bot SSH key
   ansible.builtin.copy:
-    content: '{{ ota_engine_ota_bot_private_key }}'
-    dest: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
+    content: '{{ ota_engine_github_bot_private_key }}'
+    dest: '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
     mode: "600"
@@ -23,7 +23,7 @@
     version: '{{ ota_engine_declarations_branch }}'
     force: true
     accept_hostkey: true
-    key_file: '/home/{{ ansible_user }}/.ssh/ota-bot-key'
+    key_file: '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'
     depth: 1
   tags:
     - update-declarations

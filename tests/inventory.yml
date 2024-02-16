@@ -6,7 +6,7 @@ vagrant:
       ansible_python_interpreter: /usr/bin/python3
       ansible_ssh_private_key_file: ~/.ssh/ota-vagrant
       ota_engine_config_path: ./engine_config.json
-      ota_engine_ota_bot_private_key: !vault |
+      ota_engine_github_bot_private_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           63366161663933343964333231666663356335616231393562366266353139653032376635373036
           3233356266633764663963666564366633346561633633300a333865393538363665383936323336

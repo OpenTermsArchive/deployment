@@ -70,7 +70,7 @@ Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/pla
 
 | Variable | Description | Default value | Required |
 | --- | --- | --- | --- |
-| `ota_engine_ota_bot_private_key` | SSH private key of GitHub user with privileges on snapshots and versions repositories. | No default value | ✔︎ |
+| `ota_engine_github_bot_private_key` | SSH private key contents for GitHub user with privileges on snapshots and versions repositories | No default value | ✔︎ |
 | `ota_engine_smtp_password` | Password for the SMTP server used for sending error notifications by email | No default value | - |
 | `ota_engine_sendinblue_api_key` | SendInBlue API key used to send email notifications | No default value | - |
 | `ota_engine_github_token` | When defined, this authentication token enables GitHub issue creation on the declarations repository | No default value | - |
@@ -163,7 +163,7 @@ ansible-vault encrypt_string --name <sensitive-config-name> <sensitive-config-co
 For example, to encrypt the GitHub bot private key used by the engine to push updates:
 
 ```sh
-ansible-vault encrypt_string --name 'ota_engine_ota_bot_private_key' '-----BEGIN OPENSSH PRIVATE KEY-----
+ansible-vault encrypt_string --name 'ota_engine_github_bot_private_key' '-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
 …
 UlcCkBZ5IkI0eNAAAAE25kcG50QE1CUC1OZHBudC5sYW4BAgMEBQYH
@@ -174,7 +174,7 @@ UlcCkBZ5IkI0eNAAAAE25kcG50QE1CUC1OZHBudC5sYW4BAgMEBQYH
 The encrypted result will look like this:
 
 ```sh
-ota_engine_ota_bot_private_key: !vault |
+ota_engine_github_bot_private_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           62313438616266383732353634343736623532666365643364396464633732613966636235616261
           3136656665316437613434323561613732373361306161640a306132316531356537373862363838
@@ -193,7 +193,7 @@ all:
       ansible_user: debian
       ota_engine_config_path: ./engine_config.json
       ota_engine_declarations_branch: new-feature
-      ota_engine_ota_bot_private_key: !vault |
+      ota_engine_github_bot_private_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           62313438616266383732353634343736623532666365643364396464633732613966636235616261
           3136656665316437613434323561613732373361306161640a306132316531356537373862363838
