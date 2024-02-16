@@ -22,7 +22,6 @@
     dest: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}'
     version: '{{ ota_engine_declarations_branch }}'
     force: true
-    accept_hostkey: true
     key_file: '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'
     depth: 1
   tags:
