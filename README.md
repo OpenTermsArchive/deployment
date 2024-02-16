@@ -240,6 +240,8 @@ Then the code can be deployed to the running machine with all the options descri
 
 ### Test collection
 
+_The testing environment is preconfigured for Open Terms Archive maintainers. For other contributors, the configuration file `tests/engine_config.json` needs to be updated to specify repositories where they have authorizations. Additionally, the `ota_engine_github_bot_private_key` value in the inventory file `tests/inventory.yml` should be updated._
+
 Test locally the changes to the collection before opening a pull request:
 
 Remove all traces of previous tests to ensure that changes do not work by coincidence:
