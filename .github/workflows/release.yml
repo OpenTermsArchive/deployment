@@ -36,9 +36,10 @@ jobs:
 
       - name: Bump version
         run: |
+          echo "Found release type '${{ env.RELEASE_TYPE }}'"
           echo "NEW_VERSION=$(semver -i $RELEASE_TYPE ${{ steps.get_current_version.outputs.result }})" >> $GITHUB_ENV
         env:
-          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
+          RELEASE_TYPE: ${{ needs.changelog.outputs.release_type }}
 
       - name: Update changelog unreleased section with new version
         uses: superfaceai/release-changelog-action@v2
