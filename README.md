@@ -234,44 +234,33 @@ Then the code can be deployed to the running machine with all the options descri
 
 ### Test collection
 
-_The testing environment is preconfigured for Open Terms Archive maintainers. For other contributors, the configuration file `tests/engine_config.json` needs to be updated to specify repositories where they have authorizations. Additionally, the `ota_engine_github_bot_private_key` value in the inventory file `tests/inventory.yml` should be updated._
+Testing the Ansible collection locally is crucial to ensure that changes function properly before submitting them as a pull request.
 
-Test locally the changes to the collection before opening a pull request:
+The testing environment is preconfigured for Open Terms Archive maintainers. For other contributors, the configuration file `tests/engine_config.json` needs to be updated to specify repositories where they have authorizations. Additionally, the `ota_engine_github_bot_private_key` value in the inventory file `tests/inventory.yml` should be updated.
 
-Remove all traces of previous tests to ensure that changes do not work by coincidence:
+Follow these instructions to test the collection in a local environment:
+
+- Ensure you have a clean testing environment to prevent interference from previous configurations:
 ```sh
 vagrant destroy
 vagrant up
 ```
 
-Start by applying changes on the virtual machine:
-
+- Apply the changes to the virtual machine:
 ```sh
 ansible-playbook ../playbooks/engine/all.yml
 ```
 
-Connect through SSH to the virtual machine and check that everything works as intended:
+- Connect to the virtual machine to verify that changes were applied successfully:
 ```sh
-vagrant ssh
+vagrant ssh # use "vagrant" as password
+```
+
+- Check that everything works as intended within the virtual machine. Depending on the nature of changes made, you can monitor logs or execute commands to validate functionality:
+```sh
 pm2 logs
 ```
 
-### Vagrant quick reference
-
-#### Connect to the virtual machine
-
-```sh
-vagrant up
-vagrant ssh  # use "vagrant" as password
-```
-
-#### Start again with a clean virtual machine
-
-```sh
-vagrant halt  # stop machine
-vagrant destroy  # remove machine
-vagrant up
-```
 ---
 
 ## License
