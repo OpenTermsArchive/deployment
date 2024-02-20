@@ -18,6 +18,13 @@
     key_file: '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'
   when: existing_repository.before is defined and not existing_repository.before # if existing_repository.before is null, then the repository is new
 
+- name: Configure {{ engine_database_name }} repository to use the GitHub Bot SSH Key
+  ansible.builtin.git_config:
+    name: core.sshCommand
+    value: ssh -i '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'
+    scope: local
+    repo: '{{ engine_database_directory }}'
+
 - name: Remove existing locks in {{ engine_database_name }}
   ansible.builtin.file:
     path: '{{ engine_database_directory }}/.git/index.lock'
