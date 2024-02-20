@@ -62,13 +62,19 @@ Available playbooks for the engine application:
 
 Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html) are listed below, along with default values:
 
-| Variable | Description | Default value |
-| --- | --- | --- |
-| `ota_engine_config_path` | Path to the engine config file related to the inventory file | `../config/production.json` |
-| `ota_engine_declarations_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the declarations repository to use | `main` |
-| `ota_engine_snapshots_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the snapshots repository to use | `main` |
-| `ota_engine_versions_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the versions repository to use | `main` |
-| `ota_engine_declarations_directory` | Path of the directory where the code will be deployed on the server | Value declared in the `name` key in the engine config file |
+| Variable | Description | Default value | Required |
+| --- | --- | --- | --- |
+| `ota_engine_github_bot_private_key` | SSH private key contents for GitHub user with privileges on snapshots and versions repositories | No default value | ✔︎ |
+| `ota_engine_smtp_password` | Password for the SMTP server used for sending error notifications by email | No default value | - |
+| `ota_engine_sendinblue_api_key` | SendInBlue API key used to send email notifications | No default value | - |
+| `ota_engine_github_token` | When defined, this authentication token enables GitHub issue creation on the declarations repository | No default value | - |
+| `ota_engine_config_path` | Path to the engine config file, relative to the inventory file | `../config/production.json` | - |
+| `ota_engine_declarations_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the declarations repository to use | `main` | - |
+| `ota_engine_snapshots_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the snapshots repository to use | `main` | - |
+| `ota_engine_versions_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the versions repository to use | `main` | - |
+| `ota_engine_declarations_directory` | Path of the directory where the code will be deployed on the server | Value declared in the `name` key in the engine config file | - |
+
+For encryption of sensitive configuration entries, please refer to the [dedicated section](#encrypt-sensitive-configuration-entries).
 
 These variables can be overriden in the inventory file, for example:
 
@@ -108,11 +114,14 @@ Available playbooks for the Federated API application:
 
 Available variables are listed below, along with default values:
 
-| Variable | Description | Default value |
-| --- | --- | --- |
-| `ota_federated_api_repo` | Repository URL of the federated API code | `https://github.com/OpenTermsArchive/federated-api.git` |
-| `ota_federated_api_directory` | Path of the directory where the code will be deployed on the server | `federated-api` |
-| `ota_federated_api_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the federated API repository to use | `main` |
+| Variable | Description | Default value | Required |
+| --- | --- | --- | --- |
+| `ota_federated_api_repo` | Repository URL of the federated API code | `https://github.com/OpenTermsArchive/federated-api.git` | - |
+| `ota_federated_api_directory` | Path of the directory where the code will be deployed on the server | `federated-api` | - |
+| `ota_federated_api_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the federated API repository to use | `main` | - |
+| `ota_federated_api_smtp_password` | Password for the SMTP server used for sending errors notifications by email. | - | - |
+
+For encryption of sensitive configuration entries, please refer to the [dedicated section](#encrypt-sensitive-configuration-entries).
 
 These variables can be overridden in the inventory file, for example:
 
@@ -134,6 +143,63 @@ Available [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_ta
 | `start` | To only start the Federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application --tags start` |
 | `stop` | To only stop the Federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application --tags stop` |
 | `restart` | To only restart the Federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application --tags restart` |
+
+- - -
+
+## Encrypt sensitive configuration entries
+
+Certain configuration entries contain sensitive information that should be encrypted to ensure security. Ansible provides a convenient way to encrypt such strings using its built-in [vault feature](https://docs.ansible.com/ansible/2.9/user_guide/vault.html):
+
+```sh
+ansible-vault encrypt_string --name <sensitive-config-name> <sensitive-config-content>
+```
+
+For example, to encrypt the GitHub bot private key used by the engine to push updates:
+
+```sh
+ansible-vault encrypt_string --name 'ota_engine_github_bot_private_key' '-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
+…
+UlcCkBZ5IkI0eNAAAAE25kcG50QE1CUC1OZHBudC5sYW4BAgMEBQYH
+-----END OPENSSH PRIVATE KEY-----
+'
+```
+
+The encrypted result will look like this:
+
+```sh
+ota_engine_github_bot_private_key: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          62313438616266383732353634343736623532666365643364396464633732613966636235616261
+          3136656665316437613434323561613732373361306161640a306132316531356537373862363838
+          66363763613833373530633831653163303961376331393761366261633561656463626563383931
+          3361643836623239660a333134626139626465303234313366313433653261376437316231363834
+          32643261303534366333383131633430396366343631656363663965633964663331346231663166
+          3331316462356461373134303666613035393335333139613639
+```
+
+Then it can be used directly in the inventory file:
+
+```yml
+all:
+  hosts:
+    127.0.0.1:
+      ansible_user: debian
+      ota_engine_config_path: ./engine_config.json
+      ota_engine_declarations_branch: new-feature
+      ota_engine_github_bot_private_key: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          62313438616266383732353634343736623532666365643364396464633732613966636235616261
+          3136656665316437613434323561613732373361306161640a306132316531356537373862363838
+          66363763613833373530633831653163303961376331393761366261633561656463626563383931
+          3361643836623239660a333134626139626465303234313366313433653261376437316231363834
+          32643261303534366333383131633430396366343631656363663965633964663331346231663166
+          3331316462356461373134303666613035393335333139613639
+```
+
+Repeat the process for each sensitive configuration entry that needs encryption.
+
+Please note that the data will be stored unencrypted on the deployment server.
 
 - - -
 
@@ -168,41 +234,31 @@ Then the code can be deployed to the running machine with all the options descri
 
 ### Test collection
 
-Test locally the changes to the collection before opening a pull request:
+Testing the Ansible collection locally is crucial to ensure that changes function properly before submitting them as a pull request.
 
-Remove all traces of previous tests to ensure that changes do not work by coincidence:
+The testing environment is preconfigured for Open Terms Archive maintainers. For other contributors, the configuration file `tests/engine_config.json` needs to be updated to specify repositories where they have authorizations. Additionally, the `ota_engine_github_bot_private_key` value in the inventory file `tests/inventory.yml` should be updated.
+
+Follow these instructions to test the collection in a local environment:
+
+- Ensure you have a clean testing environment to prevent interference from previous configurations:
 ```sh
 vagrant destroy
 vagrant up
 ```
 
-Start by applying changes on the virtual machine:
-
+- Apply the changes to the virtual machine:
 ```sh
 ansible-playbook ../playbooks/engine/all.yml
 ```
 
-Connect through SSH to the virtual machine and check that everything works as intended:
+- Connect to the virtual machine to verify that changes were applied successfully:
 ```sh
-vagrant ssh
+vagrant ssh # use "vagrant" as password
+```
+
+- Check that everything works as intended within the virtual machine. Depending on the nature of changes made, you can monitor logs or execute commands to validate functionality:
+```sh
 pm2 logs
-```
-
-### Vagrant quick reference
-
-#### Connect to the virtual machine
-
-```sh
-vagrant up
-vagrant ssh  # use "vagrant" as password
-```
-
-#### Start again with a clean virtual machine
-
-```sh
-vagrant halt  # stop machine
-vagrant destroy  # remove machine
-vagrant up
 ```
 
 ---
