@@ -8,7 +8,7 @@ _Full changeset and discussions: [#34](https://github.com/OpenTermsArchive/deplo
 
 > Development of this release was supported by the [French Ministry for Foreign Affairs](https://www.diplomatie.gouv.fr/fr/politique-etrangere-de-la-france/diplomatie-numerique/) through its ministerial [State Startups incubator](https://beta.gouv.fr/startups/open-terms-archive.html) under the aegis of the Ambassador for Digital Affairs.
 
-_Define the public API that can now [be considered stable](https://semver.org/spec/v2.0.0.html#spec-item-5)_
+_No actual code changes were made in this release, but it signifies that the public API can now [be considered stable](https://semver.org/spec/v2.0.0.html#spec-item-5)._
 
 ## 0.1.1 - 2024-02-20
 
