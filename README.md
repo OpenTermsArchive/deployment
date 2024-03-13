@@ -65,9 +65,9 @@ Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/pla
 | Variable | Description | Default value | Required |
 | --- | --- | --- | --- |
 | `ota_engine_github_bot_private_key` | SSH private key contents for GitHub user with privileges on snapshots and versions repositories | No default value | ✔︎ |
+| `ota_engine_github_token` | GitHub token to enable issue creation on the declarations repository and publish releases on versions repository | No default value | ✔︎ |
 | `ota_engine_smtp_password` | Password for the SMTP server used for sending error notifications by email | No default value | - |
 | `ota_engine_sendinblue_api_key` | SendInBlue API key used to send email notifications | No default value | - |
-| `ota_engine_github_token` | When defined, this authentication token enables GitHub issue creation on the declarations repository | No default value | - |
 | `ota_engine_config_path` | Path to the engine config file, relative to the inventory file | `../config/production.json` | - |
 | `ota_engine_declarations_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the declarations repository to use | `main` | - |
 | `ota_engine_snapshots_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the snapshots repository to use | `main` | - |
