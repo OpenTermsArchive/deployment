@@ -73,6 +73,7 @@ Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/pla
 | `ota_engine_snapshots_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the snapshots repository to use | `main` | - |
 | `ota_engine_versions_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the versions repository to use | `main` | - |
 | `ota_engine_declarations_directory` | Path of the directory where the code will be deployed on the server | Value declared in the `name` key in the engine config file | - |
+| `ota_engine_restart_delay` | Delay, in milliseconds, before restarting the engine after a crash | 10800000 | - |
 
 For encryption of sensitive configuration entries, please refer to the [dedicated section](#encrypt-sensitive-configuration-entries).
 
