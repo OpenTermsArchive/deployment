@@ -42,9 +42,10 @@
     mode: "644"
 
 - name: Add pm2 config file
-  ansible.builtin.copy:
-    src: pm2.config.cjs
+  ansible.builtin.template:
+    src: pm2.config.j2
     dest: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/pm2.config.cjs'
+    force: true
     mode: "644"
 
 - name: Stop Open Terms Archive schedulers
