@@ -3,10 +3,10 @@ name: deployment
 version: 1.1.0
 readme: README.md
 authors:
-  - contact@opentermsarchive.org
+  - Open Terms Archive contributors <contact@opentermsarchive.org> (https://opentermsarchive.org/about)
 description: >-
-  This ansible collection provides roles and playbooks to deploy and manage Open
-  Terms Archive collections.
+  This Ansible collection provides roles and playbooks to deploy and manage
+  Open Terms Archive collections.
 license:
   - EUPL-1.2
 tags:
@@ -18,8 +18,8 @@ tags:
   - database
   - history
 dependencies: {}
-repository: https://github.com/OpenTermsArchive/deployment.git
-documentation: https://github.com/OpenTermsArchive/deployment.git
-homepage: https://github.com/OpenTermsArchive/deployment.git
+repository: https://github.com/OpenTermsArchive/deployment
+documentation: https://docs.opentermsarchive.org/collections/create/
+homepage: https://opentermsarchive.org
 issues: https://github.com/OpenTermsArchive/deployment/issues
 build_ignore: []
