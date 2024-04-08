@@ -1,12 +1,12 @@
 namespace: opentermsarchive
 name: deployment
-version: 1.1.0
+version: 1.1.1
 readme: README.md
 authors:
   - Open Terms Archive contributors
 description: >-
-  This Ansible collection provides roles and playbooks to deploy and manage
-  Open Terms Archive collections.
+  This Ansible collection provides roles and playbooks to deploy and manage Open
+  Terms Archive collections.
 license:
   - EUPL-1.2
 tags:
