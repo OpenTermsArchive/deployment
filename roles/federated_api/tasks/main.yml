@@ -31,7 +31,7 @@
       
 - name: Save production config data into a variable
   set_fact: 
-    app_config: "{{ read_config.stdout | from_json }}"
+    ota_federated_api_app_config: "{{ read_config.stdout | from_json }}"
 
 - name: Install dependencies
   ansible.builtin.command:
