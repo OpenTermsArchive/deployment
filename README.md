@@ -163,7 +163,7 @@ Available variables are listed below, along with default values:
 
 | Variable | Description | Default value | Required |
 | --- | --- | --- | --- |
-| `ota_reverse_proxy_engine_path` | Path where the API of the engine will be available | `/collection-api` | - |
+| `ota_reverse_proxy_engine_path` | Path where the collection API embed with the engine will be available | `/collection-api` | - |
 | `ota_reverse_proxy_federated_api_path` | Path where the federated API will be available | `/federation-api` | - |
 
 - - -
