@@ -12,7 +12,7 @@ _Full changeset and discussions: [#39](https://github.com/OpenTermsArchive/deplo
 
 ### Added
 
-- Enable the deployment of the Open Terms Archive Engine and Federated API applications on a single server; refer to the [added playbooks](https://github.com/OpenTermsArchive/deployment#engine-and-federated-api-applications)
+- Enable the deployment of the Open Terms Archive Engine and Federated API applications on a single server; refer to the [added playbooks](https://github.com/OpenTermsArchive/deployment#engine-and-federated-api-applications); remove any existing Nginx configurations previously installed by this collection like `engine-api`, `federated-api`, `ota-engine-api`, or `ota-federated-api` in `/etc/nginx/sites-available` to avoid conflicts.
 
 ## 1.1.1 - 2024-04-08
 
