@@ -31,7 +31,7 @@
       
 - name: Save production config data into a variable
   set_fact: 
-    app_config: "{{ read_config.stdout | from_json }}"
+    ota_federated_api_app_config: "{{ read_config.stdout | from_json }}"
 
 - name: Install dependencies
   ansible.builtin.command:
@@ -62,7 +62,7 @@
   become: true
   ansible.builtin.template:
     src: nginx-conf.j2
-    dest: '/etc/nginx/sites-available/ota-federated-api'
+    dest: '/etc/nginx/sites-available/ota'
     force: true
     mode: "644"
   notify: Restart NGINX
@@ -70,8 +70,8 @@
 - name: Link conf from sites-available to sites-enabled
   become: true
   ansible.builtin.file:
-    src: '/etc/nginx/sites-available/ota-federated-api'
-    dest: '/etc/nginx/sites-enabled/ota-federated-api'
+    src: '/etc/nginx/sites-available/ota'
+    dest: '/etc/nginx/sites-enabled/ota'
     state: link
     force: true
   notify: Restart NGINX

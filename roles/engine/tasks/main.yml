@@ -18,7 +18,7 @@
 
 - name: Install services declarations
   ansible.builtin.git:
-    repo: '{{ app_config.services.repository }}'
+    repo: '{{ ota_engine_app_config.services.repository }}'
     dest: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}'
     version: '{{ ota_engine_declarations_branch }}'
     force: true
@@ -60,7 +60,7 @@
   become: true
   ansible.builtin.template:
     src: nginx-conf.j2
-    dest: '/etc/nginx/sites-available/ota-engine-api'
+    dest: '/etc/nginx/sites-available/ota'
     force: true
     mode: "644"
   notify: Restart NGINX
@@ -68,29 +68,29 @@
 - name: Link conf from sites-available to sites-enabled
   become: true
   ansible.builtin.file:
-    src: '/etc/nginx/sites-available/ota-engine-api'
-    dest: '/etc/nginx/sites-enabled/ota-engine-api'
+    src: '/etc/nginx/sites-available/ota'
+    dest: '/etc/nginx/sites-enabled/ota'
     state: link
     force: true
   notify: Restart NGINX
 
 - name: Setup snapshots git repository
   ansible.builtin.include_tasks: database.yml
-  when: app_config.recorder.snapshots.storage.git.repository is defined
+  when: ota_engine_app_config.recorder.snapshots.storage.git.repository is defined
   vars:
     engine_database_name: snapshots
-    engine_database_repository: '{{ app_config.recorder.snapshots.storage.git.repository }}'
+    engine_database_repository: '{{ ota_engine_app_config.recorder.snapshots.storage.git.repository }}'
     engine_database_branch: '{{ ota_engine_snapshots_branch }}'
-    engine_database_directory: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/{{ app_config.recorder.snapshots.storage.git.path }}'
+    engine_database_directory: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/{{ ota_engine_app_config.recorder.snapshots.storage.git.path }}'
 
 - name: Setup versions git repository
   ansible.builtin.include_tasks: database.yml
-  when: app_config.recorder.versions.storage.git.repository is defined
+  when: ota_engine_app_config.recorder.versions.storage.git.repository is defined
   vars:
     engine_database_name: versions
-    engine_database_repository: '{{ app_config.recorder.versions.storage.git.repository }}'
+    engine_database_repository: '{{ ota_engine_app_config.recorder.versions.storage.git.repository }}'
     engine_database_branch: '{{ ota_engine_versions_branch }}'
-    engine_database_directory: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/{{ app_config.recorder.versions.storage.git.path }}'
+    engine_database_directory: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}/{{ ota_engine_app_config.recorder.versions.storage.git.path }}'
 
 - name: Start Open Terms Archive schedulers
   ansible.builtin.command:

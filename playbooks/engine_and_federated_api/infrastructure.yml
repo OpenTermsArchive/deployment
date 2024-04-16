@@ -1,0 +1,7 @@
+---
+- name: Set up infrastructure
+  hosts: all
+  become: true
+
+- ansible.builtin.import_playbook: ../engine/infrastructure.yml
+- ansible.builtin.import_playbook: ../federated_api/infrastructure.yml

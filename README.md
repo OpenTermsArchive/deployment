@@ -147,6 +147,27 @@ Available [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_ta
 
 - - -
 
+### Engine and Federated API applications
+
+Available playbooks to deploy both the Open Terms Archive Engine and Federated API applications on a single server.
+
+| Playbook name | Description | Command example |
+| --- | --- | --- |
+| `engine_and_federated_api.infrastructure` | Set up and configure the infrastructure required by the Open Terms Archive engine and federated API applications | `ansible-playbook opentermsarchive.deployment.engine_and_federated_api.infrastructure` |
+| `engine_and_federated_api.application` | Deploy the Open Terms Archive engine and federated API applications | `ansible-playbook opentermsarchive.deployment.engine_and_federated_api.application` |
+| `engine_and_federated_api.all` | Set up infrastructure and deploy the Open Terms Archive engine and federated API applications | `ansible-playbook opentermsarchive.deployment.engine_and_federated_api.all` |
+
+#### Configuration
+
+Available variables are listed below, along with default values:
+
+| Variable | Description | Default value | Required |
+| --- | --- | --- | --- |
+| `ota_reverse_proxy_engine_path` | Path where the collection API embed with the engine will be available | `/collection-api` | - |
+| `ota_reverse_proxy_federated_api_path` | Path where the federated API will be available | `/federation-api` | - |
+
+- - -
+
 ## Encrypt sensitive configuration entries
 
 Certain configuration entries contain sensitive information that should be encrypted to ensure security. Ansible provides a convenient way to encrypt such strings using its built-in [vault feature](https://docs.ansible.com/ansible/2.9/user_guide/vault.html):

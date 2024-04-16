@@ -5,7 +5,7 @@
   tasks:
     - name: Load the production config
       ansible.builtin.include_vars:
-        name: app_config
+        name: ota_engine_app_config
         file: "{{ inventory_dir }}/{{ ota_engine_config_path | default('../config/production.json') }}"
       tags: always
     
