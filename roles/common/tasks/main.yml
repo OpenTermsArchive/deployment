@@ -10,3 +10,4 @@
       - zip
     update_cache: true
     state: latest
+  become: true
