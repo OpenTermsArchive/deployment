@@ -1,0 +1,22 @@
+- name: Install PM2 to latest version 5
+  ansible.builtin.command: npm install -g pm2@5 --production=true
+  when: ota_pm2_install_only | bool
+
+- name: Stop Open Terms Archive applications
+  ansible.builtin.command:
+    cmd: pm2 stop pm2.config.cjs
+    chdir: '/home/{{ ansible_user }}/{{ ota_app_directory }}'
+  tags:
+    - stop
+  when: not ota_pm2_install_only | bool
+
+- name: Start Open Terms Archive applications
+  ansible.builtin.command:
+    cmd: pm2 startOrRestart pm2.config.cjs
+    chdir: '/home/{{ ansible_user }}/{{ ota_app_directory }}'
+  environment:
+    NODE_ENV: production
+  tags:
+    - restart
+    - start
+  when: not ota_pm2_install_only | bool
