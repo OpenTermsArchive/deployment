@@ -1,4 +1,4 @@
-- name: Check if {{ engine_database_name }} base data has already been obtained from {{ engine_database_repository }}
+- name: "Check if {{ engine_database_name }} base data has already been obtained from {{ engine_database_repository }}"
   ansible.builtin.git:
     repo: '{{ engine_database_repository }}'
     version: '{{ engine_database_branch }}'

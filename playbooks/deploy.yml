@@ -1,0 +1,72 @@
+---
+- name: Deploy the Open Terms Archive applications
+  hosts: all
+  vars_files: "{{ inventory_dir }}/secrets.yml"
+  tasks:
+    - name: Load OTA applications configs
+      ansible.builtin.include_role:
+        name: ota/applications
+      vars:
+        ota_app_read_config_only: true
+
+    - block:
+      - name: Install Node
+        ansible.builtin.include_role:
+          name: node
+      
+      - name: Install PM2
+        ansible.builtin.include_role:
+          name: pm2
+        vars:
+          ota_pm2_install_only: true
+
+      - name: Install Chromium
+        ansible.builtin.include_role:
+          name: chromium
+        when: ota_apps_config['@opentermsarchive/engine'] is defined
+
+      - name: Install and setup Nginx 
+        ansible.builtin.include_role:
+          name: nginx
+        vars:
+          ota_nginx_configure: true
+          ota_nginx_config_template: ./templates/nginx.conf.j2
+    
+      - name: Install and setup Mongo
+        ansible.builtin.include_role:
+          name: mongo
+        when:
+          - (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo') or
+            (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
+          # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB.
+          # See https://www.mongodb.com/docs/manual/installation/#supported-platforms
+          - ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')
+      become: true
+      tags: 
+      - infrastructure
+    
+    - name: Setup OTA snapshots and versions databases
+      ansible.builtin.include_role:
+        name: ota/database
+      when: 
+        - ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository is defined or
+          ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository is defined
+
+    - name: Setup OTA applications
+      ansible.builtin.include_role:
+        name: ota/applications
+
+    - name: Start OTA applications
+      ansible.builtin.include_role:
+        name: pm2
+
+    - name: Setup reverse proxy
+      ansible.builtin.include_role:
+        name: nginx
+        apply:
+          become: true
+      vars:
+        ota_nginx_install: false
+        ota_nginx_configure: false
+        ota_nginx_configure_reverse_proxy: true
+        ota_nginx_reverse_proxy_config_template: ./templates/nginx-reverse-proxy-conf.j2

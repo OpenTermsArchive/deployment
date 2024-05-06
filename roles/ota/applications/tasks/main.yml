@@ -1,0 +1,30 @@
+- name: Clone repository
+  ansible.builtin.git:
+    repo: '{{ ota_app_repository }}'
+    dest: '/home/{{ ansible_user }}/{{ ota_app_directory }}'
+    version: '{{ ota_app_repository_branch }}'
+    force: true
+    key_file: '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'
+    depth: 1
+
+- name: Read the production config
+  shell: cat '/home/{{ ansible_user }}/{{ ota_app_directory }}/config/production.json'
+  register: read_config
+      
+- name: Save production config data into a variable
+  set_fact: 
+    ota_apps_config: "{{ read_config.stdout | from_json }}"
+
+- block:
+  - name: Install dependencies
+    ansible.builtin.command:
+      cmd: npm install ci
+      chdir: '/home/{{ ansible_user }}/{{ ota_app_directory }}'
+
+  - name: Add .env file
+    ansible.builtin.template:
+      src: .env
+      dest: '/home/{{ ansible_user }}/{{ ota_app_directory }}/.env'
+      force: true
+      mode: "644"
+  when: not ota_app_read_config_only | bool

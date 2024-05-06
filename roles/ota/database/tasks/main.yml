@@ -1,0 +1,17 @@
+- name: Setup snapshots git repository
+  ansible.builtin.include_tasks: database.yml
+  when: ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository is defined
+  vars:
+    engine_database_name: snapshots
+    engine_database_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository }}"
+    engine_database_branch: "{{ ota_database_snapshots_branch }}"
+    engine_database_directory: "/home/{{ ansible_user }}/{{ ota_app_directory }}/{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path }}"
+
+- name: Setup versions git repository
+  ansible.builtin.include_tasks: database.yml
+  when: ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository is defined
+  vars:
+    engine_database_name: versions
+    engine_database_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository }}"
+    engine_database_branch: "{{ ota_database_versions_branch }}"
+    engine_database_directory: "/home/{{ ansible_user }}/{{ ota_app_directory }}/{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.path }}"

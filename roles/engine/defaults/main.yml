@@ -1,5 +1,0 @@
-ota_engine_declarations_directory: "{{ ota_engine_app_config.name }}"
-ota_engine_declarations_branch: main
-ota_engine_snapshots_branch: main
-ota_engine_versions_branch: main
-ota_engine_restart_delay: 10800000 # 3 hours in ms
