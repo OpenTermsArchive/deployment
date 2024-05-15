@@ -13,11 +13,11 @@ server {
   }
 {% endif %}
 
-{% if ota_apps_config['@opentermsarchive/federated-api'].basePath is defined and ota_apps_config['@opentermsarchive/federated-api'].port is defined %}
-  location {{ ota_apps_config['@opentermsarchive/federated-api'].basePath }} {
+{% if ota_apps_config['@opentermsarchive/federation-api'].basePath is defined and ota_apps_config['@opentermsarchive/federation-api'].port is defined %}
+  location {{ ota_apps_config['@opentermsarchive/federation-api'].basePath }} {
     # Allowing for a `burst` of up to 5 requests beyond the specified rate limit. The `nodelay` parameter ensures that excessive requests beyond the burst limit are immediately rejected with a 429 error response instead of being queued. See https://www.nginx.com/blog/rate-limiting-nginx/.
     limit_req zone=limited burst=5 nodelay;
-    proxy_pass http://localhost:{{ ota_apps_config['@opentermsarchive/federated-api'].port }};
+    proxy_pass http://localhost:{{ ota_apps_config['@opentermsarchive/federation-api'].port }};
     proxy_redirect off;
   }
 {% endif %}
