@@ -8,12 +8,6 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "vagrant"
 
   config.vm.box = "debian/bullseye64" # Unable to locate package mongodb-org
-
-  # in order to have the same config for both Docker and VirtualBox providers, we load the key manually
-  # if necessary, create the key with `ssh-keygen -f ~/.ssh/ota-vagrant -q -N ""`
-  # CAUTION: use of `~` in path causes problems with ssh
-  config.vm.provision "file", source: File.join(ENV['HOME'], ".ssh", "ota-vagrant.pub"), destination: "/home/vagrant/.ssh/authorized_keys"
-  
   config.vm.network "forwarded_port", guest: guest_port, host: host_port
 
   # based on https://github.com/rofrano/vagrant-docker-provider#example-vagrantfile
