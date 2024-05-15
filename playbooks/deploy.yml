@@ -5,6 +5,7 @@
     - name: Load OTA applications configs
       ansible.builtin.include_role:
         name: ota/apps
+        public: true # ensure that the role's variables and defaults are accessible to the play
       vars:
         ota_apps_read_config_only: true
 
@@ -41,13 +42,13 @@
           # See https://www.mongodb.com/docs/manual/installation/#supported-platforms
           - ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')
       become: true
-      tags: 
+      tags:
       - infrastructure
     
     - name: Setup OTA snapshots and versions databases
       ansible.builtin.include_role:
         name: ota/database
-      when: 
+      when:
         - ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository is defined or
           ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository is defined
 
