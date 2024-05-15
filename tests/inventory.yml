@@ -3,7 +3,6 @@ vagrant:
     127.0.0.1:
       ansible_user: vagrant
       ansible_port: 2222
-      ansible_python_interpreter: /usr/bin/python3
 
       ota_app_repository: https://github.com/OpenTermsArchive/demo-declarations.git
       ota_app_directory: demo
