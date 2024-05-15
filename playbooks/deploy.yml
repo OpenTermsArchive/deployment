@@ -1,7 +1,6 @@
 ---
 - name: Deploy the Open Terms Archive applications
   hosts: all
-  vars_files: "{{ inventory_dir }}/secrets.yml"
   tasks:
     - name: Load OTA applications configs
       ansible.builtin.include_role:
