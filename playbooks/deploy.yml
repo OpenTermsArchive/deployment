@@ -5,9 +5,9 @@
   tasks:
     - name: Load OTA applications configs
       ansible.builtin.include_role:
-        name: ota/applications
+        name: ota/apps
       vars:
-        ota_app_read_config_only: true
+        ota_apps_read_config_only: true
 
     - block:
       - name: Install Node
@@ -54,7 +54,7 @@
 
     - name: Setup OTA applications
       ansible.builtin.include_role:
-        name: ota/applications
+        name: ota/apps
 
     - name: Start OTA applications
       ansible.builtin.include_role:
