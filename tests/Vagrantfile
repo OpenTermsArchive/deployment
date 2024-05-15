@@ -5,6 +5,7 @@ guest_port = 80
 host_port = ENV["PORT"] || 8080
 
 Vagrant.configure("2") do |config|
+  config.vm.define "opentermsarchive_deployment"
   config.vm.hostname = "vagrant"
 
   config.vm.box = "debian/bullseye64" # Unable to locate package mongodb-org
