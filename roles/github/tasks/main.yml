@@ -1,4 +1,10 @@
 ---
+- name: Check if github-bot-private-key file is provided (on local machine)
+  ansible.builtin.stat:
+    path: "{{ inventory_dir }}/github-bot-private-key"
+  register: github_bot_private_key_file
+  delegate_to: localhost
+
 - name: Add GitHub Bot SSH key
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/github-bot-private-key"
@@ -6,6 +12,7 @@
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
     mode: "600"
+  when: github_bot_private_key_file.stat.exists
 
 - name: Add GitHub SSH key to known_hosts
   ansible.builtin.known_hosts:
