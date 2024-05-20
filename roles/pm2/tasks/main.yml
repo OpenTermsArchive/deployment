@@ -2,21 +2,29 @@
   ansible.builtin.command: npm install -g pm2@5 --production=true
   when: ota_pm2_install_only | bool
 
-- name: Stop Open Terms Archive applications
-  ansible.builtin.command:
-    cmd: pm2 stop pm2.config.cjs
-    chdir: '/home/{{ ansible_user }}/{{ ota_apps_directory }}'
-  tags:
-    - stop
-  when: not ota_pm2_install_only | bool
+- block:
+  - name: Add pm2.config.cjs file
+    ansible.builtin.copy:
+      src: "{{ inventory_dir }}/pm2.config.cjs"
+      dest: '/home/{{ ansible_user }}/{{ ota_directory }}/pm2.config.cjs'
+      force: true
+      mode: "644"
 
-- name: Start Open Terms Archive applications
-  ansible.builtin.command:
-    cmd: pm2 startOrRestart pm2.config.cjs
-    chdir: '/home/{{ ansible_user }}/{{ ota_apps_directory }}'
-  environment:
-    NODE_ENV: production
-  tags:
-    - restart
-    - start
+  - name: Stop Open Terms Archive applications
+    ansible.builtin.command:
+      cmd: pm2 stop pm2.config.cjs
+      chdir: '/home/{{ ansible_user }}/{{ ota_directory }}'
+    tags:
+      - stop
+
+  - name: Start Open Terms Archive applications
+    ansible.builtin.command:
+      cmd: pm2 startOrRestart pm2.config.cjs
+      chdir: '/home/{{ ansible_user }}/{{ ota_directory }}'
+    environment:
+      NODE_ENV: production
+    tags:
+      - restart
+      - start
+
   when: not ota_pm2_install_only | bool
