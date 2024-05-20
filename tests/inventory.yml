@@ -4,5 +4,5 @@ vagrant:
       ansible_user: vagrant
       ansible_port: 2222
 
-      ota_apps_repository: https://github.com/OpenTermsArchive/demo-declarations.git
-      ota_apps_repository_branch: test-new-config
+      ota_source_repository: https://github.com/OpenTermsArchive/demo-declarations.git
+      ota_source_repository_branch: test-new-config
