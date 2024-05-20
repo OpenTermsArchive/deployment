@@ -21,10 +21,11 @@
       cmd: npm ci
       chdir: '/home/{{ ansible_user }}/{{ ota_directory }}'
 
-  - name: Check if .env file is provided
+  - name: Check if .env file is provided (on local machine)
     ansible.builtin.stat:
       path: "{{ inventory_dir }}/.env"
     register: env_file
+    delegate_to: localhost
 
   - name: Add .env file
     ansible.builtin.copy:
