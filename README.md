@@ -2,11 +2,13 @@
 
 This repository contains the `opentermsarchive.deployment` Ansible collection. This Ansible collection provides playbooks to set up the infrastructure of and deploy Open Terms Archive applications.
 
+To prevent confusion between the notion of Ansible [Collection](https://docs.ansible.com/ansible/latest/collections_guide/index.html) and an Open Terms Archive [Collection](https://docs.opentermsarchive.org/#collection), we will refer to Ansible Collection only as “Playbook”, as this is the main entry point to interact with it.
+
 ## Installation
 
-[Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) is required to use this collection.
+[Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) is required to use this playbook.
 
-This collection can be installed from Ansible Galaxy manually with the `ansible-galaxy` command-line tool:
+This playbook can be installed from Ansible Galaxy manually with the `ansible-galaxy` command-line tool:
 
 ```sh
 ansible-galaxy collection install opentermsarchive.deployment
@@ -28,200 +30,102 @@ ansible-galaxy collection install -r requirements.yml
 
 ## Usage
 
-Once installed, some playbooks are available to deploy the two main Open Terms Archive applications: [Engine](https://github.com/OpenTermsArchive/engine) and [Federated API](https://github.com/OpenTermsArchive/federated-api).
+Once installed, the playbook `deploy` allows to set up the two main Open Terms Archive applications: [Engine](https://github.com/OpenTermsArchive/engine) and [Federated API](https://github.com/OpenTermsArchive/federated-api).
 
-Each playbook can be executed using the `ansible-playbook` command-line tool:
+The playbook can be executed using the `ansible-playbook` command-line tool:
 
 ```sh
-ansible-playbook opentermsarchive.deployment.<playbook-name>
+ansible-playbook opentermsarchive.deployment.deploy
 ```
-
-Refer to the application related sections below for a list of available playbooks.
 
 _It is possible to check a playbook execution without actually applying changes with `check` and `diff` options:_
 
 ```sh
-ansible-playbook opentermsarchive.deployment.<playbook-name> --check --diff
+ansible-playbook opentermsarchive.deployment.deploy --check --diff
 ```
 
 > See “[Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html)” in Ansible’s user guide for more information about Ansible collections.
 
 - - -
 
-### Engine application
+### Configuration
 
-Available playbooks for the engine application:
+Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html) are listed below, along with their default values:
 
-| Playbook name | Description | Command example |
-| --- | --- | --- |
-| `engine.infrastructure` | Set up and configure the infrastructure required by the Open Terms Archive engine | `ansible-playbook opentermsarchive.deployment.engine.infrastructure` |
-| `engine.application` | Deploy the Open Terms Archive engine | `ansible-playbook opentermsarchive.deployment.engine.application` |
-| `engine.all` | Set up infrastructure and deploy the Open Terms Archive engine | `ansible-playbook opentermsarchive.deployment.engine.all` |
+| Variable                       | Description                                                                                                                | Default Value          | Required |
+|--------------------------------|----------------------------------------------------------------------------------------------------------------------------|------------------------|----------|
+| `ota_source_repository`        | URL of the source repository                                                                                               | No default value       | ✔︎        |
+| `ota_source_repository_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the source repository | `main`                 |          |
+| `ota_directory`                | Directory path where the code will be deployed on the server                                                               | Name of the repository |          |
 
-#### Configuration
-
-Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html) are listed below, along with default values:
-
-| Variable | Description | Default value | Required |
-| --- | --- | --- | --- |
-| `ota_engine_github_bot_private_key` | SSH private key contents for GitHub user with privileges on snapshots and versions repositories | No default value | ✔︎ |
-| `ota_engine_github_token` | GitHub token to enable issue creation on the declarations repository and publish releases on versions repository | No default value | ✔︎ |
-| `ota_engine_smtp_password` | Password for the SMTP server used for sending error notifications by email | No default value | - |
-| `ota_engine_sendinblue_api_key` | SendInBlue API key used to send email notifications | No default value | - |
-| `ota_engine_config_path` | Path to the engine config file, relative to the inventory file | `../config/production.json` | - |
-| `ota_engine_declarations_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the declarations repository to use | `main` | - |
-| `ota_engine_snapshots_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the snapshots repository to use | `main` | - |
-| `ota_engine_versions_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the versions repository to use | `main` | - |
-| `ota_engine_declarations_directory` | Path of the directory where the code will be deployed on the server | Value declared in the `name` key in the engine config file | - |
-| `ota_engine_restart_delay` | Delay, in milliseconds, before restarting the engine after a crash | `10800000` _(3 hours)_ | - |
-
-For encryption of sensitive configuration entries, please refer to the [dedicated section](#encrypt-sensitive-configuration-entries).
-
-These variables can be overriden in the inventory file, for example:
+These variables can be defined in the inventory file, for example:
 
 ```yml
 all:
   hosts:
     127.0.0.1:
       ansible_user: debian
-      ota_engine_config_path: ./engine_config.json
-      ota_engine_declarations_branch: new-feature
+      ota_source_repository: https://github.com/OpenTermsArchive/demo-declarations.git
+      ota_directory: demo
 ```
 
-#### Tags
+#### Additional files
 
-Available [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html) to refine what will happen, use them with `--tags`:
+The `deploy` playbook requires additional files to be placed alongside the `inventory.yml` file. These files are necessary for deploying the Open Terms Archive applications properly. Below are the required and optional files and their purposes:
 
-| Tag | Description | Command example |
-| --- | --- | --- |
-| `start` | Start the engine | `ansible-playbook opentermsarchive.deployment.engine.application --tags start` |
-| `stop` | Stop the engine | `ansible-playbook opentermsarchive.deployment.engine.application --tags stop` |
-| `restart` | Restart the engine | `ansible-playbook opentermsarchive.deployment.engine.application --tags restart` |
-| `update-declarations` | Update service declarations (pull declarations, install dependencies, and restart engine) | `ansible-playbook opentermsarchive.deployment.engine.application --tags update-declarations` |
+| File                     | Description                                                                                             | Required | Encryption Required |
+|--------------------------|---------------------------------------------------------------------------------------------------------|----------|---------------------|
+| `pm2.config.cjs`         | Configuration file describing the processes to be started and managed by PM2                            | ✔︎        |                     |
+| `github-bot-private-key` | Private SSH key for accessing SSH Git URLs                                                              | Required if `ota_source_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs | ✔︎                 |
+| `.env`                   | File defining environment variables required by the deployed application                                |          | ✔︎                   |
 
-- - -
+Here is an example of the directory structure:
 
-### Federated API application
-
-Available playbooks for the Federated API application:
-
-| Playbook name | Description | Command example |
-| --- | --- | --- |
-| `federated_api.infrastructure` | Set up and configure the infrastructure required by the Open Terms Archive federated API | `ansible-playbook opentermsarchive.deployment.federated_api.infrastructure` |
-| `federated_api.application` | Deploy the Open Terms Archive federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application` |
-| `federated_api.all` | Set up infrastructure and deploy the Open Terms Archive federated API | `ansible-playbook opentermsarchive.deployment.federated_api.all` |
-
-#### Configuration
-
-Available variables are listed below, along with default values:
-
-| Variable | Description | Default value | Required |
-| --- | --- | --- | --- |
-| `ota_federated_api_repo` | Repository URL of the federated API code | `https://github.com/OpenTermsArchive/federated-api.git` | - |
-| `ota_federated_api_directory` | Path of the directory where the code will be deployed on the server | `federated-api` | - |
-| `ota_federated_api_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the federated API repository to use | `main` | - |
-| `ota_federated_api_smtp_password` | Password for the SMTP server used for sending errors notifications by email. | - | - |
-
-For encryption of sensitive configuration entries, please refer to the [dedicated section](#encrypt-sensitive-configuration-entries).
-
-These variables can be overridden in the inventory file, for example:
-
-```yml
-all:
-  hosts:
-    127.0.0.1:
-      ansible_user: debian
-      ota_federated_api_repo: https://github.com/OpenTermsArchive/federated-api.git
-      ota_federated_api_branch: new-feature
+```plaintext
+ops/
+  ├── inventory.yml
+  ├── pm2.config.cjs
+  ├── github-bot-private-key
+  └── .env
 ```
 
-#### Tags
+#### Encrypting sensitive configuration files
 
-Available [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html) to refine what will happen, use them with `--tags`:
+Sensitive configuration files should be encrypted using [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html).
 
-| Tag | Description | Command example |
-| --- | --- | --- |
-| `start` | To only start the Federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application --tags start` |
-| `stop` | To only stop the Federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application --tags stop` |
-| `restart` | To only restart the Federated API | `ansible-playbook opentermsarchive.deployment.federated_api.application --tags restart` |
+Examples:
 
-- - -
+- Encrypt the `github-bot-private-key` file: `ansible-vault encrypt github-bot-private-key`
+- Decrypt the `github-bot-private-key` file: `ansible-vault decrypt github-bot-private-key`
+- Encrypting with a password stored in a file:
+  - `echo 'your_password' > vault.key`
+  - `ansible-vault encrypt --vault-password-file vault.key github-bot-private-key`
 
-### Engine and Federated API applications
-
-Available playbooks to deploy both the Open Terms Archive Engine and Federated API applications on a single server.
-
-| Playbook name | Description | Command example |
-| --- | --- | --- |
-| `engine_and_federated_api.infrastructure` | Set up and configure the infrastructure required by the Open Terms Archive engine and federated API applications | `ansible-playbook opentermsarchive.deployment.engine_and_federated_api.infrastructure` |
-| `engine_and_federated_api.application` | Deploy the Open Terms Archive engine and federated API applications | `ansible-playbook opentermsarchive.deployment.engine_and_federated_api.application` |
-| `engine_and_federated_api.all` | Set up infrastructure and deploy the Open Terms Archive engine and federated API applications | `ansible-playbook opentermsarchive.deployment.engine_and_federated_api.all` |
-
-#### Configuration
-
-Available variables are listed below, along with default values:
-
-| Variable | Description | Default value | Required |
-| --- | --- | --- | --- |
-| `ota_reverse_proxy_engine_path` | Path where the collection API embed with the engine will be available | `/collection-api` | - |
-| `ota_reverse_proxy_federated_api_path` | Path where the federated API will be available | `/federation-api` | - |
-
-- - -
-
-## Encrypt sensitive configuration entries
-
-Certain configuration entries contain sensitive information that should be encrypted to ensure security. Ansible provides a convenient way to encrypt such strings using its built-in [vault feature](https://docs.ansible.com/ansible/2.9/user_guide/vault.html):
+To run the playbook with encrypted files:
 
 ```sh
-ansible-vault encrypt_string --name <sensitive-config-name> <sensitive-config-content>
+ansible-playbook playbook.yml --ask-vault-pass
 ```
 
-For example, to encrypt the GitHub bot private key used by the engine to push updates:
+Or with a password file:
 
 ```sh
-ansible-vault encrypt_string --name 'ota_engine_github_bot_private_key' '-----BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
-…
-UlcCkBZ5IkI0eNAAAAE25kcG50QE1CUC1OZHBudC5sYW4BAgMEBQYH
------END OPENSSH PRIVATE KEY-----
-'
+ansible-playbook playbook.yml --vault-password-file vault.key
 ```
-
-The encrypted result will look like this:
-
-```sh
-ota_engine_github_bot_private_key: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          62313438616266383732353634343736623532666365643364396464633732613966636235616261
-          3136656665316437613434323561613732373361306161640a306132316531356537373862363838
-          66363763613833373530633831653163303961376331393761366261633561656463626563383931
-          3361643836623239660a333134626139626465303234313366313433653261376437316231363834
-          32643261303534366333383131633430396366343631656363663965633964663331346231663166
-          3331316462356461373134303666613035393335333139613639
-```
-
-Then it can be used directly in the inventory file:
-
-```yml
-all:
-  hosts:
-    127.0.0.1:
-      ansible_user: debian
-      ota_engine_config_path: ./engine_config.json
-      ota_engine_declarations_branch: new-feature
-      ota_engine_github_bot_private_key: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          62313438616266383732353634343736623532666365643364396464633732613966636235616261
-          3136656665316437613434323561613732373361306161640a306132316531356537373862363838
-          66363763613833373530633831653163303961376331393761366261633561656463626563383931
-          3361643836623239660a333134626139626465303234313366313433653261376437316231363834
-          32643261303534366333383131633430396366343631656363663965633964663331346231663166
-          3331316462356461373134303666613035393335333139613639
-```
-
-Repeat the process for each sensitive configuration entry that needs encryption.
 
 Please note that the data will be stored unencrypted on the deployment server.
+
+### Refining playbook execution
+
+Use [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html) to refine playbook execution. Example commands:
+
+| Tag             | Description                             | Command Example                                                                  |
+|-----------------|-----------------------------------------|----------------------------------------------------------------------------------|
+| `start`         | Start Open Terms Archive applications   | `ansible-playbook opentermsarchive.deployment.deploy --tags start`               |
+| `stop`          | Stop Open Terms Archive applications    | `ansible-playbook opentermsarchive.deployment.deploy --tags stop`                |
+| `restart`       | Restart Open Terms Archive applications | `ansible-playbook opentermsarchive.deployment.deploy --tags restart`             |
+| `infrastructure`| Set up the infrastructure only          | `ansible-playbook opentermsarchive.deployment.deploy --tags infrastructure`      |
+| `infrastructure`| Skip the infrastructure                 | `ansible-playbook opentermsarchive.deployment.deploy --skip-tags infrastructure` |
 
 - - -
 
@@ -258,7 +162,7 @@ Then the code can be deployed to the running machine with all the options descri
 
 Testing the Ansible collection locally is crucial to ensure that changes function properly before submitting them as a pull request.
 
-The testing environment is preconfigured for Open Terms Archive maintainers. For other contributors, the configuration file `tests/engine_config.json` needs to be updated to specify repositories where they have authorizations. Additionally, the `ota_engine_github_bot_private_key` value in the inventory file `tests/inventory.yml` should be updated.
+The testing environment is preconfigured for Open Terms Archive maintainers. For other contributors, the inventory file `tests/inventory.yml` needs to be updated to specify repositories where they have authorizations. Additionally, the `github-bot-private-key` file should be updated.
 
 Follow these instructions to test the collection in a local environment:
 
@@ -270,7 +174,7 @@ vagrant up
 
 - Apply the changes to the virtual machine:
 ```sh
-ansible-playbook ../playbooks/engine/all.yml
+ansible-playbook ../playbooks/deploy.yml
 ```
 
 - Connect to the virtual machine to verify that changes were applied successfully:
@@ -281,6 +185,50 @@ vagrant ssh # use "vagrant" as password
 - Check that everything works as intended within the virtual machine. Depending on the nature of changes made, you can monitor logs or execute commands to validate functionality:
 ```sh
 pm2 logs
+```
+
+#### Troubleshooting
+
+If you encounter an error while running the playbook, such as:
+
+```sh
+PLAY [Deploy the Open Terms Archive applications] ************************************************
+
+TASK [Gathering Facts] ***************************************************************************
+fatal: [127.0.0.1]: UNREACHABLE! => changed=false
+  msg: 'Failed to connect to the host via ssh: vagrant@127.0.0.1: Permission denied (publickey,password).'
+  unreachable: true
+```
+
+Do the following:
+
+1. Run `vagrant ssh-config` and note the `IdentityFile` output:
+
+```sh
+vagrant ssh-config
+```
+
+Example output:
+
+```plaintext
+Host opentermsarchive_deployment
+  HostName 127.0.0.1
+  User vagrant
+  Port 2222
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile /path/to/your/vagrant/private_key
+  IdentitiesOnly yes
+  LogLevel FATAL
+  PubkeyAcceptedKeyTypes +ssh-rsa
+  HostKeyAlgorithms +ssh-rsa
+```
+
+2. Add the private key to your SSH agent:
+
+```sh
+ssh-add /path/to/your/vagrant/private_key
 ```
 
 ---
