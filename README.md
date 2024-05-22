@@ -71,7 +71,7 @@ all:
 
 #### Additional files
 
-The `deploy` playbook requires additional files to be placed alongside the `inventory.yml` file. These files are necessary for deploying the Open Terms Archive applications properly. Below are the required and optional files and their purposes:
+The `deploy` playbook requires additional files to be placed alongside the `inventory.yml` file. These files are necessary for deploying Open Terms Archive applications properly. Below are the required and optional files and their purposes:
 
 | File                     | Description                                                                                             | Required | Encryption Required |
 |--------------------------|---------------------------------------------------------------------------------------------------------|----------|---------------------|
@@ -192,7 +192,7 @@ pm2 logs
 If you encounter an error while running the playbook, such as:
 
 ```sh
-PLAY [Deploy the Open Terms Archive applications] ************************************************
+PLAY [Deploy Open Terms Archive applications] ************************************************
 
 TASK [Gathering Facts] ***************************************************************************
 fatal: [127.0.0.1]: UNREACHABLE! => changed=false
