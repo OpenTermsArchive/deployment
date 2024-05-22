@@ -66,6 +66,7 @@ all:
     127.0.0.1:
       ansible_user: debian
       ota_source_repository: https://github.com/OpenTermsArchive/demo-declarations.git
+      ota_source_repository_branch: main
       ota_directory: demo
 ```
 
