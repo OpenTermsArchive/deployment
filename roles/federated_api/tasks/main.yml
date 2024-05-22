@@ -35,7 +35,7 @@
 
 - name: Install dependencies
   ansible.builtin.command:
-    cmd: npm install ci
+    cmd: npm ci
     chdir: '/home/{{ ansible_user }}/{{ ota_federated_api_directory }}'
 
 - name: Add .env file
