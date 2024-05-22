@@ -30,7 +30,7 @@ ansible-galaxy collection install -r requirements.yml
 
 ## Usage
 
-Once installed, the playbook `deploy` allows to set up the two main Open Terms Archive applications: [Engine](https://github.com/OpenTermsArchive/engine) and [Federated API](https://github.com/OpenTermsArchive/federated-api).
+Once installed, the playbook `deploy` allows to set up the two main Open Terms Archive applications: [Engine](https://github.com/OpenTermsArchive/engine) and [Federation API](https://github.com/OpenTermsArchive/federation-api).
 
 The playbook can be executed using the `ansible-playbook` command-line tool:
 
