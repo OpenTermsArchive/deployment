@@ -30,7 +30,7 @@
 - name: Add mongod.conf
   ansible.builtin.copy:
     src: mongod.conf
-    dest: '/etc/mongod.conf'
+    dest: /etc/mongod.conf
     mode: "644"
 
 - name: Create data directory

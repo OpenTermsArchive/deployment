@@ -11,8 +11,7 @@
     executable: /bin/bash
 
 - name: Create deb repository
-  ansible.builtin.shell:
-    set -o pipefail && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list # Remember to update the major version of NPM when updating the major version of Node
+  ansible.builtin.shell: set -o pipefail && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list # Remember to update the major version of NPM when updating the major version of Node
   args:
     executable: /bin/bash
 
