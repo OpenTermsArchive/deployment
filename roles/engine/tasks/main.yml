@@ -29,7 +29,7 @@
 
 - name: Install services declarations dependencies
   ansible.builtin.command:
-    cmd: npm install ci
+    cmd: npm ci
     chdir: '/home/{{ ansible_user }}/{{ ota_engine_declarations_directory }}'
   tags:
     - update-declarations
