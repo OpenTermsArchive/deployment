@@ -46,41 +46,9 @@ ansible-playbook opentermsarchive.deployment.deploy --check --diff
 
 > See “[Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html)” in Ansible’s user guide for more information about Ansible collections.
 
-- - -
+## Configuration
 
-### Configuration
-
-Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html) are listed below, along with their default values:
-
-| Variable                       | Description                                                                                                                | Default Value          | Required |
-|--------------------------------|----------------------------------------------------------------------------------------------------------------------------|------------------------|----------|
-| `ota_source_repository`        | URL of the source repository                                                                                               | No default value       | ✔︎        |
-| `ota_source_repository_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the source repository | `main`                 |          |
-| `ota_directory`                | Directory path where the code will be deployed on the server                                                               | Name of the repository |          |
-
-These variables are defined in the inventory file, for example:
-
-```yml
-all:
-  hosts:
-    127.0.0.1:
-      ansible_user: debian
-      ota_source_repository: https://github.com/OpenTermsArchive/demo-declarations.git
-      ota_source_repository_branch: main
-      ota_directory: demo
-```
-
-#### Additional files
-
-Beyond inventory variables, the playbook uses additional files alongside the `inventory.yml` file:
-
-| File                     | Description                                                                                             | Required | Encryption Required |
-|--------------------------|---------------------------------------------------------------------------------------------------------|----------|---------------------|
-| `pm2.config.cjs`         | Configuration for the [PM2](https://pm2.keymetrics.io) process manager used to start the applications                           | ✔︎        |                     |
-| `github-bot-private-key` | Private SSH key for accessing SSH Git URLs                                                              | Required if `ota_source_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs | ✔︎                 |
-| `.env`                   | Environment variables of the deployed applications                                |          | ✔︎                   |
-
-Here is an example of the directory structure:
+Configuration is done through various files located in the `deployment` folder. Below is an example of the directory structure:
 
 ```plaintext
 deployment/
@@ -90,11 +58,53 @@ deployment/
   └── .env
 ```
 
-#### Encrypting sensitive configuration files
+- ### Inventory File — `inventory.yml`
+
+**This file is mandatory**
+
+The `inventory.yml` file defines the hosts and the variables required for the deployment. This file should contain all the necessary variables as described below.
+
+| Variable                       | Description                                                                                                                | Required or default Value |
+|--------------------------------|----------------------------------------------------------------------------------------------------------------------------|------------------------|
+| `ota_source_repository`        | URL of the declarations repository to deploy                                                                                               | **required** |
+| `ota_source_repository_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the source repository | `main` |
+| `ota_directory`                | Directory path where the code will be deployed on the server                                                               | Name of the repository |
+
+These variables are defined in the inventory file, for example:
+
+```yml
+all:
+  hosts:
+    127.0.0.1:
+      ansible_user: debian
+      ota_source_repository: https://github.com/OpenTermsArchive/demo-declarations.git
+      ota_source_repository_branch: master
+      ota_directory: opentermsarchive-demo
+```
+
+- ### PM2 Configuration File — `pm2.config.cjs`
+
+**This file is mandatory**
+
+The `pm2.config.cjs` file is used to configure the [PM2](https://pm2.keymetrics.io) process manager, which is used to start the applications. 
+
+- ### GitHub Bot Private Key — `github-bot-private-key`
+
+The `github-bot-private-key` file contains a private SSH key for accessing and pushing to SSH Git URLs. This file is required if `ota_source_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs.
+
+It is strongly recommended to [encrypt this file](#file-encryption) if is is checked in to a public repository.
+
+- ### Environment Variables File — `.env`
+
+The `.env` file contains the environment variables for the deployed applications.
+
+It is strongly recommended to [encrypt this file](#file-encryption) if is is checked in to a public repository.
+
+## File encryption
 
 Sensitive configuration files should be encrypted using [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html).
 
-Examples:
+Examples of encrypting and decrypting a file:
 
 - Encrypt the `github-bot-private-key` file: `ansible-vault encrypt github-bot-private-key`
 - Decrypt the `github-bot-private-key` file: `ansible-vault decrypt github-bot-private-key`
@@ -116,7 +126,7 @@ ansible-playbook playbook.yml --vault-password-file vault.key
 
 Please note that encrypted files will be decrypted and stored in plaintext on the deployment server. Always protect access to your production server.
 
-### Refining playbook execution
+## Playbook execution refinement
 
 Use [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html) to refine playbook execution. Example commands:
 
