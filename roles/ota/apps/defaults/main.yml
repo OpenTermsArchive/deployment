@@ -1,4 +1,4 @@
 ---
 ota_apps_read_config_only: false
 ota_source_repository_branch: main
-ota_directory: "{{ ota_source_repository | urlsplit('path') | regex_replace('^.*/(.+?)(\\.git)?$', '\\1') }}" # extract the repository name from the URL
+ota_directory: "{{ ota_source_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename | ansible.builtin.splitext | first }}" # extract the repository name from the URL
