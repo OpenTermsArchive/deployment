@@ -15,7 +15,10 @@
       vars:
         ota_apps_read_config_only: true
 
-    - block:
+    - name: Install infrastructure
+      block:
+      become: true
+      tags: [infrastructure]
       - name: Install Node
         ansible.builtin.include_role:
           name: node
