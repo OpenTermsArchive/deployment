@@ -53,12 +53,12 @@
         - mongo_condition
         - skip_debian_arm
   
-    - name: Setup OTA snapshots and versions databases
+    - name: Setup Git-based databases
       ansible.builtin.include_role:
-        name: ota/database
       when:
         - ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository is defined or
           ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository is defined
+        name: ota/git-database
 
     - name: Setup OTA applications
       ansible.builtin.include_role:
