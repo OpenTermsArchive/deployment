@@ -4,20 +4,20 @@ server {
   listen 80;
   server_name {{ inventory_hostname }};
 
-{% if ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath is defined and ota_apps_config['@opentermsarchive/engine']['collection-api'].port is defined %}  
-  location {{ ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath }} {
+{% if collection_api_basePath and collection_api_port %}  
+  location {{ collection_api_basePath }} {
     # Allowing for a `burst` of up to 5 requests beyond the specified rate limit. The `nodelay` parameter ensures that excessive requests beyond the burst limit are immediately rejected with a 429 error response instead of being queued. See https://www.nginx.com/blog/rate-limiting-nginx/.
     limit_req zone=limited burst=5 nodelay;
-    proxy_pass http://localhost:{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].port }};
+    proxy_pass http://localhost:{{ collection_api_port }};
     proxy_redirect off;
   }
 {% endif %}
 
-{% if ota_apps_config['@opentermsarchive/federation-api'].basePath is defined and ota_apps_config['@opentermsarchive/federation-api'].port is defined %}
-  location {{ ota_apps_config['@opentermsarchive/federation-api'].basePath }} {
+{% if federation_api_basePath and federation_api_port %}
+  location {{ federation_api_basePath }} {
     # Allowing for a `burst` of up to 5 requests beyond the specified rate limit. The `nodelay` parameter ensures that excessive requests beyond the burst limit are immediately rejected with a 429 error response instead of being queued. See https://www.nginx.com/blog/rate-limiting-nginx/.
     limit_req zone=limited burst=5 nodelay;
-    proxy_pass http://localhost:{{ ota_apps_config['@opentermsarchive/federation-api'].port }};
+    proxy_pass http://localhost:{{ federation_api_port }};
     proxy_redirect off;
   }
 {% endif %}

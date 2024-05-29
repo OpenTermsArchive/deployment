@@ -22,10 +22,18 @@
               (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
             ) | bool 
           }}"
+        
         snapshots_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository }}"
         snapshots_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path }}"
+        
         versions_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository }}"
         versions_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.path is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.path }}"
+        
+        collection_api_basePath: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath is defined and ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath }}"
+        collection_api_port: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].port is defined and ota_apps_config['@opentermsarchive/engine']['collection-api'].port }}"
+        
+        federation_api_basePath: "{{ ota_apps_config['@opentermsarchive/federation-api'].basePath is defined and ota_apps_config['@opentermsarchive/federation-api'].basePath }}"
+        federation_api_port: "{{ ota_apps_config['@opentermsarchive/federation-api'].port is defined and ota_apps_config['@opentermsarchive/federation-api'].port }}"
     
     - name: Install infrastructure
       become: true
