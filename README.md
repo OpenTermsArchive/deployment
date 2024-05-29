@@ -190,40 +190,12 @@ pm2 logs
 
 #### Troubleshooting
 
-If you encounter an error while running the playbook, such as:
+If you encounter a `Permission denied` error at the “Gathering Facts” step of the playbook, this most likely means the Vagrant-managed SSH key is not loaded in your SSH agent.
+
+1. Identify which SSH key is used by Vagrant:
 
 ```sh
-PLAY [Deploy Open Terms Archive applications] ************************************************
-
-TASK [Gathering Facts] ***************************************************************************
-fatal: [127.0.0.1]: UNREACHABLE! => changed=false
-  msg: 'Failed to connect to the host via ssh: vagrant@127.0.0.1: Permission denied (publickey,password).'
-  unreachable: true
-```
-
-Do the following:
-
-1. Run `vagrant ssh-config` and note the `IdentityFile` output:
-
-```sh
-vagrant ssh-config
-```
-
-Example output:
-
-```plaintext
-Host opentermsarchive_deployment
-  HostName 127.0.0.1
-  User vagrant
-  Port 2222
-  UserKnownHostsFile /dev/null
-  StrictHostKeyChecking no
-  PasswordAuthentication no
-  IdentityFile /path/to/your/vagrant/private_key
-  IdentitiesOnly yes
-  LogLevel FATAL
-  PubkeyAcceptedKeyTypes +ssh-rsa
-  HostKeyAlgorithms +ssh-rsa
+vagrant ssh-config | grep IdentityFile
 ```
 
 2. Add the private key to your SSH agent:
