@@ -3,10 +3,13 @@
   hosts: all
   vars:
     chromium_required: ota_apps_config['@opentermsarchive/engine'] is defined
+    # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB; see https://www.mongodb.com/docs/manual/installation/#supported-platforms
     mongo_required: >
-      (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo') or
-      (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
-    skip_debian_arm: ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64') # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB; see https://www.mongodb.com/docs/manual/installation/#supported-platforms
+      ( ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')) 
+      and (
+        (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo') or
+        (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
+      )
     
   tasks:
     - name: Load OTA applications configs
@@ -42,7 +45,6 @@
             name: mongo/install
           when:
             - mongo_required
-            - skip_debian_arm
 
     - name: Configure Mongo
       ansible.builtin.include_role:
@@ -50,7 +52,6 @@
         apply:
           become: true
       when:
-        - skip_debian_arm
         - mongo_required
   
     - name: Setup Git-based databases
