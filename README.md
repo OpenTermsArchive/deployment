@@ -2,7 +2,7 @@
 
 This repository contains the `opentermsarchive.deployment` Ansible collection. This Ansible collection provides playbooks to set up the infrastructure of and deploy Open Terms Archive applications.
 
-To prevent confusion between the notion of Ansible [Collection](https://docs.ansible.com/ansible/latest/collections_guide/index.html) and an Open Terms Archive [Collection](https://docs.opentermsarchive.org/#collection), we will refer to Ansible Collection only as “Playbook”, as this is the main entry point to interact with it.
+To prevent confusion between the notion of Ansible [Collection](https://docs.ansible.com/ansible/latest/collections_guide/index.html) and an Open Terms Archive [Collection](https://docs.opentermsarchive.org/#collection), this documentation will refer to Ansible Collection only as “Playbook”, as this is the main entry point to interact with it.
 
 ## Installation
 
@@ -38,7 +38,7 @@ The playbook can be executed using the `ansible-playbook` command-line tool:
 ansible-playbook opentermsarchive.deployment.deploy
 ```
 
-_It is possible to check a playbook execution without actually applying changes with `check` and `diff` options:_
+_It is possible to check the playbook execution without actually applying changes with the `check` and `diff` options:_
 
 ```sh
 ansible-playbook opentermsarchive.deployment.deploy --check --diff
@@ -58,7 +58,7 @@ Available [variables](https://docs.ansible.com/ansible/latest/playbook_guide/pla
 | `ota_source_repository_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the source repository | `main`                 |          |
 | `ota_directory`                | Directory path where the code will be deployed on the server                                                               | Name of the repository |          |
 
-These variables can be defined in the inventory file, for example:
+These variables are defined in the inventory file, for example:
 
 ```yml
 all:
@@ -72,18 +72,18 @@ all:
 
 #### Additional files
 
-The `deploy` playbook requires additional files to be placed alongside the `inventory.yml` file. These files are necessary for deploying Open Terms Archive applications properly. Below are the required and optional files and their purposes:
+Beyond inventory variables, the playbook uses additional files alongside the `inventory.yml` file:
 
 | File                     | Description                                                                                             | Required | Encryption Required |
 |--------------------------|---------------------------------------------------------------------------------------------------------|----------|---------------------|
-| `pm2.config.cjs`         | Configuration file describing the processes to be started and managed by PM2                            | ✔︎        |                     |
+| `pm2.config.cjs`         | Configuration for the [PM2](https://pm2.keymetrics.io) process manager used to start the applications                           | ✔︎        |                     |
 | `github-bot-private-key` | Private SSH key for accessing SSH Git URLs                                                              | Required if `ota_source_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs | ✔︎                 |
-| `.env`                   | File defining environment variables required by the deployed application                                |          | ✔︎                   |
+| `.env`                   | Environment variables of the deployed applications                                |          | ✔︎                   |
 
 Here is an example of the directory structure:
 
 ```plaintext
-ops/
+deployment/
   ├── inventory.yml
   ├── pm2.config.cjs
   ├── github-bot-private-key
@@ -114,7 +114,7 @@ Or with a password file:
 ansible-playbook playbook.yml --vault-password-file vault.key
 ```
 
-Please note that the data will be stored unencrypted on the deployment server.
+Please note that encrypted files will be decrypted and stored in plaintext on the deployment server. Always protect access to your production server.
 
 ### Refining playbook execution
 
