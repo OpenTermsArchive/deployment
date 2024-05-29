@@ -2,6 +2,7 @@
 - name: Deploy Open Terms Archive applications
   hosts: all
   vars:
+    chromium_required: ota_apps_config['@opentermsarchive/engine'] is defined
     mongo_required: >
       (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo') or
       (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
@@ -30,7 +31,7 @@
       - name: Install Chromium
         ansible.builtin.include_role:
           name: chromium
-        when: ota_apps_config['@opentermsarchive/engine'] is defined
+        when: chromium_required
 
       - name: Install Nginx 
         ansible.builtin.include_role:
