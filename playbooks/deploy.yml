@@ -1,6 +1,12 @@
 ---
 - name: Deploy Open Terms Archive applications
   hosts: all
+  vars:
+    mongo_required: >
+      (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo') or
+      (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
+    skip_debian_arm: ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64') # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB; see https://www.mongodb.com/docs/manual/installation/#supported-platforms
+    
   tasks:
     - name: Load OTA applications configs
       ansible.builtin.include_role:
@@ -27,19 +33,22 @@
         ansible.builtin.include_role:
           name: nginx/install
     
-      - name: Install and setup Mongo
+      - name: Install Mongo
         ansible.builtin.include_role:
-          name: mongo
+          name: mongo/install
         when:
-          - (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo') or
-            (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
-          # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB.
-          # See https://www.mongodb.com/docs/manual/installation/#supported-platforms
-          - ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')
-      become: true
-      tags:
-      - infrastructure
-    
+          - mongo_condition
+          - skip_debian_arm
+
+    - name: Configure Mongo
+      ansible.builtin.include_role:
+        name: mongo/configure
+        apply:
+          become: true
+      when:
+        - mongo_condition
+        - skip_debian_arm
+  
     - name: Setup OTA snapshots and versions databases
       ansible.builtin.include_role:
         name: ota/database
