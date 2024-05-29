@@ -22,6 +22,11 @@
               (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
             ) | bool 
           }}"
+        snapshots_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository }}"
+        snapshots_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path }}"
+        versions_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository }}"
+        versions_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.path is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.path }}"
+    
     - name: Install infrastructure
       become: true
       tags: [infrastructure]
@@ -57,9 +62,25 @@
       when:
         - mongo_required
   
-    - name: Setup Git-based databases
+    - name: Setup Git-based versions database
       ansible.builtin.include_role:
         name: ota/git-database
+      vars:
+        ota_git_database_repository: "{{ versions_repository }}"
+        ota_git_database_directory: "{{ versions_path }}"
+        ota_git_database_branch: main
+      when:
+        - versions_repository and versions_path
+
+    - name: Setup Git-based snapshots database
+      ansible.builtin.include_role:
+        name: ota/git-database
+      vars:
+        ota_git_database_repository: "{{ snapshots_repository }}"
+        ota_git_database_directory: "{{ snapshots_path }}"
+        ota_git_database_branch: main
+      when:
+        - snapshots_repository and snapshots_path
 
     - name: Setup OTA applications
       ansible.builtin.include_role:
