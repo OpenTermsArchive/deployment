@@ -1,4 +1,0 @@
----
-ota_nginx_install: true
-ota_nginx_configure: false
-ota_nginx_configure_reverse_proxy: false

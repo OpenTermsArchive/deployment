@@ -1,14 +1,6 @@
 ---
-- name: Install NGINX package
-  ansible.builtin.apt:
-    name: nginx
-    update_cache: true
-    state: latest
-  when: ota_nginx_install | bool
-
 - name: Configure NGINX
   notify: Restart NGINX
-  when: ota_nginx_configure | bool
   block:
     - name: Clean default NGINX site
       ansible.builtin.file:
@@ -24,9 +16,7 @@
         mode: "644"
 
 - name: Configure NGINX Reverse Proxy
-  become: true
   notify: Restart NGINX
-  when: ota_nginx_configure_reverse_proxy | bool
   block:
     - name: Add conf in NGINX sites-available
       ansible.builtin.template:

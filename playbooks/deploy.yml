@@ -16,21 +16,16 @@
       
       - name: Install PM2
         ansible.builtin.include_role:
-          name: pm2
-        vars:
-          ota_pm2_install_only: true
+          name: pm2/install
 
       - name: Install Chromium
         ansible.builtin.include_role:
           name: chromium
         when: ota_apps_config['@opentermsarchive/engine'] is defined
 
-      - name: Install and setup Nginx 
+      - name: Install Nginx 
         ansible.builtin.include_role:
-          name: nginx
-        vars:
-          ota_nginx_configure: true
-          ota_nginx_config_template: ./templates/nginx.conf.j2
+          name: nginx/install
     
       - name: Install and setup Mongo
         ansible.builtin.include_role:
@@ -58,15 +53,13 @@
 
     - name: Start OTA applications
       ansible.builtin.include_role:
-        name: pm2
+        name: pm2/manage
 
-    - name: Setup reverse proxy
+    - name: Configure NGINX
       ansible.builtin.include_role:
-        name: nginx
+        name: nginx/configure
         apply:
           become: true
       vars:
-        ota_nginx_install: false
-        ota_nginx_configure: false
-        ota_nginx_configure_reverse_proxy: true
+        ota_nginx_config_template: ./templates/nginx.conf.j2
         ota_nginx_reverse_proxy_config_template: ./templates/nginx-reverse-proxy-conf.j2
