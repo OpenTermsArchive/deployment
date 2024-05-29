@@ -1,16 +1,6 @@
 ---
 - name: Deploy Open Terms Archive applications
   hosts: all
-  vars:
-    chromium_required: ota_apps_config['@opentermsarchive/engine'] is defined
-    # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB; see https://www.mongodb.com/docs/manual/installation/#supported-platforms
-    mongo_required: >
-      ( ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')) 
-      and (
-        (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo') or
-        (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
-      )
-    
   tasks:
     - name: Load OTA applications configs
       ansible.builtin.include_role:
@@ -19,6 +9,19 @@
       vars:
         ota_apps_read_config_only: true
 
+    - name: Set required variables
+      set_fact:
+        chromium_required: "{{ ota_apps_config['@opentermsarchive/engine'] is defined }}"
+        # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB; see https://www.mongodb.com/docs/manual/installation/#supported-platforms
+        mongo_required:
+          "{{ 
+            (ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')) 
+            and (
+              (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo') 
+              or
+              (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
+            ) | bool 
+          }}"
     - name: Install infrastructure
       become: true
       tags: [infrastructure]
