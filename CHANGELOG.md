@@ -25,8 +25,7 @@ _Full changeset and discussions: [#41](https://github.com/OpenTermsArchive/deplo
 
 - **Breaking:** Remove `ota_reverse_proxy_federated_api_path` config; define this path in your `config/production.json` under the key `@opentermsarchive/federation-api: { basePath: "" }`
 - **Breaking:** Remove `ota_reverse_proxy_engine_path` config; define this path in your `config/production.json` under the key `@opentermsarchive/engine: { collection-api: { basePath: "" } }`
-- **Breaking:** Remove obsolete `ota_federated_api_branch`, `ota_federated_api_directory`, and `ota_federated_api_repo` configs
-- **Breaking:** Remove obsolete `ota_engine_config_path` config
+- **Breaking:** Remove obsolete `ota_engine_config_path`, `ota_federated_api_branch`, `ota_federated_api_directory`, and `ota_federated_api_repo` configs
 - **Breaking:** Remove obsolete `update-declarations` tag
 
 
