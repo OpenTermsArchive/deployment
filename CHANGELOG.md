@@ -2,7 +2,9 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased [major]
+## Unreleased
+
+## 2.0.0 - 2024-05-31
 
 _Full changeset and discussions: [#41](https://github.com/OpenTermsArchive/deployment/pull/41)._
 
@@ -27,7 +29,6 @@ _Full changeset and discussions: [#41](https://github.com/OpenTermsArchive/deplo
 - **Breaking:** Remove `ota_reverse_proxy_engine_path` config; define this path in your `config/production.json` under the key `@opentermsarchive/engine: { collection-api: { basePath: "" } }`
 - **Breaking:** Remove obsolete `ota_engine_config_path`, `ota_federated_api_branch`, `ota_federated_api_directory`, and `ota_federated_api_repo` configs
 - **Breaking:** Remove obsolete `update-declarations` tag
-
 
 ## 1.2.1 - 2024-05-22
 
