@@ -72,7 +72,7 @@
   
     - name: Setup Git-based versions database
       ansible.builtin.include_role:
-        name: ota/git-database
+        name: ota/git_database
       vars:
         ota_git_database_repository: "{{ versions_repository }}"
         ota_git_database_directory: "{{ versions_path }}"
@@ -82,7 +82,7 @@
 
     - name: Setup Git-based snapshots database
       ansible.builtin.include_role:
-        name: ota/git-database
+        name: ota/git_database
       vars:
         ota_git_database_repository: "{{ snapshots_repository }}"
         ota_git_database_directory: "{{ snapshots_path }}"
