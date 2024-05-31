@@ -64,7 +64,7 @@ deployment/
 
 The `inventory.yml` file defines the hosts and the variables required for the deployment. This file should contain all the necessary variables as described below.
 
-| Variable                       | Description                                                                                                                | Required or default Value |
+| Variable                       | Description                                                                                                                | Required or default value |
 |--------------------------------|----------------------------------------------------------------------------------------------------------------------------|------------------------|
 | `ota_source_repository`        | URL of the declarations repository to deploy                                                                                               | **required** |
 | `ota_source_repository_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the source repository | `main` |
@@ -79,7 +79,7 @@ all:
       ansible_user: debian
       ota_source_repository: https://github.com/OpenTermsArchive/demo-declarations.git
       ota_source_repository_branch: master
-      ota_directory: opentermsarchive-demo
+      ota_directory: demo
 ```
 
 - ### PM2 Configuration File — `pm2.config.cjs`
