@@ -4,6 +4,4 @@ vagrant:
       ansible_user: vagrant
       ansible_port: 2222
       ansible_ssh_host: 127.0.0.1
-
       ota_source_repository: https://github.com/OpenTermsArchive/demo-declarations.git
-      ota_source_repository_branch: test-new-config
