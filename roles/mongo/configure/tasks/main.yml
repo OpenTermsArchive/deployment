@@ -1,0 +1,22 @@
+---
+- name: Configure MongoDB
+  notify: Restart MongoDB
+  block:
+  - name: Add mongod.conf
+    ansible.builtin.copy:
+      src: mongod.conf
+      dest: /etc/mongod.conf
+      mode: "644"
+
+  - name: Create data directory
+    ansible.builtin.file:
+      path: /mnt/disk/mongodb
+      state: directory
+      mode: "744"
+
+  - name: Set database files permissions
+    ansible.builtin.file:
+      path: /mnt/disk/mongodb
+      owner: mongodb
+      group: mongodb
+      recurse: true

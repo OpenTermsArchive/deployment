@@ -2,7 +2,32 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## Unreleased [major]
+
+_Full changeset and discussions: [#41](https://github.com/OpenTermsArchive/deployment/pull/41)._
+
+> Development of this release was supported by the [French Ministry for Foreign Affairs](https://www.diplomatie.gouv.fr/fr/politique-etrangere-de-la-france/diplomatie-numerique/) through its ministerial [State Startups incubator](https://beta.gouv.fr/startups/open-terms-archive.html) under the aegis of the Ambassador for Digital Affairs.
+
+### Changed
+
+- **Breaking:** Replace all playbooks with a single `deploy` playbook; update your scripts by using `ansible-playbook opentermsarchive.deployment.deploy` and use [tags to refine execution](./README.md#refining-playbook-execution)
+- **Breaking:** Change the `federation-api` deployment process to be a dependency of the source repository
+- **Breaking:** Require `engine>=2` and `federation-api>=v2`
+- **Breaking:** Make `ota_source_repository` variable mandatory
+- **Breaking:** Define environment variables in a `.env` file instead of in inventory variables; move `ota_engine_github_token`, `ota_engine_smtp_password`, `ota_engine_sendinblue_api_key`, and `ota_federated_api_smtp_password` to a `.env` file placed next to the inventory file and rename them according to the new naming conventions in `engine` v2 and `federation-api` v2
+- **Breaking:** Rename `ota_engine_declarations_branch` to `ota_source_repository_branch`
+- **Breaking:** Rename `ota_engine_declarations_directory` to `ota_directory`
+- **Breaking:** Extract the PM2 config file `pm2.config.cjs`; provide this file next to the inventory file
+- **Breaking:** Remove the `ota_engine_restart_delay` variable; define this setting directly in the `pm2.config.cjs`
+- **Breaking:** Remove the `ota_engine_github_bot_private_key` variable in favor of the `github-bot-private-key` file; define the GitHub SSH private key in the `github-bot-private-key`
+
+### Removed
+
+- **Breaking:** Remove `ota_reverse_proxy_federated_api_path` config; define this path in your `config/production.json` under the key `@opentermsarchive/federation-api: { basePath: "" }`
+- **Breaking:** Remove `ota_reverse_proxy_engine_path` config; define this path in your `config/production.json` under the key `@opentermsarchive/engine: { collection-api: { basePath: "" } }`
+- **Breaking:** Remove obsolete `ota_engine_config_path`, `ota_federated_api_branch`, `ota_federated_api_directory`, and `ota_federated_api_repo` configs
+- **Breaking:** Remove obsolete `update-declarations` tag
+
 
 ## 1.2.1 - 2024-05-22
 

@@ -1,0 +1,28 @@
+---
+# See https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/
+- name: Import the MongoDB public key used by the package management system
+  ansible.builtin.shell: set -o pipefail && wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+  args:
+    executable: /bin/bash
+
+- name: Create an apt list file for MongoDB — Debian
+  ansible.builtin.shell:
+    set -o pipefail && echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/5.0 main" |
+    sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+  when: ansible_distribution == 'Debian'
+  args:
+    executable: /bin/bash
+
+- name: Create an apt list file for MongoDB — Ubuntu
+  ansible.builtin.shell:
+    set -o pipefail && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" |
+    sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+  when: ansible_distribution == 'Ubuntu'
+  args:
+    executable: /bin/bash
+
+- name: Install MongoDB
+  ansible.builtin.apt:
+    name: mongodb-org
+    update_cache: true
+    state: latest

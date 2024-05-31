@@ -1,0 +1,13 @@
+---
+- name: Install common required packages
+  ansible.builtin.apt:
+    pkg:
+      - build-essential
+      - curl
+      - ca-certificates
+      - gnupg
+      - git
+      - zip
+    update_cache: true
+    state: latest
+  become: true

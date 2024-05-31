@@ -1,6 +1,0 @@
----
-- name: Set up infrastructure and deploy the Open Terms Archive engine and federated API
-  hosts: all
-
-- import_playbook: infrastructure.yml
-- import_playbook: application.yml

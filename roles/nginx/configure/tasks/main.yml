@@ -1,0 +1,33 @@
+---
+- name: Configure NGINX
+  notify: Restart NGINX
+  block:
+    - name: Clean default NGINX site
+      ansible.builtin.file:
+        state: absent
+        path: /etc/nginx/sites-enabled/default
+
+    - name: Setup NGINX conf
+      ansible.builtin.template:
+        src: "{{ ota_nginx_config_template }}"
+        dest: /etc/nginx/conf.d/ota.conf
+        owner: root
+        group: root
+        mode: "644"
+
+- name: Configure NGINX Reverse Proxy
+  notify: Restart NGINX
+  block:
+    - name: Add conf in NGINX sites-available
+      ansible.builtin.template:
+        src: "{{ ota_nginx_reverse_proxy_config_template }}"
+        dest: /etc/nginx/sites-available/ota
+        force: true
+        mode: "644"
+
+    - name: Link conf from sites-available to sites-enabled
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/ota
+        dest: /etc/nginx/sites-enabled/ota
+        state: link
+        force: true

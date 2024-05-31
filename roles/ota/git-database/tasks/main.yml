@@ -1,0 +1,41 @@
+---
+- name: Check if base data has already been obtained from {{ ota_git_database_repository }}
+  ansible.builtin.git:
+    repo: "{{ ota_git_database_repository }}"
+    version: "{{ ota_git_database_branch }}"
+    dest: "{{ ota_git_database_directory }}"
+    clone: false
+    update: false
+    key_file: /home/{{ ansible_user }}/.ssh/ota-github-bot-key
+  # the `before` property of the return value can tell us if the repository has been cloned already or not,
+  # see <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html#return-values>
+  register: existing_repository
+
+- name: Obtain initial data from branch {{ ota_git_database_branch }} of {{ ota_git_database_repository }}
+  ansible.builtin.git:
+    repo: "{{ ota_git_database_repository }}"
+    version: "{{ ota_git_database_branch }}"
+    dest: "{{ ota_git_database_directory }}"
+    key_file: /home/{{ ansible_user }}/.ssh/ota-github-bot-key
+  when: existing_repository.before is defined and not existing_repository.before # if existing_repository.before is null, then the repository is new
+
+- name: Configure {{ ota_git_database_directory }} repository to use the GitHub Bot SSH Key
+  community.general.git_config:
+    name: core.sshCommand
+    value: ssh -i '/home/{{ ansible_user }}/.ssh/ota-github-bot-key'
+    scope: local
+    repo: "{{ ota_git_database_directory }}"
+
+- name: Remove existing locks in {{ ota_git_database_directory }}
+  ansible.builtin.file:
+    path: "{{ ota_git_database_directory }}/.git/index.lock"
+    state: absent
+
+- name: Get latest data from {{ ota_git_database_repository }}
+  ansible.builtin.git:
+    repo: "{{ ota_git_database_repository }}"
+    version: "{{ ota_git_database_branch }}"
+    dest: "{{ ota_git_database_directory }}"
+    update: true
+    force: true # discard any modified files
+    key_file: /home/{{ ansible_user }}/.ssh/ota-github-bot-key
