@@ -1,4 +1,4 @@
-vagrant:
+all:
   hosts:
     vagrant: # Name the host instead of using 127.0.0.1 to ensure `delegate_to` distinguishes between the local machine and the locally running Vagrant VM
       ansible_user: vagrant
