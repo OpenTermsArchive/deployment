@@ -29,12 +29,12 @@
         versions_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository | default(None) }}"
         versions_relative_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.path | default(None) }}"
         
-        collection_api_basePath: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath is defined and ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath }}"
-        collection_api_port: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].port is defined and ota_apps_config['@opentermsarchive/engine']['collection-api'].port }}"
+        collection_api_basePath: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath | default(None) }}"
+        collection_api_port: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].port | default(None) }}"
         
-        federation_api_basePath: "{{ ota_apps_config['@opentermsarchive/federation-api'].basePath is defined and ota_apps_config['@opentermsarchive/federation-api'].basePath }}"
-        federation_api_port: "{{ ota_apps_config['@opentermsarchive/federation-api'].port is defined and ota_apps_config['@opentermsarchive/federation-api'].port }}"
-    
+        federation_api_basePath: "{{ ota_apps_config['@opentermsarchive/federation-api'].basePath | default(None) }}"
+        federation_api_port: "{{ ota_apps_config['@opentermsarchive/federation-api'].port | default(None) }}"
+
     - name: Install infrastructure
       become: true
       tags: [infrastructure]
