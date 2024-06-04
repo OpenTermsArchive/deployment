@@ -3,14 +3,18 @@
   hosts: all
   tasks:
     - name: Load OTA applications configs
+      tags: [always]
       ansible.builtin.include_role:
         name: ota/apps
         public: true # ensure that the role's variables and defaults are accessible to the play
+        apply:
+          tags: [always]
       vars:
         ota_apps_read_config_only: true
 
     - name: Set required variables
       set_fact:
+      tags: [always]
         chromium_required: "{{ ota_apps_config['@opentermsarchive/engine'] is defined }}"
         # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB; see https://www.mongodb.com/docs/manual/installation/#supported-platforms
         mongo_required:
