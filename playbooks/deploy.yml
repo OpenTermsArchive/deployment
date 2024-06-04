@@ -13,8 +13,8 @@
         ota_apps_read_config_only: true
 
     - name: Set required variables
-      set_fact:
       tags: [always]
+      ansible.builtin.set_fact:
         chromium_required: "{{ ota_apps_config['@opentermsarchive/engine'] is defined }}"
         # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB; see https://www.mongodb.com/docs/manual/installation/#supported-platforms
         mongo_required:
@@ -29,13 +29,13 @@
         
         snapshots_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository | default(None) }}"
         snapshots_relative_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path | default(None) }}"
-        
+
         versions_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository | default(None) }}"
         versions_relative_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.path | default(None) }}"
-        
+
         collection_api_basePath: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath | default(None) }}"
         collection_api_port: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].port | default(None) }}"
-        
+
         federation_api_basePath: "{{ ota_apps_config['@opentermsarchive/federation-api'].basePath | default(None) }}"
         federation_api_port: "{{ ota_apps_config['@opentermsarchive/federation-api'].port | default(None) }}"
 
@@ -46,7 +46,7 @@
         - name: Install Node
           ansible.builtin.include_role:
             name: node
-        
+
         - name: Install PM2
           ansible.builtin.include_role:
             name: pm2/install
@@ -56,10 +56,10 @@
             name: chromium
           when: chromium_required
 
-        - name: Install Nginx 
+        - name: Install Nginx
           ansible.builtin.include_role:
             name: nginx/install
-      
+
         - name: Install Mongo
           ansible.builtin.include_role:
             name: mongo/install
@@ -73,13 +73,13 @@
           become: true
       when:
         - mongo_required
-  
+
     - name: Setup Git-based versions database
       ansible.builtin.include_role:
         name: ota/git_database
       vars:
         ota_git_database_repository: "{{ versions_repository }}"
-        ota_git_database_directory: "/home/{{ ansible_user }}/{{ ota_directory }}/{{ versions_relative_path }}"
+        ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ versions_relative_path }}
         ota_git_database_branch: main
       when:
         - versions_repository and versions_relative_path
@@ -89,7 +89,7 @@
         name: ota/git_database
       vars:
         ota_git_database_repository: "{{ snapshots_repository }}"
-        ota_git_database_directory: "/home/{{ ansible_user }}/{{ ota_directory }}/{{ snapshots_relative_path }}"
+        ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ snapshots_relative_path }}
         ota_git_database_branch: main
       when:
         - snapshots_repository and snapshots_relative_path
