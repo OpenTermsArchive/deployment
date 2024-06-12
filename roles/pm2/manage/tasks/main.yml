@@ -9,7 +9,7 @@
 
 - name: Stop Open Terms Archive applications
   ansible.builtin.command:
-    cmd: pm2 stop pm2.config.cjs
+    cmd: pm2 delete pm2.config.cjs
     chdir: /home/{{ ansible_user }}/{{ ota_directory }}
   tags:
     - stop
