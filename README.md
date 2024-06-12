@@ -82,6 +82,10 @@ all:
       ota_directory: demo
 ```
 
+#### Changes on a existing deployment
+
+If the `ota_source_repository` is changed on an existing target, the application has to be [stopped](#playbook-execution-refinement) before the new configuration is deployed.
+
 - ### PM2 Configuration File — `pm2.config.cjs`
 
 **This file is mandatory**
