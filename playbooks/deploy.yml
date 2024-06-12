@@ -108,9 +108,10 @@
       ansible.builtin.include_role:
         name: ota/apps
 
-    - name: Start OTA applications
+    - name: Manage OTA applications processes
       ansible.builtin.include_role:
         name: pm2/manage
+      tags: [stop, start, restart]
 
     - name: Configure NGINX
       ansible.builtin.include_role:

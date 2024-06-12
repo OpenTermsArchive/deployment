@@ -2,6 +2,10 @@
   ansible.builtin.stat:
     path: /home/{{ ansible_user }}/{{ ota_directory }}/pm2.config.cjs
   register: pm2_config
+  tags:
+    - stop
+    - restart
+    - start
 
 - name: Stop Open Terms Archive applications
   ansible.builtin.command:
@@ -27,3 +31,5 @@
   tags:
     - restart
     - start
+  when: pm2_config.stat.exists
+
