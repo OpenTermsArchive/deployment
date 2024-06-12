@@ -2,6 +2,12 @@
 - name: Deploy Open Terms Archive applications
   hosts: all
   tasks:
+    - name: Install common required packages
+      ansible.builtin.include_role:
+        name: common
+        apply:
+          become: true
+
     - name: Load OTA applications configs
       tags: [always]
       ansible.builtin.include_role:
@@ -73,6 +79,10 @@
           become: true
       when:
         - mongo_required
+
+    - name: Setup GitHub bot SSH key
+      ansible.builtin.include_role:
+        name: github
 
     - name: Setup Git-based versions database
       ansible.builtin.include_role:
