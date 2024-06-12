@@ -6,12 +6,12 @@
     - stop
 
 - name: Stop Open Terms Archive applications
+  when: pm2_config.stat.exists
   ansible.builtin.command:
     cmd: pm2 delete pm2.config.cjs
     chdir: /home/{{ ansible_user }}/{{ ota_directory }}
   tags:
     - stop
-  when: pm2_config.stat.exists
 
 - name: Copy pm2.config.cjs file
   ansible.builtin.copy:
