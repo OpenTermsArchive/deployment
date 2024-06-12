@@ -8,6 +8,10 @@
         apply:
           become: true
 
+    - name: Setup GitHub bot SSH key
+      ansible.builtin.include_role:
+        name: github
+
     - name: Load OTA applications configs
       tags: [always]
       ansible.builtin.include_role:
@@ -79,10 +83,6 @@
           become: true
       when:
         - mongo_required
-
-    - name: Setup GitHub bot SSH key
-      ansible.builtin.include_role:
-        name: github
 
     - name: Setup Git-based versions database
       ansible.builtin.include_role:
