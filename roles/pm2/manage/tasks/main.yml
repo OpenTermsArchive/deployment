@@ -1,15 +1,17 @@
-- name: Check if pm2.config.cjs file is provided
+- name: Check if pm2.config.cjs file is present
   ansible.builtin.stat:
     path: /home/{{ ansible_user }}/{{ ota_directory }}/pm2.config.cjs
   register: pm2_config
+  tags:
+    - stop
 
 - name: Stop Open Terms Archive applications
+  when: pm2_config.stat.exists
   ansible.builtin.command:
-    cmd: pm2 stop pm2.config.cjs
+    cmd: pm2 delete pm2.config.cjs
     chdir: /home/{{ ansible_user }}/{{ ota_directory }}
   tags:
     - stop
-  when: pm2_config.stat.exists
 
 - name: Copy pm2.config.cjs file
   ansible.builtin.copy:
@@ -17,6 +19,9 @@
     dest: /home/{{ ansible_user }}/{{ ota_directory }}/pm2.config.cjs
     force: true
     mode: "644"
+  tags:
+    - restart
+    - start
 
 - name: Start Open Terms Archive applications
   ansible.builtin.command:
