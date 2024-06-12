@@ -8,7 +8,7 @@ _Full changeset and discussions: [#46](https://github.com/OpenTermsArchive/deplo
 
 ### Fixed
 
-- Ensure processes are cleaned up at each deployment
+- Ensure configuration changes are taken into account on restart
 - Make refined playbook execution work with the `start`, `stop` and `restart` tags
 
 ## 2.0.1 - 2024-06-04
