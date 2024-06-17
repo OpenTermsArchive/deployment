@@ -18,3 +18,11 @@ The format to use is [Common Changelog](https://common-changelog.org), with the 
 This module follows the [semantic versioning](https://semver.org) v2 standard.
 
 The public API used for determining breaking changes is the exposed Ansible commands, and not the resulting infrastructure. For example, a major upgrade to the installed Node version can be a minor change, but is not a major change: it is expected that running this playbook may manipulate the entire global installs on the server. On the other hand, a change to the playbook name must trigger a major update, even if the result of executing it yields exactly the same infrastructure as before.
+
+## List a new contributor in the Open Terms Archive website
+
+We acknowledge the efforts of our contributors by listing them on our [website](https://opentermsarchive.org) and this is made possible by the use of the [All Contributors bot](https://allcontributors.org/docs/en/bot/overview).
+
+All Contributors enables adding a contributor with a comment on an issue or pull request, without writing code. To do this, please use the [dedicated issue](https://github.com/OpenTermsArchive/deployment/issues/48) on this repository.
+
+Please read the following [contributing guide](https://github.com/OpenTermsArchive/opentermsarchive.org/blob/main/CONTRIBUTING.md#list-a-new-contributor-in-the-open-terms-archive-website).
