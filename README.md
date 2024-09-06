@@ -82,6 +82,9 @@ all:
       ota_directory: demo
 ```
 
+If your firewall blocks output requests on ssh port (for accessing github by SSH urls) you can use ssh on port 443:
+`ssh://git@ssh.github.com:443/<org>/<repository>.git`
+
 #### Changes on a existing deployment
 
 If the `ota_source_repository` is changed on an existing target, the application has to be [stopped](#playbook-execution-refinement) before the new configuration is deployed.
