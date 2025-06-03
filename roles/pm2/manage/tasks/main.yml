@@ -23,6 +23,13 @@
     - restart
     - start
 
+- name: Generate and enable PM2 startup script
+  ansible.builtin.command:
+    cmd: sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u {{ ansible_user }} --hp /home/{{ ansible_user }}
+  tags:
+    - restart
+    - start
+
 - name: Start Open Terms Archive applications
   ansible.builtin.command:
     cmd: pm2 startOrRestart pm2.config.cjs
@@ -32,3 +39,12 @@
   tags:
     - restart
     - start
+
+- name: Save PM2 process list for auto-restart
+  ansible.builtin.command:
+    cmd: pm2 save
+    chdir: /home/{{ ansible_user }}/{{ ota_directory }}
+  tags:
+    - restart
+    - start
+    - stop
