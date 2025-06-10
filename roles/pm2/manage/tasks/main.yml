@@ -25,7 +25,7 @@
 
 - name: Generate and enable PM2 startup script
   ansible.builtin.command:
-    cmd: sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u {{ ansible_user }} --hp /home/{{ ansible_user }}
+    cmd: sudo env PATH=$PATH:/usr/bin pm2 startup systemd --user {{ ansible_user }} --hp /home/{{ ansible_user }}
   tags:
     - restart
     - start
