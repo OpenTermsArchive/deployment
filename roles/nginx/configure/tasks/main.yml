@@ -7,6 +7,16 @@
         state: absent
         path: /etc/nginx/sites-enabled/default
 
+    - name: Check if server_tokens is already configured
+      ansible.builtin.command: grep -E "^\s*server_tokens" /etc/nginx/nginx.conf
+      register: nginx_server_tokens_directive
+      failed_when: false
+      changed_when: false
+
+    - name: Share server_tokens configuration state
+      ansible.builtin.set_fact:
+        nginx_conf_has_server_tokens: "{{ nginx_server_tokens_directive.rc == 0 }}"
+
     - name: Setup NGINX conf
       ansible.builtin.template:
         src: "{{ ota_nginx_config_template }}"
