@@ -6,7 +6,9 @@
 # vulnerabilities or exploits that are present in specific versions.
 # Disabling server_tokens can help to mitigate this risk by removing the NGINX
 # version number from the response headers.
+{% if not nginx_conf_has_server_tokens | default(false) %}
 server_tokens off;
+{% endif %}
 
 # Configure the rate limiting module to prevent DDoS attacks.
 limit_req_zone $binary_remote_addr zone=limited:10m rate=10r/s;
