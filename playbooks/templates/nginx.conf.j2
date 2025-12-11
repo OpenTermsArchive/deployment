@@ -10,8 +10,8 @@
 server_tokens off;
 {% endif %}
 
-# Configure the rate limiting module to prevent DDoS attacks.
-limit_req_zone $binary_remote_addr zone=limited:10m rate=10r/s;
+# Configure the collection-specific rate limiting zone to prevent DDoS attacks.
+limit_req_zone $binary_remote_addr zone=ota_limited_{{ ota_collection_id }}:10m rate=10r/s;
 
 # Define HTTP response status code that is returned to clients when the rate limit is exceeded.
 limit_req_status 429;

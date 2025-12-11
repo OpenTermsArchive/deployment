@@ -121,3 +121,4 @@
       vars:
         ota_nginx_config_template: ./templates/nginx.conf.j2
         ota_nginx_reverse_proxy_config_template: ./templates/nginx-reverse-proxy-conf.j2
+        ota_nginx_server_config_template: ./templates/nginx-server.conf.j2

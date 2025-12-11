@@ -1,12 +1,7 @@
 ---
-- name: Configure NGINX
+- name: Configure NGINX for OTA
   notify: Restart NGINX
   block:
-    - name: Clean default NGINX site
-      ansible.builtin.file:
-        state: absent
-        path: /etc/nginx/sites-enabled/default
-
     - name: Check if server_tokens is already configured
       ansible.builtin.command: grep -E "^\s*server_tokens" /etc/nginx/nginx.conf
       register: nginx_server_tokens_directive
@@ -17,27 +12,44 @@
       ansible.builtin.set_fact:
         nginx_conf_has_server_tokens: "{{ nginx_server_tokens_directive.rc == 0 }}"
 
-    - name: Setup NGINX conf
+    - name: Add collection-specific rate limit config
       ansible.builtin.template:
         src: "{{ ota_nginx_config_template }}"
-        dest: /etc/nginx/conf.d/ota.conf
+        dest: /etc/nginx/conf.d/ota-rate-limit-{{ ota_collection_id }}.conf
         owner: root
         group: root
         mode: "644"
+        force: true  # Update on each deploy
 
-- name: Configure NGINX Reverse Proxy
+    - name: Ensure ota.d directory exists
+      ansible.builtin.file:
+        path: /etc/nginx/ota.d
+        state: directory
+        owner: root
+        group: root
+        mode: "755"
+
+- name: Configure NGINX for collection
   notify: Restart NGINX
   block:
-    - name: Add conf in NGINX sites-available
+    - name: Add collection-specific location config
       ansible.builtin.template:
         src: "{{ ota_nginx_reverse_proxy_config_template }}"
-        dest: /etc/nginx/sites-available/ota
-        force: true
+        dest: /etc/nginx/ota.d/{{ ota_collection_id }}.conf
+        force: true  # Update on each deploy
         mode: "644"
 
-    - name: Link conf from sites-available to sites-enabled
+    - name: Ensure OTA server block exists in sites-available
+      ansible.builtin.template:
+        src: "{{ ota_nginx_server_config_template }}"
+        dest: /etc/nginx/sites-available/ota
+        owner: root
+        group: root
+        mode: "644"
+        force: false  # Don't overwrite if exists (preserve manual edits)
+
+    - name: Enable OTA site
       ansible.builtin.file:
         src: /etc/nginx/sites-available/ota
         dest: /etc/nginx/sites-enabled/ota
         state: link
-        force: true
