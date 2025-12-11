@@ -7,9 +7,11 @@
 
 - name: Stop Open Terms Archive applications
   when: pm2_config.stat.exists
-  ansible.builtin.command:
-    cmd: pm2 delete pm2.config.cjs
+  ansible.builtin.shell: pm2 delete pm2.config.cjs 2>/dev/null || true
+  args:
     chdir: /home/{{ ansible_user }}/{{ ota_directory }}
+  environment:
+    PM2_HOME: "{{ ota_pm2_home }}"
   tags:
     - stop
 
@@ -24,8 +26,9 @@
     - start
 
 - name: Generate and enable PM2 startup script
-  ansible.builtin.command:
-    cmd: sudo env PATH=$PATH:/usr/bin pm2 startup systemd --user {{ ansible_user }} --hp /home/{{ ansible_user }}
+  ansible.builtin.shell: |
+    export PM2_HOME="{{ ota_pm2_home }}"
+    sudo env PATH=$PATH:/usr/bin PM2_HOME="{{ ota_pm2_home }}" pm2 startup systemd --user {{ ansible_user }} --hp /home/{{ ansible_user }}
   tags:
     - restart
     - start
@@ -36,6 +39,7 @@
     chdir: /home/{{ ansible_user }}/{{ ota_directory }}
   environment:
     NODE_ENV: production
+    PM2_HOME: "{{ ota_pm2_home }}"
   tags:
     - restart
     - start
@@ -44,6 +48,8 @@
   ansible.builtin.command:
     cmd: pm2 save
     chdir: /home/{{ ansible_user }}/{{ ota_directory }}
+  environment:
+    PM2_HOME: "{{ ota_pm2_home }}"
   tags:
     - restart
     - start
