@@ -1,0 +1,8 @@
+---
+contrib_tool_apps_read_config_only: false
+contrib_tool_source_repository_branch: main
+# Allow override of directory name for multi-instance deployment
+# If not set, extract from repository URL
+contrib_tool_directory: "{{ contrib_tool_directory_override | default(contrib_tool_source_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename | ansible.builtin.splitext | first) }}"
+contrib_tool_collection_id: "{{ contrib_tool_directory }}" # Collection identifier for multi-tenant deployment
+contrib_tool_pm2_home: "/home/{{ ansible_user }}/.pm2-{{ contrib_tool_collection_id }}" # Collection-scoped PM2 home directory

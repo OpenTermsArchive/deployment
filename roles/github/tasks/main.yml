@@ -1,15 +1,32 @@
 ---
-- name: Check if github-bot-private-key file is provided (on local machine)
+- name: Check if instance-specific github-bot-private-key exists in subdirectory
+  ansible.builtin.stat:
+    path: "{{ inventory_dir }}/{{ contrib_tool_config_file | default('') }}/github-bot-private-key"
+  register: github_bot_private_key_instance_subdir
+  delegate_to: localhost
+  when: contrib_tool_config_file is defined
+
+- name: Check if github-bot-private-key file is provided in root (on local machine)
   ansible.builtin.stat:
     path: "{{ inventory_dir }}/github-bot-private-key"
   register: github_bot_private_key_file
   delegate_to: localhost
+  when: not (github_bot_private_key_instance_subdir.stat.exists | default(false))
 
-- name: Add GitHub Bot SSH key (collection-scoped)
-  when: github_bot_private_key_file.stat.exists
+- name: Add GitHub Bot SSH key from instance subdirectory (collection-scoped)
+  when: github_bot_private_key_instance_subdir.stat.exists | default(false)
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/{{ contrib_tool_config_file }}/github-bot-private-key"
+    dest: "{{ ota_github_bot_key }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "600"
+
+- name: Add GitHub Bot SSH key from root (collection-scoped)
+  when: not (github_bot_private_key_instance_subdir.stat.exists | default(false)) and (github_bot_private_key_file.stat.exists | default(false))
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/github-bot-private-key"
-    dest: /home/{{ ansible_user }}/.ssh/ota-github-bot-key-{{ ota_collection_id }}
+    dest: "{{ ota_github_bot_key }}"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "600"
