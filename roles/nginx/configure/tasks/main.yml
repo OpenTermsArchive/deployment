@@ -12,6 +12,15 @@
       ansible.builtin.set_fact:
         nginx_conf_has_server_tokens: "{{ nginx_server_tokens_directive.rc == 0 }}"
 
+    - name: Add global OTA config
+      ansible.builtin.template:
+        src: ./templates/nginx-global.conf.j2
+        dest: /etc/nginx/conf.d/ota-global.conf
+        owner: root
+        group: root
+        mode: "644"
+        force: true  # Update on each deploy
+
     - name: Add collection-specific rate limit config
       ansible.builtin.template:
         src: "{{ ota_nginx_config_template }}"

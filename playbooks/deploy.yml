@@ -2,41 +2,93 @@
 - name: Deploy Open Terms Archive applications
   hosts: all
   tasks:
+    # Detect app type based on which source repository variable is defined
+    - name: Detect application type
+      tags: [always]
+      ansible.builtin.set_fact:
+        app_type: >-
+          {%- if ota_source_repository is defined -%}
+            ota
+          {%- elif contrib_tool_source_repository is defined -%}
+            contrib-tool
+          {%- elif federation_api_source_repository is defined -%}
+            federation-api
+          {%- else -%}
+            unknown
+          {%- endif -%}
+
+    - name: Validate app type
+      tags: [always]
+      ansible.builtin.fail:
+        msg: "Unable to detect app type. Please define one of: ota_source_repository, contrib_tool_source_repository, or federation_api_source_repository in your inventory."
+      when: app_type == 'unknown'
+
+    - name: Display detected app type
+      tags: [always]
+      ansible.builtin.debug:
+        msg: "Detected app type: {{ app_type }}"
+
     - name: Install common required packages
       ansible.builtin.include_role:
         name: common
         apply:
           become: true
 
+    # SSH keys only needed for OTA collections
     - name: Setup GitHub bot SSH key
       ansible.builtin.include_role:
         name: github
+      when: app_type == 'ota'
 
+    # Load app-specific config
     - name: Load OTA applications configs
       tags: [always]
       ansible.builtin.include_role:
         name: ota/apps
-        public: true # ensure that the role's variables and defaults are accessible to the play
+        public: true
         apply:
           tags: [always]
       vars:
         ota_apps_read_config_only: true
+      when: app_type == 'ota'
 
-    - name: Set required variables
+    - name: Load contribution-tool config
+      tags: [always]
+      ansible.builtin.include_role:
+        name: contrib-tool/apps
+        public: true
+        apply:
+          tags: [always]
+      vars:
+        contrib_tool_apps_read_config_only: true
+      when: app_type == 'contrib-tool'
+
+    - name: Load federation-api config
+      tags: [always]
+      ansible.builtin.include_role:
+        name: federation-api/apps
+        public: true
+        apply:
+          tags: [always]
+      vars:
+        federation_api_apps_read_config_only: true
+      when: app_type == 'federation-api'
+
+    # Set app-specific variables
+    - name: Set OTA required variables
       tags: [always]
       ansible.builtin.set_fact:
         chromium_required: "{{ ota_apps_config['@opentermsarchive/engine'] is defined }}"
-        # Skip Debian 11 with ARM architecture as it is not currently supported by MongoDB; see https://www.mongodb.com/docs/manual/installation/#supported-platforms
         mongo_required:
-          "{{ 
-            (ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64')) 
+          "{{
+            (ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64'))
             and (
-              (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo') 
+              (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo')
               or
               (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
-            ) | bool 
+            ) | bool
           }}"
-        
+
         snapshots_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository | default(None) }}"
         snapshots_relative_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path | default(None) }}"
 
@@ -48,6 +100,63 @@
 
         federation_api_basePath: "{{ ota_apps_config['@opentermsarchive/federation-api'].basePath | default(None) }}"
         federation_api_port: "{{ ota_apps_config['@opentermsarchive/federation-api'].port | default(None) }}"
+
+        # Generic variables for PM2 and nginx
+        app_directory: "{{ ota_directory }}"
+        app_collection_id: "{{ ota_collection_id }}"
+        app_pm2_home: "{{ ota_pm2_home }}"
+
+        # Build generic endpoint list for nginx configuration
+        app_endpoints:
+          - name: "collection-api"
+            basePath: "{{ collection_api_basePath }}"
+            port: "{{ collection_api_port }}"
+          - name: "federation-api"
+            basePath: "{{ federation_api_basePath }}"
+            port: "{{ federation_api_port }}"
+      when: app_type == 'ota'
+
+    - name: Set contribution-tool required variables
+      tags: [always]
+      ansible.builtin.set_fact:
+        chromium_required: true  # Contribution-tool needs Chromium for Puppeteer
+        mongo_required: false
+
+        contrib_tool_port: "{{ contrib_tool_apps_config['contrib-tool'].port }}"
+        contrib_tool_basePath: "{{ contrib_tool_apps_config['contrib-tool'].basePath }}"
+
+        # Generic variables for PM2 and nginx
+        app_directory: "{{ contrib_tool_directory }}"
+        app_collection_id: "{{ contrib_tool_collection_id }}"
+        app_pm2_home: "{{ contrib_tool_pm2_home }}"
+
+        # Build generic endpoint list for nginx configuration
+        app_endpoints:
+          - name: "contribution-tool"
+            basePath: "{{ contrib_tool_basePath }}"
+            port: "{{ contrib_tool_port }}"
+      when: app_type == 'contrib-tool'
+
+    - name: Set federation-api required variables
+      tags: [always]
+      ansible.builtin.set_fact:
+        chromium_required: false  # Federation-api doesn't need Chromium
+        mongo_required: false
+
+        federation_api_port: "{{ federation_api_apps_config['@opentermsarchive/federation-api'].port }}"
+        federation_api_basePath: "{{ federation_api_apps_config['@opentermsarchive/federation-api'].basePath }}"
+
+        # Generic variables for PM2 and nginx
+        app_directory: "{{ federation_api_directory }}"
+        app_collection_id: "{{ federation_api_collection_id }}"
+        app_pm2_home: "{{ federation_api_pm2_home }}"
+
+        # Build generic endpoint list for nginx configuration
+        app_endpoints:
+          - name: "federation-api"
+            basePath: "{{ federation_api_basePath }}"
+            port: "{{ federation_api_port }}"
+      when: app_type == 'federation-api'
 
     - name: Install infrastructure
       become: true
@@ -73,17 +182,16 @@
         - name: Install Mongo
           ansible.builtin.include_role:
             name: mongo/install
-          when:
-            - mongo_required
+          when: mongo_required
 
     - name: Configure Mongo
       ansible.builtin.include_role:
         name: mongo/configure
         apply:
           become: true
-      when:
-        - mongo_required
+      when: mongo_required
 
+    # Git databases only for OTA collections
     - name: Setup Git-based versions database
       ansible.builtin.include_role:
         name: ota/git_database
@@ -92,6 +200,7 @@
         ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ versions_relative_path }}
         ota_git_database_branch: main
       when:
+        - app_type == 'ota'
         - versions_repository and versions_relative_path
 
     - name: Setup Git-based snapshots database
@@ -102,23 +211,44 @@
         ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ snapshots_relative_path }}
         ota_git_database_branch: main
       when:
+        - app_type == 'ota'
         - snapshots_repository and snapshots_relative_path
 
+    # Setup application
     - name: Setup OTA applications
       ansible.builtin.include_role:
         name: ota/apps
+      when: app_type == 'ota'
 
-    - name: Manage OTA applications processes
+    - name: Setup contribution-tool application
+      ansible.builtin.include_role:
+        name: contrib-tool/apps
+        public: true  # Make variables available to other roles
+      when: app_type == 'contrib-tool'
+
+    - name: Setup federation-api application
+      ansible.builtin.include_role:
+        name: federation-api/apps
+        public: true  # Make variables available to other roles
+      when: app_type == 'federation-api'
+
+    # Manage PM2 processes (generic)
+    - name: Manage application processes
       ansible.builtin.include_role:
         name: pm2/manage
+      vars:
+        ota_directory: "{{ app_directory }}"
+        ota_pm2_home: "{{ app_pm2_home }}"
       tags: [stop, start, restart]
 
+    # Configure NGINX (generic)
     - name: Configure NGINX
       ansible.builtin.include_role:
         name: nginx/configure
         apply:
           become: true
       vars:
+        ota_collection_id: "{{ app_collection_id }}"
         ota_nginx_config_template: ./templates/nginx.conf.j2
         ota_nginx_reverse_proxy_config_template: ./templates/nginx-reverse-proxy-conf.j2
         ota_nginx_server_config_template: ./templates/nginx-server.conf.j2
