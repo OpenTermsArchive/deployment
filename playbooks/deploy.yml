@@ -161,8 +161,11 @@
         app_directory: "{{ federation_api_directory }}"
         app_collection_id: "{{ federation_api_collection_id }}"
         app_pm2_home: "{{ federation_api_pm2_home }}"
+      when: app_type == 'federation-api'
 
-        # Build generic endpoint list for nginx configuration
+    - name: Set federation-api endpoint list for nginx
+      tags: [always]
+      ansible.builtin.set_fact:
         app_endpoints:
           - name: "federation-api"
             basePath: "{{ federation_api_basePath }}"
