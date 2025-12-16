@@ -1,42 +1,45 @@
 ---
+# Configuration is read from inventory variables (contrib_tool_port, contrib_tool_basePath)
+# instead of a config JSON file, since contribution-tool uses .env files for configuration.
+
+- name: Set contrib-tool config from inventory variables
+  ansible.builtin.set_fact:
+    contrib_tool_apps_config:
+      contrib-tool:
+        port: "{{ contrib_tool_port }}"
+        basePath: "{{ contrib_tool_basePath | default('') }}"
+
 - name: Clone contribution-tool repository
   ansible.builtin.git:
     repo: "{{ contrib_tool_source_repository }}"
     dest: /home/{{ ansible_user }}/{{ contrib_tool_directory }}
     version: "{{ contrib_tool_source_repository_branch }}"
     force: true
-    accept_hostkey: yes
+    accept_hostkey: true
     depth: 1
-
-- name: Read the config file
-  ansible.builtin.command: cat '/home/{{ ansible_user }}/{{ contrib_tool_directory }}/config/{{ contrib_tool_config_file | default("production") }}.json'
-  register: read_config
-
-- name: Save production config data into a variable
-  ansible.builtin.set_fact:
-    contrib_tool_apps_config: "{{ read_config.stdout | from_json }}"
+  when: not contrib_tool_apps_read_config_only | bool
 
 - name: Set up environment variables, install dependencies and build
   when: not contrib_tool_apps_read_config_only | bool
   block:
     - name: Check if instance-specific .env.secrets file exists
       ansible.builtin.stat:
-        path: "{{ inventory_dir }}/{{ contrib_tool_config_file | default('production') }}/.env.secrets"
+        path: "{{ inventory_dir }}/.env.secrets"
       register: env_file_secrets
       delegate_to: localhost
 
     - name: Copy vault-encrypted .env.secrets to server as .env
       ansible.builtin.copy:
-        src: "{{ inventory_dir }}/{{ contrib_tool_config_file | default('production') }}/.env.secrets"
+        src: "{{ inventory_dir }}/.env.secrets"
         dest: /home/{{ ansible_user }}/{{ contrib_tool_directory }}/.env
         force: true
-        mode: "644"
+        mode: "0644"
         decrypt: true  # Automatically decrypt vault file during copy
       when: env_file_secrets.stat.exists
 
     - name: Install dependencies
       ansible.builtin.command:
-        cmd: npm install
+        cmd: npm ci
         chdir: /home/{{ ansible_user }}/{{ contrib_tool_directory }}
 
     - name: Run type check

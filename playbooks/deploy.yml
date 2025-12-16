@@ -34,12 +34,6 @@
         apply:
           become: true
 
-    # SSH keys only needed for OTA collections
-    - name: Setup GitHub bot SSH key
-      ansible.builtin.include_role:
-        name: github
-      when: app_type == 'ota'
-
     # Load app-specific config
     - name: Load OTA applications configs
       tags: [always]
@@ -61,7 +55,9 @@
           tags: [always]
       vars:
         contrib_tool_apps_read_config_only: true
-      when: app_type == 'contrib-tool'
+      when:
+        - app_type == 'contrib-tool'
+        - contrib_tool_port is defined  # Config comes from inventory variables
 
     - name: Load federation-api config
       tags: [always]
@@ -105,8 +101,11 @@
         app_directory: "{{ ota_directory }}"
         app_collection_id: "{{ ota_collection_id }}"
         app_pm2_home: "{{ ota_pm2_home }}"
+      when: app_type == 'ota'
 
-        # Build generic endpoint list for nginx configuration
+    - name: Set OTA endpoint list for nginx
+      tags: [always]
+      ansible.builtin.set_fact:
         app_endpoints:
           - name: "collection-api"
             basePath: "{{ collection_api_basePath }}"
@@ -116,14 +115,25 @@
             port: "{{ federation_api_port }}"
       when: app_type == 'ota'
 
+    # SSH keys only needed for OTA collections (must be after ota/apps config is loaded for ota_github_bot_key)
+    - name: Setup GitHub bot SSH key
+      ansible.builtin.include_role:
+        name: github
+      when: app_type == 'ota'
+
+    - name: Validate contribution-tool required variables
+      tags: [always]
+      ansible.builtin.fail:
+        msg: "contrib_tool_port must be defined in the inventory for contribution-tool deployments"
+      when:
+        - app_type == 'contrib-tool'
+        - contrib_tool_port is not defined
+
     - name: Set contribution-tool required variables
       tags: [always]
       ansible.builtin.set_fact:
         chromium_required: true  # Contribution-tool needs Chromium for Puppeteer
         mongo_required: false
-
-        contrib_tool_port: "{{ contrib_tool_apps_config['contrib-tool'].port }}"
-        contrib_tool_basePath: "{{ contrib_tool_apps_config['contrib-tool'].basePath }}"
 
         # Generic variables for PM2 and nginx
         app_directory: "{{ contrib_tool_directory }}"
@@ -131,9 +141,10 @@
         app_pm2_home: "{{ contrib_tool_pm2_home }}"
 
         # Build generic endpoint list for nginx configuration
+        # Port and basePath come directly from inventory variables
         app_endpoints:
           - name: "contribution-tool"
-            basePath: "{{ contrib_tool_basePath }}"
+            basePath: "{{ contrib_tool_basePath | default('') }}"
             port: "{{ contrib_tool_port }}"
       when: app_type == 'contrib-tool'
 

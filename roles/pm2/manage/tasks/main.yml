@@ -5,7 +5,7 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "0755"
-  become: true  # Need sudo to fix ownership if created by root
+  become: true
   tags:
     - stop
     - start
@@ -42,6 +42,19 @@
   ansible.builtin.shell: |
     export PM2_HOME="{{ ota_pm2_home }}"
     sudo env PATH=$PATH:/usr/bin PM2_HOME="{{ ota_pm2_home }}" pm2 startup systemd --user {{ ansible_user }} --hp /home/{{ ansible_user }}
+  tags:
+    - restart
+    - start
+
+- name: Fix PM2_HOME ownership after startup script generation
+  ansible.builtin.file:
+    path: "{{ ota_pm2_home }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+    recurse: true
+  become: true
   tags:
     - restart
     - start
