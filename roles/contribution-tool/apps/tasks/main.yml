@@ -1,0 +1,56 @@
+---
+# Configuration is read from inventory variables (ota_contribution_tool_port, ota_contribution_tool_base_path)
+# instead of a config JSON file, since contribution-tool uses .env files for configuration.
+
+- name: Set contribution-tool config from inventory variables
+  ansible.builtin.set_fact:
+    ota_contribution_tool_apps_config:
+      contribution-tool:
+        port: "{{ ota_contribution_tool_port }}"
+        basePath: "{{ ota_contribution_tool_base_path | default('') }}"
+
+- name: Clone contribution-tool repository
+  ansible.builtin.git:
+    repo: "{{ ota_contribution_tool_source_repository }}"
+    dest: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
+    version: "{{ ota_contribution_tool_source_repository_branch }}"
+    force: true
+    accept_hostkey: true
+    depth: 1
+  when: not ota_contribution_tool_apps_read_config_only | bool
+
+- name: Set up environment variables, install dependencies and build
+  when: not ota_contribution_tool_apps_read_config_only | bool
+  block:
+    - name: Check if instance-specific .env file exists
+      ansible.builtin.stat:
+        path: "{{ inventory_dir }}/.env"
+      register: ota_env_file
+      delegate_to: localhost
+
+    - name: Copy .env file to server
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/.env"
+        dest: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}/.env
+        force: true
+        mode: "0644"
+      when: ota_env_file.stat.exists
+
+    - name: Install dependencies
+      ansible.builtin.command:
+        cmd: npm ci
+        chdir: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
+
+    - name: Run type check
+      ansible.builtin.command:
+        cmd: npm run type-check
+        chdir: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
+      environment:
+        NODE_ENV: production
+
+    - name: Build contribution-tool
+      ansible.builtin.command:
+        cmd: npm run build
+        chdir: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
+      environment:
+        NODE_ENV: production

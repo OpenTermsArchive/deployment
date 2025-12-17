@@ -1,0 +1,8 @@
+---
+ota_contribution_tool_apps_read_config_only: false
+ota_contribution_tool_source_repository_branch: main
+# Allow override of directory name for multi-instance deployment
+# If not set, extract from repository URL
+ota_contribution_tool_directory: "{{ ota_contribution_tool_directory_override | default(ota_contribution_tool_source_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename | ansible.builtin.splitext | first) }}"
+ota_contribution_tool_collection_id: "{{ ota_contribution_tool_directory }}"
+ota_contribution_tool_pm2_home: "/home/{{ ansible_user }}/.pm2-{{ ota_contribution_tool_collection_id }}"

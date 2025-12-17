@@ -19,20 +19,19 @@
 - name: Set up environment variables and install dependencies
   when: not ota_federation_api_apps_read_config_only | bool
   block:
-    - name: Check if instance-specific .env.secrets file exists
+    - name: Check if instance-specific .env file exists
       ansible.builtin.stat:
-        path: "{{ inventory_dir }}/.env.secrets"
-      register: ota_env_file_secrets
+        path: "{{ inventory_dir }}/.env"
+      register: ota_env_file
       delegate_to: localhost
 
-    - name: Copy vault-encrypted .env.secrets to server as .env
+    - name: Copy .env file to server
       ansible.builtin.copy:
-        src: "{{ inventory_dir }}/.env.secrets"
+        src: "{{ inventory_dir }}/.env"
         dest: /home/{{ ansible_user }}/{{ ota_federation_api_directory }}/.env
         force: true
         mode: "0644"
-        decrypt: true
-      when: ota_env_file_secrets.stat.exists
+      when: ota_env_file.stat.exists
 
     - name: Install dependencies
       ansible.builtin.command:

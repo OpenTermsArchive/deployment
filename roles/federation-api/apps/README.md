@@ -16,6 +16,6 @@ Deploys the OTA Federation API application.
 
 ## Files Required
 
-- `.env.secrets` in inventory directory
+- `.env` in inventory directory
 - `pm2.config.cjs` in inventory directory
 - `config/production.json` in repository

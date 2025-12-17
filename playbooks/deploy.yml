@@ -9,8 +9,8 @@
         ota_app_type: >-
           {%- if ota_source_repository is defined -%}
             ota
-          {%- elif ota_contrib_tool_source_repository is defined -%}
-            contrib-tool
+          {%- elif ota_contribution_tool_source_repository is defined -%}
+            contribution-tool
           {%- elif ota_federation_api_source_repository is defined -%}
             federation-api
           {%- else -%}
@@ -20,7 +20,7 @@
     - name: Validate app type
       tags: [always]
       ansible.builtin.fail:
-        msg: "Unable to detect app type. Please define one of: ota_source_repository, ota_contrib_tool_source_repository, or ota_federation_api_source_repository in your inventory."
+        msg: "Unable to detect app type. Please define one of: ota_source_repository, ota_contribution_tool_source_repository, or ota_federation_api_source_repository in your inventory."
       when: ota_app_type == 'unknown'
 
     - name: Display detected app type
@@ -49,15 +49,15 @@
     - name: Load contribution-tool config
       tags: [always]
       ansible.builtin.include_role:
-        name: contrib-tool/apps
+        name: contribution-tool/apps
         public: true
         apply:
           tags: [always]
       vars:
-        ota_contrib_tool_apps_read_config_only: true
+        ota_contribution_tool_apps_read_config_only: true
       when:
-        - ota_app_type == 'contrib-tool'
-        - ota_contrib_tool_port is defined  # Config comes from inventory variables
+        - ota_app_type == 'contribution-tool'
+        - ota_contribution_tool_port is defined  # Config comes from inventory variables
 
     - name: Load federation-api config
       tags: [always]
@@ -124,10 +124,10 @@
     - name: Validate contribution-tool required variables
       tags: [always]
       ansible.builtin.fail:
-        msg: "ota_contrib_tool_port must be defined in the inventory for contribution-tool deployments"
+        msg: "ota_contribution_tool_port must be defined in the inventory for contribution-tool deployments"
       when:
-        - ota_app_type == 'contrib-tool'
-        - ota_contrib_tool_port is not defined
+        - ota_app_type == 'contribution-tool'
+        - ota_contribution_tool_port is not defined
 
     - name: Set contribution-tool required variables
       tags: [always]
@@ -136,17 +136,17 @@
         ota_mongo_required: false
 
         # Generic variables for PM2 and nginx
-        ota_app_directory: "{{ ota_contrib_tool_directory }}"
-        ota_app_collection_id: "{{ ota_contrib_tool_collection_id }}"
-        ota_app_pm2_home: "{{ ota_contrib_tool_pm2_home }}"
+        ota_app_directory: "{{ ota_contribution_tool_directory }}"
+        ota_app_collection_id: "{{ ota_contribution_tool_collection_id }}"
+        ota_app_pm2_home: "{{ ota_contribution_tool_pm2_home }}"
 
         # Build generic endpoint list for nginx configuration
         # Port and basePath come directly from inventory variables
         ota_app_endpoints:
           - name: "contribution-tool"
-            basePath: "{{ ota_contrib_tool_base_path | default('') }}"
-            port: "{{ ota_contrib_tool_port }}"
-      when: ota_app_type == 'contrib-tool'
+            basePath: "{{ ota_contribution_tool_base_path | default('') }}"
+            port: "{{ ota_contribution_tool_port }}"
+      when: ota_app_type == 'contribution-tool'
 
     - name: Set federation-api required variables
       tags: [always]
@@ -236,9 +236,9 @@
 
     - name: Setup contribution-tool application
       ansible.builtin.include_role:
-        name: contrib-tool/apps
+        name: contribution-tool/apps
         public: true  # Make variables available to other roles
-      when: ota_app_type == 'contrib-tool'
+      when: ota_app_type == 'contribution-tool'
 
     - name: Setup federation-api application
       ansible.builtin.include_role:
