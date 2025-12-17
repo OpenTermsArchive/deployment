@@ -55,9 +55,7 @@
           tags: [always]
       vars:
         ota_contribution_tool_apps_read_config_only: true
-      when:
-        - ota_app_type == 'contribution-tool'
-        - ota_contribution_tool_port is defined  # Config comes from inventory variables
+      when: ota_app_type == 'contribution-tool'
 
     - name: Load federation-api config
       tags: [always]
