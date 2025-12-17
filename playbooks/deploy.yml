@@ -49,7 +49,7 @@
     - name: Load contribution-tool config
       tags: [always]
       ansible.builtin.include_role:
-        name: contribution-tool/apps
+        name: contribution-tool
         public: true
         apply:
           tags: [always]
@@ -62,7 +62,7 @@
     - name: Load federation-api config
       tags: [always]
       ansible.builtin.include_role:
-        name: federation-api/apps
+        name: federation-api
         public: true
         apply:
           tags: [always]
@@ -236,13 +236,13 @@
 
     - name: Setup contribution-tool application
       ansible.builtin.include_role:
-        name: contribution-tool/apps
+        name: contribution-tool
         public: true  # Make variables available to other roles
       when: ota_app_type == 'contribution-tool'
 
     - name: Setup federation-api application
       ansible.builtin.include_role:
-        name: federation-api/apps
+        name: federation-api
         public: true  # Make variables available to other roles
       when: ota_app_type == 'federation-api'
 
