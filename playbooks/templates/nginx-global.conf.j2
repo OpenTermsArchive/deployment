@@ -8,7 +8,7 @@
 # vulnerabilities or exploits that are present in specific versions.
 # Disabling server_tokens can help to mitigate this risk by removing the NGINX
 # version number from the response headers.
-{% if not nginx_conf_has_server_tokens | default(false) %}
+{% if not ota_nginx_conf_has_server_tokens | default(false) %}
 server_tokens off;
 {% endif %}
 

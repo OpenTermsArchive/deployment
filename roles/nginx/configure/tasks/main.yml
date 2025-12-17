@@ -4,13 +4,13 @@
   block:
     - name: Check if server_tokens is already configured
       ansible.builtin.command: grep -E "^\s*server_tokens" /etc/nginx/nginx.conf
-      register: nginx_server_tokens_directive
+      register: ota_nginx_server_tokens_directive
       failed_when: false
       changed_when: false
 
     - name: Share server_tokens configuration state
       ansible.builtin.set_fact:
-        nginx_conf_has_server_tokens: "{{ nginx_server_tokens_directive.rc == 0 }}"
+        ota_nginx_conf_has_server_tokens: "{{ ota_nginx_server_tokens_directive.rc == 0 }}"
 
     - name: Add global OTA config
       ansible.builtin.template:
@@ -18,17 +18,17 @@
         dest: /etc/nginx/conf.d/ota-global.conf
         owner: root
         group: root
-        mode: "644"
-        force: true  # Update on each deploy
+        mode: "0644"
+        force: true
 
     - name: Add collection-specific rate limit config
       ansible.builtin.template:
         src: "{{ ota_nginx_config_template }}"
-        dest: /etc/nginx/conf.d/ota-rate-limit-{{ ota_collection_id }}.conf
+        dest: /etc/nginx/conf.d/ota-rate-limit-{{ ota_nginx_collection_id }}.conf
         owner: root
         group: root
-        mode: "644"
-        force: true  # Update on each deploy
+        mode: "0644"
+        force: true
 
     - name: Ensure ota.d directory exists
       ansible.builtin.file:
@@ -36,7 +36,7 @@
         state: directory
         owner: root
         group: root
-        mode: "755"
+        mode: "0755"
 
 - name: Configure NGINX for collection
   notify: Restart NGINX
@@ -44,9 +44,9 @@
     - name: Add collection-specific location config
       ansible.builtin.template:
         src: "{{ ota_nginx_reverse_proxy_config_template }}"
-        dest: /etc/nginx/ota.d/{{ ota_collection_id }}.conf
-        force: true  # Update on each deploy
-        mode: "644"
+        dest: /etc/nginx/ota.d/{{ ota_nginx_collection_id }}.conf
+        force: true
+        mode: "0644"
 
     - name: Ensure OTA server block exists in sites-available
       ansible.builtin.template:
@@ -54,8 +54,8 @@
         dest: /etc/nginx/sites-available/ota
         owner: root
         group: root
-        mode: "644"
-        force: false  # Don't overwrite if exists (preserve manual edits)
+        mode: "0644"
+        force: false
 
     - name: Enable OTA site
       ansible.builtin.file:

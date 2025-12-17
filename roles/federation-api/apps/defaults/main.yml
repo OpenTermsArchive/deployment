@@ -1,8 +1,8 @@
 ---
-federation_api_apps_read_config_only: false
-federation_api_source_repository_branch: main
+ota_federation_api_apps_read_config_only: false
+ota_federation_api_source_repository_branch: main
 # Allow override of directory name for multi-instance deployment
 # If not set, extract from repository URL
-federation_api_directory: "{{ federation_api_directory_override | default(federation_api_source_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename | ansible.builtin.splitext | first) }}"
-federation_api_collection_id: "{{ federation_api_directory }}" # Collection identifier for multi-tenant deployment
-federation_api_pm2_home: "/home/{{ ansible_user }}/.pm2-{{ federation_api_collection_id }}" # Collection-scoped PM2 home directory
+ota_federation_api_directory: "{{ ota_federation_api_directory_override | default(ota_federation_api_source_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename | ansible.builtin.splitext | first) }}"
+ota_federation_api_collection_id: "{{ ota_federation_api_directory }}"
+ota_federation_api_pm2_home: "/home/{{ ansible_user }}/.pm2-{{ ota_federation_api_collection_id }}"

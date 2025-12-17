@@ -1,40 +1,40 @@
 ---
 - name: Clone federation-api repository
   ansible.builtin.git:
-    repo: "{{ federation_api_source_repository }}"
-    dest: /home/{{ ansible_user }}/{{ federation_api_directory }}
-    version: "{{ federation_api_source_repository_branch }}"
+    repo: "{{ ota_federation_api_source_repository }}"
+    dest: /home/{{ ansible_user }}/{{ ota_federation_api_directory }}
+    version: "{{ ota_federation_api_source_repository_branch }}"
     force: true
-    accept_hostkey: yes
+    accept_hostkey: true
     depth: 1
 
 - name: Read the config file
-  ansible.builtin.command: cat '/home/{{ ansible_user }}/{{ federation_api_directory }}/config/{{ federation_api_config_file | default("production") }}.json'
-  register: read_config
+  ansible.builtin.command: cat '/home/{{ ansible_user }}/{{ ota_federation_api_directory }}/config/{{ ota_federation_api_config_file | default("production") }}.json'
+  register: ota_read_config
 
 - name: Save production config data into a variable
   ansible.builtin.set_fact:
-    federation_api_apps_config: "{{ read_config.stdout | from_json }}"
+    ota_federation_api_apps_config: "{{ ota_read_config.stdout | from_json }}"
 
 - name: Set up environment variables and install dependencies
-  when: not federation_api_apps_read_config_only | bool
+  when: not ota_federation_api_apps_read_config_only | bool
   block:
     - name: Check if instance-specific .env.secrets file exists
       ansible.builtin.stat:
-        path: "{{ inventory_dir }}/{{ federation_api_config_file | default('production') }}/.env.secrets"
-      register: env_file_secrets
+        path: "{{ inventory_dir }}/.env.secrets"
+      register: ota_env_file_secrets
       delegate_to: localhost
 
     - name: Copy vault-encrypted .env.secrets to server as .env
       ansible.builtin.copy:
-        src: "{{ inventory_dir }}/{{ federation_api_config_file | default('production') }}/.env.secrets"
-        dest: /home/{{ ansible_user }}/{{ federation_api_directory }}/.env
+        src: "{{ inventory_dir }}/.env.secrets"
+        dest: /home/{{ ansible_user }}/{{ ota_federation_api_directory }}/.env
         force: true
-        mode: "644"
-        decrypt: true  # Automatically decrypt vault file during copy
-      when: env_file_secrets.stat.exists
+        mode: "0644"
+        decrypt: true
+      when: ota_env_file_secrets.stat.exists
 
     - name: Install dependencies
       ansible.builtin.command:
-        cmd: npm install
-        chdir: /home/{{ ansible_user }}/{{ federation_api_directory }}
+        cmd: npm ci
+        chdir: /home/{{ ansible_user }}/{{ ota_federation_api_directory }}

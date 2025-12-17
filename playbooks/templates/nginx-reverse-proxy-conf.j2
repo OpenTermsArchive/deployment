@@ -1,12 +1,12 @@
 {{ ansible_managed | comment }}
 
-# Collection: {{ ota_collection_id }}
+# Collection: {{ ota_nginx_collection_id }}
 
-{% for endpoint in app_endpoints %}
+{% for endpoint in ota_nginx_endpoints %}
 {% if endpoint.basePath and endpoint.port %}
 location {{ endpoint.basePath }} {
     # Allowing for a `burst` of requests beyond the specified rate limit. The `nodelay` parameter ensures that excessive requests beyond the burst limit are immediately rejected with a 429 error response instead of being queued. See https://www.nginx.com/blog/rate-limiting-nginx/.
-    limit_req zone=ota_limited_{{ ota_collection_id }} burst={{ ota_rate_limit_burst | default(5) }} nodelay;
+    limit_req zone=ota_limited_{{ ota_nginx_collection_id }} burst={{ ota_rate_limit_burst | default(5) }} nodelay;
     proxy_pass http://localhost:{{ endpoint.port }};
     proxy_redirect off;
     proxy_set_header Host $host;
