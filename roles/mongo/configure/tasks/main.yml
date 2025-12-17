@@ -6,13 +6,13 @@
       ansible.builtin.copy:
         src: mongod.conf
         dest: /etc/mongod.conf
-        mode: "644"
+        mode: "0644"
 
     - name: Create data directory
       ansible.builtin.file:
         path: /mnt/disk/mongodb
         state: directory
-        mode: "744"
+        mode: "0755"
 
     - name: Set database files permissions
       ansible.builtin.file:

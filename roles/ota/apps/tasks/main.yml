@@ -35,5 +35,5 @@
         src: "{{ inventory_dir }}/.env"
         dest: /home/{{ ansible_user }}/{{ ota_directory }}/.env
         force: true
-        mode: "644"
+        mode: "0644"
       when: env_file.stat.exists
