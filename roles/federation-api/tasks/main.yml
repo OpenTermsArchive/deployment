@@ -5,7 +5,6 @@
     dest: /home/{{ ansible_user }}/{{ ota_federation_api_directory }}
     version: "{{ ota_federation_api_source_repository_branch }}"
     force: true
-    accept_hostkey: true
     depth: 1
 
 - name: Read the config file

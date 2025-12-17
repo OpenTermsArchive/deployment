@@ -15,7 +15,6 @@
     dest: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
     version: "{{ ota_contribution_tool_source_repository_branch }}"
     force: true
-    accept_hostkey: true
     depth: 1
   when: not ota_contribution_tool_apps_read_config_only | bool
 
