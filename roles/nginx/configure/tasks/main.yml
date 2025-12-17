@@ -55,7 +55,7 @@
         owner: root
         group: root
         mode: "0644"
-        force: false
+        force: true
 
     - name: Enable OTA site
       ansible.builtin.file:
