@@ -94,9 +94,6 @@
         ota_collection_api_base_path: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath | default(None) }}"
         ota_collection_api_port: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].port | default(None) }}"
 
-        ota_federation_api_base_path: "{{ ota_apps_config['@opentermsarchive/federation-api'].basePath | default(None) }}"
-        ota_federation_api_port: "{{ ota_apps_config['@opentermsarchive/federation-api'].port | default(None) }}"
-
         # Generic variables for PM2 and nginx
         ota_app_directory: "{{ ota_directory }}"
         ota_app_collection_id: "{{ ota_collection_id }}"
@@ -110,9 +107,6 @@
           - name: "collection-api"
             basePath: "{{ ota_collection_api_base_path }}"
             port: "{{ ota_collection_api_port }}"
-          - name: "federation-api"
-            basePath: "{{ ota_federation_api_base_path }}"
-            port: "{{ ota_federation_api_port }}"
       when: ota_app_type == 'ota'
 
     # SSH keys only needed for OTA collections (must be after ota/apps config is loaded for ota_github_bot_key)
