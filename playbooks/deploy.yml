@@ -8,7 +8,7 @@
       ansible.builtin.set_fact:
         ota_app_type: >-
           {%- if ota_source_repository is defined -%}
-            ota
+            ota-collection
           {%- elif ota_contribution_tool_source_repository is defined -%}
             contribution-tool
           {%- elif ota_federation_api_source_repository is defined -%}
@@ -38,18 +38,18 @@
     - name: Load OTA applications configs
       tags: [always]
       ansible.builtin.include_role:
-        name: ota/apps
+        name: ota/collection
         public: true
         apply:
           tags: [always]
       vars:
         ota_apps_read_config_only: true
-      when: ota_app_type == 'ota'
+      when: ota_app_type == 'ota-collection'
 
     - name: Load contribution-tool config
       tags: [always]
       ansible.builtin.include_role:
-        name: contribution-tool
+        name: ota/contribution-tool
         public: true
         apply:
           tags: [always]
@@ -60,7 +60,7 @@
     - name: Load federation-api config
       tags: [always]
       ansible.builtin.include_role:
-        name: federation-api
+        name: ota/federation-api
         public: true
         apply:
           tags: [always]
@@ -96,7 +96,7 @@
         ota_app_directory: "{{ ota_directory }}"
         ota_app_collection_id: "{{ ota_collection_id }}"
         ota_app_pm2_home: "{{ ota_pm2_home }}"
-      when: ota_app_type == 'ota'
+      when: ota_app_type == 'ota-collection'
 
     - name: Set OTA endpoint list for nginx
       tags: [always]
@@ -105,13 +105,13 @@
           - name: "collection-api"
             basePath: "{{ ota_collection_api_base_path }}"
             port: "{{ ota_collection_api_port }}"
-      when: ota_app_type == 'ota'
+      when: ota_app_type == 'ota-collection'
 
     # SSH keys only needed for OTA collections (must be after ota/apps config is loaded for ota_github_bot_key)
     - name: Setup GitHub bot SSH key
       ansible.builtin.include_role:
         name: github
-      when: ota_app_type == 'ota'
+      when: ota_app_type == 'ota-collection'
 
     - name: Set contribution-tool required variables
       tags: [always]
@@ -198,7 +198,7 @@
         ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_versions_relative_path }}
         ota_git_database_branch: main
       when:
-        - ota_app_type == 'ota'
+        - ota_app_type == 'ota-collection'
         - ota_versions_repository and ota_versions_relative_path
 
     - name: Setup Git-based snapshots database
@@ -209,24 +209,24 @@
         ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_snapshots_relative_path }}
         ota_git_database_branch: main
       when:
-        - ota_app_type == 'ota'
+        - ota_app_type == 'ota-collection'
         - ota_snapshots_repository and ota_snapshots_relative_path
 
     # Setup application
     - name: Setup OTA applications
       ansible.builtin.include_role:
-        name: ota/apps
-      when: ota_app_type == 'ota'
+        name: ota/collection
+      when: ota_app_type == 'ota-collection'
 
     - name: Setup contribution-tool application
       ansible.builtin.include_role:
-        name: contribution-tool
+        name: ota/contribution-tool
         public: true  # Make variables available to other roles
       when: ota_app_type == 'contribution-tool'
 
     - name: Setup federation-api application
       ansible.builtin.include_role:
-        name: federation-api
+        name: ota/federation-api
         public: true  # Make variables available to other roles
       when: ota_app_type == 'federation-api'
 
