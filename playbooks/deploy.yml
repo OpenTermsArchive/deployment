@@ -113,14 +113,6 @@
         name: github
       when: ota_app_type == 'ota'
 
-    - name: Validate contribution-tool required variables
-      tags: [always]
-      ansible.builtin.fail:
-        msg: "ota_contribution_tool_port must be defined in the inventory for contribution-tool deployments"
-      when:
-        - ota_app_type == 'contribution-tool'
-        - ota_contribution_tool_port is not defined
-
     - name: Set contribution-tool required variables
       tags: [always]
       ansible.builtin.set_fact:
@@ -133,10 +125,10 @@
         ota_app_pm2_home: "{{ ota_contribution_tool_pm2_home }}"
 
         # Build generic endpoint list for nginx configuration
-        # Port and basePath come directly from inventory variables
+        # Port and basePath are read from .env file by the contribution-tool role
         ota_app_endpoints:
           - name: "contribution-tool"
-            basePath: "{{ ota_contribution_tool_base_path | default('') }}"
+            basePath: "{{ ota_contribution_tool_base_path }}"
             port: "{{ ota_contribution_tool_port }}"
       when: ota_app_type == 'contribution-tool'
 
