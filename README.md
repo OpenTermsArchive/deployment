@@ -83,6 +83,11 @@ all:
 The playbook will automatically derive:
 - `ota_directory`: The directory where the code will be deployed (extracted from the repository URL, e.g., `demo-declarations`)
 - `ota_collection_id`: The collection identifier used for PM2 and nginx configuration (directory name without the `-declarations` suffix, e.g., `demo`)
+- `ota_pm2_home`: The PM2 home directory for isolating PM2 processes (e.g., `/home/debian/.pm2-demo`)
+
+#### Multi-tenant deployment
+
+Multiple collections can be deployed to the same server. Each collection will have its own isolated PM2 instance and nginx configuration. Simply define multiple hosts with different `ota_collection_repository` values, or deploy collections sequentially to the same host.
 
 #### Changes on an existing deployment
 
@@ -199,9 +204,9 @@ ansible-playbook ../playbooks/deploy.yml
 vagrant ssh # use "vagrant" as password
 ```
 
-- Check that everything works as intended within the virtual machine. Depending on the nature of changes made, you can monitor logs or execute commands to validate functionality:
+- Check that everything works as intended within the virtual machine. Depending on the nature of changes made, you can monitor logs or execute commands to validate functionality. Note that you need to set the `PM2_HOME` environment variable to the collection-specific PM2 home directory:
 ```sh
-pm2 logs
+PM2_HOME=~/.pm2-demo pm2 logs
 ```
 
 #### Troubleshooting
