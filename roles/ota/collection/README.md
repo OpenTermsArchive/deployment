@@ -1,6 +1,6 @@
-# ota/apps
+# ota/collection
 
-Deploys OTA Engine collections.
+Deploys OTA engine collections.
 
 ## Variables
 

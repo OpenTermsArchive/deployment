@@ -38,7 +38,7 @@
         apply:
           become: true
 
-    # Ota-collection: configuration & setup
+    # OTA-collection: configuration & setup
     - name: Configure OTA collection
       tags: [always]
       when: ota_app_type == 'ota-collection'
@@ -176,7 +176,7 @@
           become: true
       when: ota_mongo_required
 
-    # Ota-collection: application deployment
+    # OTA-collection: application deployment
     - name: Deploy OTA collection application
       when: ota_app_type == 'ota-collection'
       block:

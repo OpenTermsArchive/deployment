@@ -1,5 +1,5 @@
 ---
-- name: Configure NGINX for OTA
+- name: Configure NGINX
   notify: Restart NGINX
   block:
     - name: Check if server_tokens is already configured
@@ -45,8 +45,8 @@
       ansible.builtin.template:
         src: "{{ ota_nginx_reverse_proxy_config_template }}"
         dest: /etc/nginx/ota.d/{{ ota_nginx_collection_id }}.conf
-        force: true
         mode: "0644"
+        force: true
 
     - name: Ensure OTA server block exists in sites-available
       ansible.builtin.template:
@@ -57,8 +57,9 @@
         mode: "0644"
         force: true
 
-    - name: Enable OTA site
+    - name: Enable OTA collection site
       ansible.builtin.file:
         src: /etc/nginx/sites-available/ota
         dest: /etc/nginx/sites-enabled/ota
         state: link
+        force: true
