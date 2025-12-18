@@ -50,13 +50,6 @@
          | default([''], true)
          | first }}
 
-- name: Set contribution-tool config from .env values
-  ansible.builtin.set_fact:
-    ota_contribution_tool_apps_config:
-      contribution-tool:
-        port: "{{ ota_contribution_tool_port }}"
-        basePath: "{{ ota_contribution_tool_base_path }}"
-
 - name: Clone contribution-tool repository
   ansible.builtin.git:
     repo: "{{ ota_contribution_tool_repository }}"
