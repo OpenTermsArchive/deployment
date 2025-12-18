@@ -15,6 +15,6 @@ Deploys OTA engine collections.
 
 ## Files Required
 
-- `.env` or `.env.secrets` in inventory directory
-- `pm2.config.cjs` in inventory directory
-- `github-bot-private-key` in inventory directory (for SSH repos)
+- `pm2.config.cjs` in inventory directory (required)
+- `.env` in inventory directory (optional)
+- `github-bot-private-key` in inventory directory (required for SSH repos)
