@@ -1,5 +1,5 @@
 ---
-ota_apps_read_config_only: false
+ota_collection_read_config_only: false
 ota_collection_repository_branch: main
 ota_directory: "{{ ota_collection_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename | ansible.builtin.splitext | first }}" # extract the repository name from the URL
 ota_collection_id: "{{ ota_directory | regex_replace('-declarations$', '') }}"

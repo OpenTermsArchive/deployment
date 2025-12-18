@@ -1,5 +1,5 @@
 {{ ansible_managed | comment }}
 
-# Collection: {{ ota_nginx_collection_id }}
-# Configure the collection-specific rate limiting zone to prevent DDoS attacks.
-limit_req_zone $binary_remote_addr zone=ota_limited_{{ ota_nginx_collection_id }}:{{ ota_rate_limit_zone_size | default('10m') }} rate={{ ota_rate_limit_rate | default('10r/s') }};
+# Application: {{ ota_nginx_app_id }}
+# Configure app-specific rate limiting zone to prevent DDoS attacks.
+limit_req_zone $binary_remote_addr zone=ota_limited_{{ ota_nginx_app_id }}:{{ ota_rate_limit_zone_size | default('10m') }} rate={{ ota_rate_limit_rate | default('10r/s') }};

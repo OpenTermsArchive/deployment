@@ -1,5 +1,5 @@
 ---
-ota_federation_api_apps_read_config_only: false
+ota_federation_api_read_config_only: false
 ota_federation_api_instance_repository_branch: main
 # Allow override of directory name for multi-instance deployment
 # If not set, extract from repository URL

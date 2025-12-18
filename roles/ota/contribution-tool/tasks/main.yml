@@ -57,10 +57,10 @@
     version: "{{ ota_contribution_tool_repository_branch }}"
     force: true
     depth: 1
-  when: not ota_contribution_tool_apps_read_config_only | bool
+  when: not ota_contribution_tool_read_config_only | bool
 
 - name: Set up environment variables, install dependencies and build
-  when: not ota_contribution_tool_apps_read_config_only | bool
+  when: not ota_contribution_tool_read_config_only | bool
   block:
     - name: Copy .env file to server (decrypts if vault-encrypted)
       ansible.builtin.copy:

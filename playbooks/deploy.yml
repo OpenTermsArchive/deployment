@@ -50,36 +50,36 @@
             apply:
               tags: [always]
           vars:
-            ota_apps_read_config_only: true
+            ota_collection_read_config_only: true
 
         - name: Set OTA collection variables
           ansible.builtin.set_fact:
-            ota_chromium_required: "{{ ota_apps_config['@opentermsarchive/engine'] is defined }}"
+            ota_chromium_required: "{{ ota_collection_config['@opentermsarchive/engine'] is defined }}"
             ota_mongo_required: >-
               {{
                 (ansible_distribution != 'Debian' or (ansible_distribution == 'Debian' and ansible_facts['architecture'] != 'aarch64'))
                 and (
-                  (ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined
-                   and ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo')
+                  (ota_collection_config['@opentermsarchive/engine'].recorder.versions.storage.type is defined
+                   and ota_collection_config['@opentermsarchive/engine'].recorder.versions.storage.type == 'mongo')
                   or
-                  (ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined
-                   and ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
+                  (ota_collection_config['@opentermsarchive/engine'].recorder.snapshots.storage.type is defined
+                   and ota_collection_config['@opentermsarchive/engine'].recorder.snapshots.storage.type == 'mongo')
                 ) | bool
               }}
-            ota_snapshots_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository | default(None) }}"
-            ota_snapshots_relative_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path | default(None) }}"
-            ota_versions_repository: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository | default(None) }}"
-            ota_versions_relative_path: "{{ ota_apps_config['@opentermsarchive/engine'].recorder.versions.storage.git.path | default(None) }}"
-            ota_collection_api_base_path: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath | default(None) }}"
-            ota_collection_api_port: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].port | default(None) }}"
+            ota_snapshots_repository: "{{ ota_collection_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.repository | default(None) }}"
+            ota_snapshots_relative_path: "{{ ota_collection_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path | default(None) }}"
+            ota_versions_repository: "{{ ota_collection_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository | default(None) }}"
+            ota_versions_relative_path: "{{ ota_collection_config['@opentermsarchive/engine'].recorder.versions.storage.git.path | default(None) }}"
+            ota_collection_api_base_path: "{{ ota_collection_config['@opentermsarchive/engine']['collection-api'].basePath | default(None) }}"
+            ota_collection_api_port: "{{ ota_collection_config['@opentermsarchive/engine']['collection-api'].port | default(None) }}"
             # Generic variables for pm2 and nginx
             ota_app_directory: "{{ ota_directory }}"
             ota_app_collection_id: "{{ ota_collection_id }}"
             ota_app_pm2_home: "{{ ota_pm2_home }}"
             ota_app_endpoints:
               - name: "collection-api"
-                basePath: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].basePath | default(None) }}"
-                port: "{{ ota_apps_config['@opentermsarchive/engine']['collection-api'].port | default(None) }}"
+                basePath: "{{ ota_collection_config['@opentermsarchive/engine']['collection-api'].basePath | default(None) }}"
+                port: "{{ ota_collection_config['@opentermsarchive/engine']['collection-api'].port | default(None) }}"
 
         - name: Setup GitHub bot SSH key
           ansible.builtin.include_role:
@@ -97,7 +97,7 @@
             apply:
               tags: [always]
           vars:
-            ota_contribution_tool_apps_read_config_only: true
+            ota_contribution_tool_read_config_only: true
 
         - name: Set contribution-tool variables
           ansible.builtin.set_fact:
@@ -125,22 +125,22 @@
             apply:
               tags: [always]
           vars:
-            ota_federation_api_apps_read_config_only: true
+            ota_federation_api_read_config_only: true
 
         - name: Set federation-api variables
           ansible.builtin.set_fact:
             ota_chromium_required: false
             ota_mongo_required: false
-            ota_federation_api_port: "{{ ota_federation_api_apps_config['@opentermsarchive/federation-api'].port }}"
-            ota_federation_api_base_path: "{{ ota_federation_api_apps_config['@opentermsarchive/federation-api'].basePath }}"
+            ota_federation_api_port: "{{ ota_federation_api_config['@opentermsarchive/federation-api'].port }}"
+            ota_federation_api_base_path: "{{ ota_federation_api_config['@opentermsarchive/federation-api'].basePath }}"
             # Generic variables for pm2 and nginx
             ota_app_directory: "{{ ota_federation_api_directory }}"
             ota_app_collection_id: "{{ ota_federation_api_collection_id }}"
             ota_app_pm2_home: "{{ ota_federation_api_pm2_home }}"
             ota_app_endpoints:
               - name: "federation-api"
-                basePath: "{{ ota_federation_api_apps_config['@opentermsarchive/federation-api'].basePath }}"
-                port: "{{ ota_federation_api_apps_config['@opentermsarchive/federation-api'].port }}"
+                basePath: "{{ ota_federation_api_config['@opentermsarchive/federation-api'].basePath }}"
+                port: "{{ ota_federation_api_config['@opentermsarchive/federation-api'].port }}"
 
     # Infrastructure installation (common)
     - name: Install infrastructure
@@ -235,7 +235,7 @@
         apply:
           become: true
       vars:
-        ota_nginx_collection_id: "{{ ota_app_collection_id }}"
+        ota_nginx_app_id: "{{ ota_app_collection_id }}"
         ota_nginx_endpoints: "{{ ota_app_endpoints }}"
         ota_nginx_config_template: ./templates/nginx.conf.j2
         ota_nginx_reverse_proxy_config_template: ./templates/nginx-reverse-proxy-conf.j2

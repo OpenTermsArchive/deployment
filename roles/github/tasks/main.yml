@@ -5,7 +5,7 @@
   register: github_bot_private_key_file
   delegate_to: localhost
 
-- name: Add GitHub Bot SSH key (collection-scoped)
+- name: Add GitHub Bot SSH key (app-scoped)
   when: github_bot_private_key_file.stat.exists | default(false)
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/github-bot-private-key"

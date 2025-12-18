@@ -6,7 +6,7 @@ Configures NGINX reverse proxy for OTA applications.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `ota_nginx_collection_id` | Collection identifier for config files | Required |
+| `ota_nginx_app_id` | Application identifier for config files | Required |
 | `ota_nginx_endpoints` | List of endpoints with basePath and port | Required |
 | `ota_nginx_config_template` | Rate limit config template path | Required |
 | `ota_nginx_reverse_proxy_config_template` | Reverse proxy config template path | Required |

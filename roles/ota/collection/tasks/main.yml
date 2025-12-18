@@ -14,10 +14,10 @@
 
 - name: Save production config data into a variable
   ansible.builtin.set_fact:
-    ota_apps_config: "{{ read_config.stdout | from_json }}"
+    ota_collection_config: "{{ read_config.stdout | from_json }}"
 
 - name: Set up environment variables and install dependencies
-  when: not ota_apps_read_config_only | bool
+  when: not ota_collection_read_config_only | bool
   block:
     - name: Install dependencies
       ansible.builtin.command:

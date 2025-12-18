@@ -21,10 +21,10 @@
         mode: "0644"
         force: true
 
-    - name: Add collection-specific rate limit config
+    - name: Add app-specific rate limit config
       ansible.builtin.template:
         src: "{{ ota_nginx_config_template }}"
-        dest: /etc/nginx/conf.d/ota-rate-limit-{{ ota_nginx_collection_id }}.conf
+        dest: /etc/nginx/conf.d/ota-rate-limit-{{ ota_nginx_app_id }}.conf
         owner: root
         group: root
         mode: "0644"
@@ -38,13 +38,13 @@
         group: root
         mode: "0755"
 
-- name: Configure NGINX for collection
+- name: Configure NGINX for application
   notify: Restart NGINX
   block:
-    - name: Add collection-specific location config
+    - name: Add app-specific location config
       ansible.builtin.template:
         src: "{{ ota_nginx_reverse_proxy_config_template }}"
-        dest: /etc/nginx/ota.d/{{ ota_nginx_collection_id }}.conf
+        dest: /etc/nginx/ota.d/{{ ota_nginx_app_id }}.conf
         mode: "0644"
         force: true
 
@@ -57,7 +57,7 @@
         mode: "0644"
         force: true
 
-    - name: Enable OTA collection site
+    - name: Enable OTA site
       ansible.builtin.file:
         src: /etc/nginx/sites-available/ota
         dest: /etc/nginx/sites-enabled/ota
