@@ -9,7 +9,7 @@
   when: github_bot_private_key_file.stat.exists | default(false)
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/github-bot-private-key"
-    dest: "{{ ota_github_bot_key }}"
+    dest: "{{ ota_github_bot_key_path }}"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "0600"

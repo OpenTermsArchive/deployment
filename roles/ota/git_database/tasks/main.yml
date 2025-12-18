@@ -6,7 +6,7 @@
     dest: "{{ ota_git_database_directory }}"
     clone: false
     update: false
-    key_file: "{{ ota_github_bot_key }}"
+    key_file: "{{ ota_github_bot_key_path }}"
   # the `before` property of the return value can tell us if the repository has been cloned already or not,
   # see <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html#return-values>
   register: existing_repository
@@ -17,12 +17,12 @@
     repo: "{{ ota_git_database_repository }}"
     version: "{{ ota_git_database_branch }}"
     dest: "{{ ota_git_database_directory }}"
-    key_file: "{{ ota_github_bot_key }}"
+    key_file: "{{ ota_github_bot_key_path }}"
 
 - name: Configure {{ ota_git_database_directory }} repository to use the GitHub Bot SSH Key
   community.general.git_config:
     name: core.sshCommand
-    value: ssh -i '{{ ota_github_bot_key }}'
+    value: ssh -i '{{ ota_github_bot_key_path }}'
     scope: local
     repo: "{{ ota_git_database_directory }}"
 
@@ -38,4 +38,4 @@
     dest: "{{ ota_git_database_directory }}"
     update: true
     force: true # discard any modified files
-    key_file: "{{ ota_github_bot_key }}"
+    key_file: "{{ ota_github_bot_key_path }}"

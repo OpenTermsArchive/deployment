@@ -11,7 +11,7 @@ Deploys OTA engine collections.
 | `ota_directory` | Directory name on server | Extracted from repo URL |
 | `ota_collection_id` | Collection identifier | Same as directory |
 | `ota_pm2_home` | PM2 home directory | `/home/{{ ansible_user }}/.pm2-{{ ota_collection_id }}` |
-| `ota_github_bot_key` | SSH key path | `/home/{{ ansible_user }}/.ssh/ota-github-bot-key-{{ ota_collection_id }}` |
+| `ota_github_bot_key_path` | SSH key path | `/home/{{ ansible_user }}/.ssh/ota-github-bot-key-{{ ota_collection_id }}` |
 
 ## Files Required
 

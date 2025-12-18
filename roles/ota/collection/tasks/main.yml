@@ -5,7 +5,7 @@
     dest: /home/{{ ansible_user }}/{{ ota_directory }}
     version: "{{ ota_collection_repository_branch }}"
     force: true
-    key_file: "{{ ota_github_bot_key }}"
+    key_file: "{{ ota_github_bot_key_path }}"
     depth: 1
 
 - name: Read the production config
