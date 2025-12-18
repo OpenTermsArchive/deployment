@@ -2,6 +2,23 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [major]
+
+> Development of this release was supported by [Reset Tech](https://www.reset.tech).
+
+### Added
+
+- Support multi-tenant deployment on a single server, with isolated PM2 instances, nginx configurations, and SSH keys per collection
+- Add configurable rate limiting for API requests through `ota_rate_limit_rate` and `ota_rate_limit_burst` inventory variables
+
+### Changed
+
+- **Breaking:** Rename `ota_source_repository` to `ota_collection_repository`
+- **Breaking:** Rename `ota_source_repository_branch` to `ota_collection_repository_branch`
+- Scope PM2 home directory per collection (`~/.pm2-{collection_id}`)
+- Scope GitHub bot SSH keys per collection (`~/.ssh/ota-github-bot-key-{collection_id}`)
+- Scope nginx configuration files per collection
+
 ## 2.1.1 - 2025-11-28
 
 _Full changeset and discussions: [#57](https://github.com/OpenTermsArchive/deployment/pull/57)._
