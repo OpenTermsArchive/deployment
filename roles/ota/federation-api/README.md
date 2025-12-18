@@ -6,8 +6,8 @@ Deploys the OTA Federation API application.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `ota_federation_api_source_repository` | Repository URL | Required |
-| `ota_federation_api_source_repository_branch` | Git branch | `main` |
+| `ota_federation_api_instance_repository` | Repository URL | Required |
+| `ota_federation_api_instance_repository_branch` | Git branch | `main` |
 | `ota_federation_api_directory` | Directory name on server | Extracted from repo URL |
 | `ota_federation_api_directory_override` | Override directory name | None |
 | `ota_federation_api_config_file` | Config file name (without .json) | `production` |

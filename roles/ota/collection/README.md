@@ -6,8 +6,8 @@ Deploys OTA Engine collections.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `ota_source_repository` | Repository URL | Required |
-| `ota_source_repository_branch` | Git branch | `main` |
+| `ota_collection_repository` | Repository URL | Required |
+| `ota_collection_repository_branch` | Git branch | `main` |
 | `ota_directory` | Directory name on server | Extracted from repo URL |
 | `ota_collection_id` | Collection identifier | Same as directory |
 | `ota_pm2_home` | PM2 home directory | `/home/{{ ansible_user }}/.pm2-{{ ota_collection_id }}` |

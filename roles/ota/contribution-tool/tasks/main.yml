@@ -59,9 +59,9 @@
 
 - name: Clone contribution-tool repository
   ansible.builtin.git:
-    repo: "{{ ota_contribution_tool_source_repository }}"
+    repo: "{{ ota_contribution_tool_repository }}"
     dest: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
-    version: "{{ ota_contribution_tool_source_repository_branch }}"
+    version: "{{ ota_contribution_tool_repository_branch }}"
     force: true
     depth: 1
   when: not ota_contribution_tool_apps_read_config_only | bool

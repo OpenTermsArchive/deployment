@@ -66,8 +66,8 @@ The `inventory.yml` file defines the hosts and the variables required for the de
 
 | Variable                       | Description                                                                                                                | Required or default value |
 |--------------------------------|----------------------------------------------------------------------------------------------------------------------------|---------------------------|
-| `ota_source_repository`        | URL of the declarations repository to deploy                                                                               | **required**              |
-| `ota_source_repository_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the source repository | `main`                    |
+| `ota_collection_repository`        | URL of the declarations repository to deploy                                                                               | **required**              |
+| `ota_collection_repository_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the source repository | `main`                    |
 
 These variables are defined in the inventory file, for example:
 
@@ -76,8 +76,8 @@ all:
   hosts:
     127.0.0.1:
       ansible_user: debian
-      ota_source_repository: https://github.com/OpenTermsArchive/demo-declarations.git
-      ota_source_repository_branch: main
+      ota_collection_repository: https://github.com/OpenTermsArchive/demo-declarations.git
+      ota_collection_repository_branch: main
 ```
 
 The playbook will automatically derive:
@@ -86,7 +86,7 @@ The playbook will automatically derive:
 
 #### Changes on an existing deployment
 
-If the `ota_source_repository` is changed on an existing target, the application has to be [stopped](#playbook-execution-refinement) before the new configuration is deployed.
+If the `ota_collection_repository` is changed on an existing target, the application has to be [stopped](#playbook-execution-refinement) before the new configuration is deployed.
 
 - ### PM2 Configuration File — `pm2.config.cjs`
 
@@ -96,7 +96,7 @@ The `pm2.config.cjs` file is used to configure the [PM2](https://pm2.keymetrics.
 
 - ### GitHub Bot Private Key — `github-bot-private-key`
 
-The `github-bot-private-key` file contains a private SSH key for accessing and pushing to SSH Git URLs. This file is required if `ota_source_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs.
+The `github-bot-private-key` file contains a private SSH key for accessing and pushing to SSH Git URLs. This file is required if `ota_collection_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs.
 
 It is strongly recommended to [encrypt this file](#file-encryption) if it is checked in to a public repository.
 

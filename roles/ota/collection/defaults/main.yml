@@ -1,7 +1,7 @@
 ---
 ota_apps_read_config_only: false
-ota_source_repository_branch: main
-ota_directory: "{{ ota_source_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename | ansible.builtin.splitext | first }}" # extract the repository name from the URL
+ota_collection_repository_branch: main
+ota_directory: "{{ ota_collection_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename | ansible.builtin.splitext | first }}" # extract the repository name from the URL
 ota_collection_id: "{{ ota_directory | regex_replace('-declarations$', '') }}"
 ota_github_bot_key: "/home/{{ ansible_user }}/.ssh/ota-github-bot-key-{{ ota_collection_id }}"
 ota_pm2_home: "/home/{{ ansible_user }}/.pm2-{{ ota_collection_id }}"

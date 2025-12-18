@@ -1,9 +1,9 @@
 ---
 - name: Clone repository
   ansible.builtin.git:
-    repo: "{{ ota_source_repository }}"
+    repo: "{{ ota_collection_repository }}"
     dest: /home/{{ ansible_user }}/{{ ota_directory }}
-    version: "{{ ota_source_repository_branch }}"
+    version: "{{ ota_collection_repository_branch }}"
     force: true
     key_file: "{{ ota_github_bot_key }}"
     depth: 1

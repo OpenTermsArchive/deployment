@@ -7,11 +7,11 @@
       tags: [always]
       ansible.builtin.set_fact:
         ota_app_type: >-
-          {%- if ota_source_repository is defined -%}
+          {%- if ota_collection_repository is defined -%}
             ota-collection
-          {%- elif ota_contribution_tool_source_repository is defined -%}
+          {%- elif ota_contribution_tool_repository is defined -%}
             contribution-tool
-          {%- elif ota_federation_api_source_repository is defined -%}
+          {%- elif ota_federation_api_instance_repository is defined -%}
             federation-api
           {%- else -%}
             unknown
@@ -22,8 +22,8 @@
       ansible.builtin.fail:
         msg: >-
           Unable to detect app type. Please define one of:
-          ota_source_repository, ota_contribution_tool_source_repository,
-          or ota_federation_api_source_repository in your inventory.
+          ota_collection_repository, ota_contribution_tool_repository,
+          or ota_federation_api_instance_repository in your inventory.
       when: ota_app_type == 'unknown'
 
     - name: Display detected app type

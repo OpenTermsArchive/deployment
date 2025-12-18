@@ -1,9 +1,9 @@
 ---
 - name: Clone federation-api repository
   ansible.builtin.git:
-    repo: "{{ ota_federation_api_source_repository }}"
+    repo: "{{ ota_federation_api_instance_repository }}"
     dest: /home/{{ ansible_user }}/{{ ota_federation_api_directory }}
-    version: "{{ ota_federation_api_source_repository_branch }}"
+    version: "{{ ota_federation_api_instance_repository_branch }}"
     force: true
     depth: 1
 

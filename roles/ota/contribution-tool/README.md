@@ -6,8 +6,8 @@ Deploys the OTA Contribution Tool application.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `ota_contribution_tool_source_repository` | Repository URL | Required |
-| `ota_contribution_tool_source_repository_branch` | Git branch | `main` |
+| `ota_contribution_tool_repository` | Repository URL | Required |
+| `ota_contribution_tool_repository_branch` | Git branch | `main` |
 | `ota_contribution_tool_directory` | Directory name on server | Extracted from repo URL |
 | `ota_contribution_tool_directory_override` | Override directory name | None |
 | `ota_contribution_tool_collection_id` | Collection identifier | Same as directory |
