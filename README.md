@@ -30,7 +30,7 @@ ansible-galaxy collection install -r requirements.yml
 
 ## Usage
 
-Once installed, the playbook `deploy` allows to set up the two main Open Terms Archive applications: [Engine](https://github.com/OpenTermsArchive/engine) and [Federation API](https://github.com/OpenTermsArchive/federation-api).
+Once installed, the playbook `deploy` allows to set up and deploy an Open Terms Archive [collection](https://docs.opentermsarchive.org/#collection) powered by the [Engine](https://github.com/OpenTermsArchive/engine).
 
 The playbook can be executed using the `ansible-playbook` command-line tool:
 
@@ -65,44 +65,51 @@ deployment/
 The `inventory.yml` file defines the hosts and the variables required for the deployment. This file should contain all the necessary variables as described below.
 
 | Variable                       | Description                                                                                                                | Required or default value |
-|--------------------------------|----------------------------------------------------------------------------------------------------------------------------|------------------------|
-| `ota_source_repository`        | URL of the declarations repository to deploy                                                                                               | **required** |
-| `ota_source_repository_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the source repository | `main` |
-| `ota_directory`                | Directory path where the code will be deployed on the server                                                               | Name of the repository |
+|--------------------------------|----------------------------------------------------------------------------------------------------------------------------|---------------------------|
+| `ota_collection_repository`        | URL of the declarations repository to deploy                                                                               | **required**              |
+| `ota_collection_repository_branch` | [Git branch or tag](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddeftree-ishatree-ishalsotreeish) of the source repository | `main`                    |
 
 These variables are defined in the inventory file, for example:
 
-```yml
+```yaml
 all:
   hosts:
     127.0.0.1:
       ansible_user: debian
-      ota_source_repository: https://github.com/OpenTermsArchive/demo-declarations.git
-      ota_source_repository_branch: master
-      ota_directory: demo
+      ota_collection_repository: https://github.com/OpenTermsArchive/demo-declarations.git
+      ota_collection_repository_branch: main
 ```
 
-#### Changes on a existing deployment
+The playbook will automatically derive:
+- `ota_directory`: The directory where the code will be deployed (extracted from the repository URL, e.g., `demo-declarations`)
+- `ota_collection_id`: The collection identifier used for PM2 and nginx configuration (directory name without the `-declarations` suffix, e.g., `demo`)
+- `ota_pm2_home`: The PM2 home directory for isolating PM2 processes (e.g., `/home/debian/.pm2-demo`)
 
-If the `ota_source_repository` is changed on an existing target, the application has to be [stopped](#playbook-execution-refinement) before the new configuration is deployed.
+#### Multi-tenant deployment
+
+Multiple collections can be deployed to the same server. Each collection will have its own isolated PM2 instance and nginx configuration. Simply define multiple hosts with different `ota_collection_repository` values, or deploy collections sequentially to the same host.
+
+#### Changes on an existing deployment
+
+If the `ota_collection_repository` is changed on an existing target, the application has to be [stopped](#playbook-execution-refinement) before the new configuration is deployed.
 
 - ### PM2 Configuration File — `pm2.config.cjs`
 
 **This file is mandatory**
 
-The `pm2.config.cjs` file is used to configure the [PM2](https://pm2.keymetrics.io) process manager, which is used to start the applications. 
+The `pm2.config.cjs` file is used to configure the [PM2](https://pm2.keymetrics.io) process manager, which is used to start the applications.
 
 - ### GitHub Bot Private Key — `github-bot-private-key`
 
-The `github-bot-private-key` file contains a private SSH key for accessing and pushing to SSH Git URLs. This file is required if `ota_source_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs.
+The `github-bot-private-key` file contains a private SSH key for accessing and pushing to SSH Git URLs. This file is required if `ota_collection_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs.
 
-It is strongly recommended to [encrypt this file](#file-encryption) if is is checked in to a public repository.
+It is strongly recommended to [encrypt this file](#file-encryption) if it is checked in to a public repository.
 
 - ### Environment Variables File — `.env`
 
 The `.env` file contains the environment variables for the deployed applications.
 
-It is strongly recommended to [encrypt this file](#file-encryption) if is is checked in to a public repository.
+It is strongly recommended to [encrypt this file](#file-encryption) if it is checked in to a public repository.
 
 ## File encryption
 
@@ -150,12 +157,12 @@ Use [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.htm
 
 1. Install [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html).
 2. Install [Vagrant](https://www.vagrantup.com/downloads).
-3. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) to manage virtual machines. If Docker is prefered, or on an Apple Silicon machine, install [Docker](https://docs.docker.com/get-docker/) instead.
+3. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) to manage virtual machines. If Docker is preferred, or on an Apple Silicon machine, install [Docker](https://docs.docker.com/get-docker/) instead.
 4. Create a dedicated SSH key with no password: `ssh-keygen -f ~/.ssh/ota-vagrant -q -N ""`. This key will be automatically used by Vagrant.
 
 > VirtualBox is not compatible with Apple Silicon (M1…) processors. To use vagrant on this kind of machine, specifying the Docker provider will be required. Since MongoDB cannot be installed on ARM, it is skipped in the infrastructure installation process. This means the MongoDB storage repository cannot be tested with Vagrant with an Apple Silicon processor.
 
-## Usage
+### Usage
 
 For testing this collection, a virtual machine description file is provided, inside the `tests` folder, to be used with [Vagrant](https://www.vagrantup.com).
 
@@ -163,7 +170,7 @@ All following commands must be executed from the `tests` folder:
 
     cd tests
 
-### Launch VM
+#### Launch VM
 
 ```sh
 vagrant up
@@ -173,7 +180,7 @@ vagrant up
 
 Then the code can be deployed to the running machine with all the options described before.
 
-### Test collection
+#### Test collection
 
 Testing the Ansible collection locally is crucial to ensure that changes function properly before submitting them as a pull request.
 
@@ -197,9 +204,9 @@ ansible-playbook ../playbooks/deploy.yml
 vagrant ssh # use "vagrant" as password
 ```
 
-- Check that everything works as intended within the virtual machine. Depending on the nature of changes made, you can monitor logs or execute commands to validate functionality:
+- Check that everything works as intended within the virtual machine. Depending on the nature of changes made, you can monitor logs or execute commands to validate functionality. Note that you need to set the `PM2_HOME` environment variable to the collection-specific PM2 home directory:
 ```sh
-pm2 logs
+PM2_HOME=~/.pm2-demo pm2 logs
 ```
 
 #### Troubleshooting

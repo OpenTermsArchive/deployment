@@ -1,1 +1,7 @@
-This file is required by Ansible Galaxy and must not be removed
+# mongo/configure
+
+Configures MongoDB for OTA applications.
+
+## Notes
+
+- Configures data storage at `/mnt/disk/mongodb`

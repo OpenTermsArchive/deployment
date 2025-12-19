@@ -1,1 +1,3 @@
-This file is required by Ansible Galaxy and must not be removed
+# nginx/install
+
+Installs NGINX web server.

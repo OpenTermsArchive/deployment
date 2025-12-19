@@ -1,0 +1,9 @@
+{{ ansible_managed | comment }}
+
+server {
+    listen 80;
+    server_name {{ inventory_hostname }};
+
+    # Include all OTA applications location configs
+    include /etc/nginx/ota.d/*.conf;
+}

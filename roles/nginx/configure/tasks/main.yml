@@ -2,40 +2,62 @@
 - name: Configure NGINX
   notify: Restart NGINX
   block:
-    - name: Clean default NGINX site
-      ansible.builtin.file:
-        state: absent
-        path: /etc/nginx/sites-enabled/default
-
     - name: Check if server_tokens is already configured
       ansible.builtin.command: grep -E "^\s*server_tokens" /etc/nginx/nginx.conf
-      register: nginx_server_tokens_directive
+      register: ota_nginx_server_tokens_directive
       failed_when: false
       changed_when: false
 
     - name: Share server_tokens configuration state
       ansible.builtin.set_fact:
-        nginx_conf_has_server_tokens: "{{ nginx_server_tokens_directive.rc == 0 }}"
+        ota_nginx_conf_has_server_tokens: "{{ ota_nginx_server_tokens_directive.rc == 0 }}"
 
-    - name: Setup NGINX conf
+    - name: Add global OTA config
       ansible.builtin.template:
-        src: "{{ ota_nginx_config_template }}"
-        dest: /etc/nginx/conf.d/ota.conf
+        src: ./templates/nginx-global.conf.j2
+        dest: /etc/nginx/conf.d/ota-global.conf
         owner: root
         group: root
-        mode: "644"
+        mode: "0644"
+        force: true
 
-- name: Configure NGINX Reverse Proxy
+    - name: Add app-specific rate limit config
+      ansible.builtin.template:
+        src: "{{ ota_nginx_config_template }}"
+        dest: /etc/nginx/conf.d/ota-rate-limit-{{ ota_nginx_app_id }}.conf
+        owner: root
+        group: root
+        mode: "0644"
+        force: true
+
+    - name: Ensure ota.d directory exists
+      ansible.builtin.file:
+        path: /etc/nginx/ota.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+- name: Configure NGINX for application
   notify: Restart NGINX
   block:
-    - name: Add conf in NGINX sites-available
+    - name: Add app-specific location config
       ansible.builtin.template:
         src: "{{ ota_nginx_reverse_proxy_config_template }}"
-        dest: /etc/nginx/sites-available/ota
+        dest: /etc/nginx/ota.d/{{ ota_nginx_app_id }}.conf
+        mode: "0644"
         force: true
-        mode: "644"
 
-    - name: Link conf from sites-available to sites-enabled
+    - name: Ensure OTA server block exists in sites-available
+      ansible.builtin.template:
+        src: "{{ ota_nginx_server_config_template }}"
+        dest: /etc/nginx/sites-available/ota
+        owner: root
+        group: root
+        mode: "0644"
+        force: true
+
+    - name: Enable OTA site
       ansible.builtin.file:
         src: /etc/nginx/sites-available/ota
         dest: /etc/nginx/sites-enabled/ota

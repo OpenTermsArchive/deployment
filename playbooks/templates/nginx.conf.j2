@@ -1,17 +1,5 @@
 {{ ansible_managed | comment }}
 
-# By default, NGINX includes its version number in the response header, which
-# can give potential attackers information about the software and version being
-# used. This information can be useful for attackers to target specific
-# vulnerabilities or exploits that are present in specific versions.
-# Disabling server_tokens can help to mitigate this risk by removing the NGINX
-# version number from the response headers.
-{% if not nginx_conf_has_server_tokens | default(false) %}
-server_tokens off;
-{% endif %}
-
-# Configure the rate limiting module to prevent DDoS attacks.
-limit_req_zone $binary_remote_addr zone=limited:10m rate=10r/s;
-
-# Define HTTP response status code that is returned to clients when the rate limit is exceeded.
-limit_req_status 429;
+# Application: {{ ota_nginx_app_id }}
+# Configure app-specific rate limiting zone to prevent DDoS attacks.
+limit_req_zone $binary_remote_addr zone=ota_limited_{{ ota_nginx_app_id }}:{{ ota_rate_limit_zone_size | default('10m') }} rate={{ ota_rate_limit_rate | default('10r/s') }};

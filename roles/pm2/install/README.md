@@ -1,1 +1,3 @@
-This file is required by Ansible Galaxy and must not be removed
+# pm2/install
+
+Installs PM2 process manager globally.

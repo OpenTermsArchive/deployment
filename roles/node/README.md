@@ -1,1 +1,8 @@
-This file is required by Ansible Galaxy and must not be removed
+# node
+
+Installs Node.js runtime.
+
+## Notes
+
+- Installs Node.js 20.x from NodeSource
+- Updates npm to version 10

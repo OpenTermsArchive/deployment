@@ -1,0 +1,16 @@
+{{ ansible_managed | comment }}
+
+# Global OTA NGINX configuration
+
+# By default, NGINX includes its version number in the response header, which
+# can give potential attackers information about the software and version being
+# used. This information can be useful for attackers to target specific
+# vulnerabilities or exploits that are present in specific versions.
+# Disabling server_tokens can help to mitigate this risk by removing the NGINX
+# version number from the response headers.
+{% if not ota_nginx_conf_has_server_tokens | default(false) %}
+server_tokens off;
+{% endif %}
+
+# Define HTTP response status code that is returned to clients when the rate limit is exceeded.
+limit_req_status 429;

@@ -1,0 +1,90 @@
+---
+# Configuration is read from the .env file in the inventory directory.
+# The .env file can be vault-encrypted.
+
+- name: Check if .env file exists
+  ansible.builtin.stat:
+    path: "{{ inventory_dir }}/.env"
+  register: ota_contribution_tool_env_file
+  delegate_to: localhost
+
+- name: Fail if .env file is missing
+  ansible.builtin.fail:
+    msg: "A .env file must be present in the inventory directory for contribution-tool deployments"
+  when: not ota_contribution_tool_env_file.stat.exists
+
+# Copy to remote server temporarily to leverage Ansible's vault decryption
+- name: Copy .env to temp location on remote (decrypts if vault-encrypted)
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/.env"
+    dest: /tmp/.env.ota_contribution_tool_temp
+    decrypt: true
+    mode: "0600"
+
+- name: Read decrypted .env content
+  ansible.builtin.slurp:
+    src: /tmp/.env.ota_contribution_tool_temp
+  register: ota_contribution_tool_env_content_raw
+
+- name: Clean up temporary .env file
+  ansible.builtin.file:
+    path: /tmp/.env.ota_contribution_tool_temp
+    state: absent
+
+- name: Set .env content fact
+  ansible.builtin.set_fact:
+    ota_contribution_tool_env_content: "{{ ota_contribution_tool_env_content_raw.content | b64decode }}"
+
+- name: Parse PORT from .env file
+  ansible.builtin.set_fact:
+    ota_contribution_tool_port: >-
+      {{ ota_contribution_tool_env_content
+         | regex_search('(?m)^PORT=(.*)$', '\1')
+         | first }}
+
+- name: Parse NEXT_PUBLIC_BASE_PATH from .env file
+  ansible.builtin.set_fact:
+    ota_contribution_tool_base_path: >-
+      {{ ota_contribution_tool_env_content
+         | regex_search('(?m)^NEXT_PUBLIC_BASE_PATH=(.*)$', '\1')
+         | default([''], true)
+         | first }}
+
+- name: Clone contribution-tool repository
+  ansible.builtin.git:
+    repo: "{{ ota_contribution_tool_repository }}"
+    dest: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
+    version: "{{ ota_contribution_tool_repository_branch }}"
+    force: true
+    depth: 1
+  when: not ota_contribution_tool_read_config_only | bool
+
+- name: Set up environment variables, install dependencies and build
+  when: not ota_contribution_tool_read_config_only | bool
+  block:
+    - name: Copy .env file to server (decrypts if vault-encrypted)
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/.env"
+        dest: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}/.env
+        decrypt: true
+        force: true
+        mode: "0644"
+
+    - name: Install dependencies
+      ansible.builtin.command:
+        cmd: npm ci
+        chdir: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
+
+    - name: Run type check
+      ansible.builtin.command:
+        cmd: npm run type-check
+        chdir: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
+      environment:
+        NODE_ENV: production
+
+    - name: Build contribution-tool
+      ansible.builtin.command:
+        cmd: npm run build
+        chdir: /home/{{ ansible_user }}/{{ ota_contribution_tool_directory }}
+      environment:
+        NODE_ENV: production

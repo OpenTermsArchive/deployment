@@ -5,14 +5,14 @@
   register: github_bot_private_key_file
   delegate_to: localhost
 
-- name: Add GitHub Bot SSH key
-  when: github_bot_private_key_file.stat.exists
+- name: Add GitHub Bot SSH key (app-scoped)
+  when: github_bot_private_key_file.stat.exists | default(false)
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/github-bot-private-key"
-    dest: /home/{{ ansible_user }}/.ssh/ota-github-bot-key
+    dest: "{{ ota_github_bot_key_path }}"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode: "600"
+    mode: "0600"
 
 - name: Add GitHub SSH key to known_hosts
   ansible.builtin.known_hosts:
