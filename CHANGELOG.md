@@ -2,6 +2,14 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [minor]
+
+> Development of this release was supported by [Reset Tech](https://www.reset.tech).
+
+### Added
+
+- Support deployment of Open Terms Archive Explorer
+
 ## 3.0.0 - 2025-12-19
 
 _Full changeset and discussions: [#58](https://github.com/OpenTermsArchive/deployment/pull/58)._
