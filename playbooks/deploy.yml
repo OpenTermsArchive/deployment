@@ -13,6 +13,8 @@
             contribution-tool
           {%- elif ota_federation_api_instance_repository is defined -%}
             federation-api
+          {%- elif ota_explorer_repository is defined -%}
+            explorer
           {%- else -%}
             unknown
           {%- endif -%}
@@ -23,7 +25,7 @@
         msg: >-
           Unable to detect app type. Please define one of:
           ota_collection_repository, ota_contribution_tool_repository,
-          or ota_federation_api_instance_repository in your inventory.
+          ota_federation_api_instance_repository, or ota_explorer_repository in your inventory.
       when: ota_app_type == 'unknown'
 
     - name: Display detected app type
@@ -142,6 +144,38 @@
                 basePath: "{{ ota_federation_api_config['@opentermsarchive/federation-api'].basePath }}"
                 port: "{{ ota_federation_api_config['@opentermsarchive/federation-api'].port }}"
 
+    # Explorer: configuration & setup
+    - name: Configure explorer
+      tags: [always]
+      when: ota_app_type == 'explorer'
+      block:
+        - name: Load explorer config
+          ansible.builtin.include_role:
+            name: ota/explorer
+            public: true
+            apply:
+              tags: [always]
+          vars:
+            ota_explorer_read_config_only: true
+
+        - name: Set explorer variables
+          ansible.builtin.set_fact:
+            ota_chromium_required: false
+            ota_mongo_required: false
+            # Generic variables for pm2 and nginx
+            ota_app_directory: "{{ ota_explorer_directory }}"
+            ota_app_collection_id: "{{ ota_explorer_collection_id }}"
+            ota_app_pm2_home: "{{ ota_explorer_pm2_home }}"
+            # Port and basepath are read from config file by the explorer role
+            ota_app_endpoints:
+              - name: "explorer"
+                basePath: "{{ ota_explorer_base_path }}"
+                port: "{{ ota_explorer_port }}"
+
+        - name: Setup GitHub bot SSH key
+          ansible.builtin.include_role:
+            name: github
+
     # Infrastructure installation (common)
     - name: Install infrastructure
       become: true
@@ -218,6 +252,15 @@
         - name: Setup federation-api
           ansible.builtin.include_role:
             name: ota/federation_api
+            public: true
+
+    # Explorer: application deployment
+    - name: Deploy explorer application
+      when: ota_app_type == 'explorer'
+      block:
+        - name: Setup explorer
+          ansible.builtin.include_role:
+            name: ota/explorer
             public: true
 
     # Process management & web server (common)
