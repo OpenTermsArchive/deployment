@@ -1,0 +1,9 @@
+---
+ota_explorer_read_config_only: false
+ota_explorer_repository_branch: main
+# Allow override of directory name for multi-instance deployment
+# If not set, extract from repository URL
+ota_explorer_directory: "{{ ota_explorer_directory_override | default(ota_explorer_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename | ansible.builtin.splitext | first) }}"
+ota_explorer_collection_id: "{{ ota_explorer_directory }}"
+ota_explorer_pm2_home: "/home/{{ ansible_user }}/.pm2-{{ ota_explorer_collection_id }}"
+ota_github_bot_key_path: "/home/{{ ansible_user }}/.ssh/ota-github-bot-key-{{ ota_explorer_collection_id }}"

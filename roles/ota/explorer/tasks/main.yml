@@ -1,0 +1,71 @@
+---
+# Configuration is read from the config/production.json file in the inventory directory.
+
+- name: Check if config/production.json file exists
+  ansible.builtin.stat:
+    path: "{{ inventory_dir }}/config/production.json"
+  register: ota_explorer_config_file
+  delegate_to: localhost
+
+- name: Fail if config/production.json file is missing
+  ansible.builtin.fail:
+    msg: "A config/production.json file must be present in the inventory directory for explorer deployments"
+  when: not ota_explorer_config_file.stat.exists
+
+- name: Read config/production.json content
+  ansible.builtin.slurp:
+    src: "{{ inventory_dir }}/config/production.json"
+  register: ota_explorer_config_content_raw
+  delegate_to: localhost
+
+- name: Parse config/production.json
+  ansible.builtin.set_fact:
+    ota_explorer_config: "{{ ota_explorer_config_content_raw.content | b64decode | from_json }}"
+
+- name: Set explorer port from config
+  ansible.builtin.set_fact:
+    ota_explorer_port: "{{ ota_explorer_config.port }}"
+
+- name: Set explorer base path from config
+  ansible.builtin.set_fact:
+    ota_explorer_base_path: "{{ ota_explorer_config.basePath | default('/') }}"
+
+- name: Clone explorer repository
+  ansible.builtin.git:
+    repo: "{{ ota_explorer_repository }}"
+    dest: /home/{{ ansible_user }}/{{ ota_explorer_directory }}
+    version: "{{ ota_explorer_repository_branch }}"
+    force: true
+    depth: 1
+    key_file: "{{ ota_github_bot_key_path | default(omit) }}"
+    accept_hostkey: true
+  when: not ota_explorer_read_config_only | bool
+
+- name: Set up configuration, install dependencies and build
+  when: not ota_explorer_read_config_only | bool
+  block:
+    - name: Copy config/production.json to server
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/config/production.json"
+        dest: /home/{{ ansible_user }}/{{ ota_explorer_directory }}/config/production.json
+        force: true
+        mode: "0644"
+
+    - name: Install dependencies
+      ansible.builtin.command:
+        cmd: npm ci
+        chdir: /home/{{ ansible_user }}/{{ ota_explorer_directory }}
+
+    - name: Run type check
+      ansible.builtin.command:
+        cmd: npm run typecheck
+        chdir: /home/{{ ansible_user }}/{{ ota_explorer_directory }}
+      environment:
+        NODE_ENV: production
+
+    - name: Build explorer
+      ansible.builtin.command:
+        cmd: npm run build
+        chdir: /home/{{ ansible_user }}/{{ ota_explorer_directory }}
+      environment:
+        NODE_ENV: production
