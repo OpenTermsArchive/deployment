@@ -1,6 +1,6 @@
 namespace: opentermsarchive
 name: deployment
-version: 3.0.0
+version: 3.0.1
 readme: README.md
 authors:
   - Open Terms Archive contributors
