@@ -137,6 +137,14 @@ ansible-playbook playbook.yml --vault-password-file vault.key
 
 Please note that encrypted files will be decrypted and stored in plaintext on the deployment server. Always protect access to your production server.
 
+## Migrations
+
+Some updates require changes on existing servers before deploying. Run the `migrate` playbook before `deploy` when needed:
+
+```sh
+ansible-playbook opentermsarchive.deployment.migrate
+```
+
 ## Playbook execution refinement
 
 Use [tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html) to refine playbook execution. Example commands:
