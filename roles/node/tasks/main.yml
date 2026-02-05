@@ -1,25 +1,46 @@
 ---
-- name: Create keyrings directory
-  ansible.builtin.file:
-    path: /etc/apt/keyrings
-    state: directory
-    mode: "0755"
+# On Debian >= 13, use native Node.js packages since the NodeSource GPG key
+# uses SHA-1, rejected by apt. See https://github.com/nodesource/distributions/issues/1908
+# On older versions, use NodeSource to provide Node.js >= 20 as required by the engine.
 
-- name: Download and import the Nodesource GPG key
-  ansible.builtin.shell: set -o pipefail && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --yes --dearmor -o /etc/apt/keyrings/nodesource.gpg
-  args:
-    executable: /bin/bash
+- name: Install Node.js and NPM on Debian >= 13
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version | int >= 13
+  block:
+    - name: Install Node.js and NPM
+      ansible.builtin.apt:
+        name:
+          - nodejs
+          - npm
+        state: present
+        update_cache: true
 
-- name: Create deb repository
-  ansible.builtin.shell: set -o pipefail && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list # Remember to update the major version of NPM when updating the major version of Node
-  args:
-    executable: /bin/bash
+    - name: Install NPM to latest version 10
+      ansible.builtin.command: npm install -g npm@10
 
-- name: Install NodeJS and NPM
-  ansible.builtin.apt:
-    name: nodejs
-    update_cache: true
-    state: latest # The major version of NodeJS is provided by the NodeSource repository defined in the task above
+- name: Install Node.js and NPM on Debian < 13
+  when: ansible_distribution != 'Debian' or ansible_distribution_major_version | int < 13
+  block:
+    - name: Create keyrings directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "755"
 
-- name: Update NPM to latest version 10
-  ansible.builtin.command: npm install -g npm@10
+    - name: Download and import the NodeSource GPG key
+      ansible.builtin.shell: set -o pipefail && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --yes --dearmor -o /etc/apt/keyrings/nodesource.gpg
+      args:
+        executable: /bin/bash
+
+    - name: Add NodeSource APT repository
+      ansible.builtin.shell: set -o pipefail && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list # Remember to update the major version of NPM when updating the major version of Node
+      args:
+        executable: /bin/bash
+
+    - name: Install Node.js
+      ansible.builtin.apt:
+        name: nodejs
+        update_cache: true
+        state: latest # The major version of NodeJS is provided by the NodeSource repository defined in the task above
+
+    - name: Install NPM 10
+      ansible.builtin.command: npm install -g npm@10

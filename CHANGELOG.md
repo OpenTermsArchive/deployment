@@ -2,6 +2,18 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [patch]
+
+> Development of this release was supported by [Reset Tech](https://www.reset.tech).
+
+### Fixed
+
+- Replace NodeSource repository with native Node.js packages on Debian >= 13 to fix deployment failure caused by NodeSource GPG key using SHA-1, [rejected by apt since 2026-02-01](https://github.com/nodesource/distributions/issues/1908)
+
+### Added
+
+- Add `migrate` playbook for one-time changes on existing servers; run `ansible-playbook opentermsarchive.deployment.migrate` before `deploy` when upgrading
+
 ## 3.0.0 - 2025-12-19
 
 _Full changeset and discussions: [#58](https://github.com/OpenTermsArchive/deployment/pull/58)._

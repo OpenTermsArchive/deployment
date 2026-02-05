@@ -1,0 +1,52 @@
+---
+- name: Run migrations
+  hosts: all
+  tasks:
+    # Stop PM2 processes running in the default home (~/.pm2)
+    # since v3 uses a per-collection home (~/.pm2-{collection_id})
+    - name: Stop PM2 processes in default home
+      ansible.builtin.shell: pm2 kill 2>/dev/null || true
+      environment:
+        PM2_HOME: /home/{{ ansible_user }}/.pm2
+
+    - name: Remove PM2 startup script
+      ansible.builtin.shell: pm2 unstartup systemd 2>/dev/null || true
+      become: true
+
+    - name: Remove default PM2 home
+      ansible.builtin.file:
+        path: /home/{{ ansible_user }}/.pm2
+        state: absent
+
+    # Remove old nginx config (v2 used a single ota.conf,
+    # v3 uses ota-global.conf and per-app ota-rate-limit-{app_id}.conf)
+    - name: Remove old nginx config
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      become: true
+      loop:
+        - /etc/nginx/conf.d/ota.conf
+        - /etc/nginx/sites-enabled/ota
+        - /etc/nginx/sites-available/ota
+
+    # See https://github.com/nodesource/distributions/issues/1908
+    - name: Remove NodeSource repository on Debian >= 13
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version | int >= 13
+      become: true
+      block:
+        - name: Remove NodeSource APT repository
+          ansible.builtin.file:
+            path: /etc/apt/sources.list.d/nodesource.list
+            state: absent
+
+        - name: Remove NodeSource GPG key
+          ansible.builtin.file:
+            path: /etc/apt/keyrings/nodesource.gpg
+            state: absent
+
+        - name: Remove NodeSource Node.js package
+          ansible.builtin.apt:
+            name: nodejs
+            state: absent
+            purge: true
