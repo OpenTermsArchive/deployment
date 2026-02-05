@@ -4,6 +4,8 @@ All changes that impact users of this module are documented in this file, in the
 
 ## Unreleased [patch]
 
+> Development of this release was supported by [Reset Tech](https://www.reset.tech).
+
 ### Fixed
 
 - Replace NodeSource repository with native Node.js packages on Debian >= 13 to fix deployment failure caused by NodeSource GPG key using SHA-1, [rejected by apt since 2026-02-01](https://github.com/nodesource/distributions/issues/1908)
@@ -11,8 +13,6 @@ All changes that impact users of this module are documented in this file, in the
 ### Added
 
 - Add `migrate` playbook for one-time changes on existing servers; run `ansible-playbook opentermsarchive.deployment.migrate` before `deploy` when upgrading
-
-> Development of this release was supported by [Reset Tech](https://www.reset.tech).
 
 ## 3.0.0 - 2025-12-19
 
