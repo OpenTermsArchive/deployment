@@ -14,7 +14,7 @@
 
     - name: Add global OTA config
       ansible.builtin.template:
-        src: ./templates/nginx-global.conf.j2
+        src: nginx-global.conf.j2
         dest: /etc/nginx/conf.d/ota-global.conf
         owner: root
         group: root

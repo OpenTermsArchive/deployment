@@ -1,0 +1,4 @@
+---
+ota_nginx_config_template: nginx.conf.j2
+ota_nginx_reverse_proxy_config_template: nginx-reverse-proxy-conf.j2
+ota_nginx_server_config_template: nginx-server.conf.j2

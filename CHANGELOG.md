@@ -2,6 +2,14 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [minor]
+
+> Development of this release was supported by [Reset Tech](https://www.reset.tech).
+
+### Changed
+
+- Make nginx role usable outside this collection
+
 ## 3.0.1 - 2026-02-05
 
 _Full changeset and discussions: [#63](https://github.com/OpenTermsArchive/deployment/pull/63)._
