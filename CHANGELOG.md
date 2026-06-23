@@ -2,6 +2,12 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [minor]
+
+### Changed
+
+- Install Node.js 26 from NodeSource on Debian and Ubuntu
+
 ## 3.1.0 - 2026-02-05
 
 _Full changeset and discussions: [#64](https://github.com/OpenTermsArchive/deployment/pull/64)._
