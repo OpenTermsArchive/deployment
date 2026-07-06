@@ -2,6 +2,12 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [patch]
+
+### Fixed
+
+- Serve content-hashed build assets under a dedicated higher-rate limit so a cold page load fetching many assets at once is not throttled into a flash of unstyled content
+
 ## 4.0.0 - 2026-06-23
 
 _Full changeset and discussions: [#65](https://github.com/OpenTermsArchive/deployment/pull/65)._
