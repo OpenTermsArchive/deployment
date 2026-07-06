@@ -14,3 +14,6 @@ Configures NGINX reverse proxy for OTA applications.
 | `ota_rate_limit_rate` | Request rate limit | `10r/s` |
 | `ota_rate_limit_burst` | Burst limit | `5` |
 | `ota_rate_limit_zone_size` | Zone memory size | `10m` |
+| `ota_assets_rate_limit_rate` | Request rate limit for build assets | `100r/s` |
+| `ota_assets_rate_limit_burst` | Burst limit for build assets | `200` |
+| `ota_assets_rate_limit_zone_size` | Assets zone memory size | `10m` |

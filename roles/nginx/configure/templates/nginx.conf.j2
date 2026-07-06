@@ -3,3 +3,5 @@
 # Application: {{ ota_nginx_app_id }}
 # Configure app-specific rate limiting zone to prevent DDoS attacks.
 limit_req_zone $binary_remote_addr zone=ota_limited_{{ ota_nginx_app_id }}:{{ ota_rate_limit_zone_size | default('10m') }} rate={{ ota_rate_limit_rate | default('10r/s') }};
+# Higher-rate zone for content-hashed build assets: a cold page load fetches many in parallel from a single IP, so this limit is permissive enough not to throttle it while still capping abuse.
+limit_req_zone $binary_remote_addr zone=ota_assets_{{ ota_nginx_app_id }}:{{ ota_assets_rate_limit_zone_size | default('10m') }} rate={{ ota_assets_rate_limit_rate | default('100r/s') }};
