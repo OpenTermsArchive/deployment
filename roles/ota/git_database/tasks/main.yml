@@ -19,6 +19,13 @@
     dest: "{{ ota_git_database_directory }}"
     key_file: "{{ ota_github_bot_key_path }}"
 
+- name: Configure {{ ota_git_database_directory }} repository to push to {{ ota_git_database_repository }}
+  community.general.git_config:
+    name: remote.origin.url
+    value: "{{ ota_git_database_repository }}"
+    scope: local
+    repo: "{{ ota_git_database_directory }}"
+
 - name: Configure {{ ota_git_database_directory }} repository to use the GitHub Bot SSH Key
   community.general.git_config:
     name: core.sshCommand
