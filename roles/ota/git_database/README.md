@@ -2,6 +2,8 @@
 
 Sets up Git-based storage for versions, snapshots and tracking-results.
 
+The repository is cloned only if it is not on the server yet. The content of an existing clone is left to the engine, which publishes its commits itself, so that the commits it has not published yet are never discarded.
+
 ## Variables
 
 | Variable | Description | Required |
