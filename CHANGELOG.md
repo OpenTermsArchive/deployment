@@ -10,6 +10,10 @@ All changes that impact users of this module are documented in this file, in the
 
 - Set up the tracking-results repository declared in the `config/production.json` file of the collection, as done for versions and snapshots; to publish tracking results, see [how to create and declare this repository](https://docs.opentermsarchive.org/collections/how-to/create-repositories/#create-tracking-results-repository)
 
+### Changed
+
+- Stop resetting the Git-based databases to the state of their remote at each deployment, which discarded the commits that the engine had not published yet, such as those of a tracking interrupted by the deployment; to align a database with its remote, for example after rewriting its history, follow the [dedicated procedure](./README.md#git-based-databases)
+
 ## 4.0.0 - 2026-06-23
 
 _Full changeset and discussions: [#65](https://github.com/OpenTermsArchive/deployment/pull/65)._
