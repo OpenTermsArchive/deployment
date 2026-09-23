@@ -101,7 +101,7 @@ The `pm2.config.cjs` file is used to configure the [PM2](https://pm2.keymetrics.
 
 - ### GitHub Bot Private Key — `github-bot-private-key`
 
-The `github-bot-private-key` file contains a private SSH key for accessing and pushing to SSH Git URLs. This file is required if `ota_collection_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs.
+The `github-bot-private-key` file contains a private SSH key for accessing and pushing to SSH Git URLs. This file is required if `ota_collection_repository` is an SSH Git URL or if the URLs for versions, snapshots and/or tracking-results repositories in the `config/production.json` file of the source repository are SSH Git URLs.
 
 It is strongly recommended to [encrypt this file](#file-encryption) if it is checked in to a public repository.
 
