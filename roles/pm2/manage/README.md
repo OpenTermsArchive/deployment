@@ -2,6 +2,8 @@
 
 Manages PM2 processes for OTA applications.
 
+By default, the role stops and then starts the applications. Use `tasks_from: stop` or `tasks_from: start` to run only one of these steps, for example to stop the applications before updating their code.
+
 ## Variables
 
 | Variable | Description | Required |
