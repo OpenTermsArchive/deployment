@@ -70,6 +70,8 @@
             ota_snapshots_relative_path: "{{ ota_collection_config['@opentermsarchive/engine'].recorder.snapshots.storage.git.path | default(None) }}"
             ota_versions_repository: "{{ ota_collection_config['@opentermsarchive/engine'].recorder.versions.storage.git.repository | default(None) }}"
             ota_versions_relative_path: "{{ ota_collection_config['@opentermsarchive/engine'].recorder.versions.storage.git.path | default(None) }}"
+            ota_tracking_results_repository: "{{ ota_collection_config['@opentermsarchive/engine']['tracking-results'].storage.git.repository | default(None) }}"
+            ota_tracking_results_relative_path: "{{ ota_collection_config['@opentermsarchive/engine']['tracking-results'].storage.git.path | default(None) }}"
             ota_collection_api_base_path: "{{ ota_collection_config['@opentermsarchive/engine']['collection-api'].basePath | default(None) }}"
             ota_collection_api_port: "{{ ota_collection_config['@opentermsarchive/engine']['collection-api'].port | default(None) }}"
             # Generic variables for pm2 and nginx
@@ -197,6 +199,15 @@
             ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_snapshots_relative_path }}
             ota_git_database_branch: main
           when: ota_snapshots_repository and ota_snapshots_relative_path
+
+        - name: Setup Git-based tracking-results database
+          ansible.builtin.include_role:
+            name: ota/git_database
+          vars:
+            ota_git_database_repository: "{{ ota_tracking_results_repository }}"
+            ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_tracking_results_relative_path }}
+            ota_git_database_branch: main
+          when: ota_tracking_results_repository and ota_tracking_results_relative_path
 
         - name: Setup OTA collection
           ansible.builtin.include_role:

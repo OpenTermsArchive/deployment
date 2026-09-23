@@ -1,6 +1,6 @@
 # ota/git_database
 
-Sets up Git-based storage for versions and snapshots.
+Sets up Git-based storage for versions, snapshots and tracking-results.
 
 ## Variables
 
