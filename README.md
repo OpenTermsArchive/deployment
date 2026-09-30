@@ -143,11 +143,13 @@ The playbook clones on the server the versions, snapshots and tracking-results r
 
 The engine then records its changes in these clones and publishes them itself, so deployments leave their content untouched: the commits that the engine has not published yet, for example because a deployment interrupted a tracking or because a push failed, are published at the end of its next run.
 
-To align a clone with its remote, for example after rewriting the history of the repository:
+To align these clones with their remote, for example after rewriting the history of a repository, deploy with the `ota_git_database_reset` variable:
 
-1. Stop the applications with `ansible-playbook opentermsarchive.deployment.deploy --tags stop`
-2. On the server, in the clone (the declared `path`, relative to the collection directory), fetch the remote with `git fetch origin`, check the commits that will be discarded with `git log origin/main..main`, and reset the clone with `git reset --hard origin/main`
-3. Start the applications with `ansible-playbook opentermsarchive.deployment.deploy --tags start`
+```sh
+ansible-playbook opentermsarchive.deployment.deploy -e ota_git_database_reset=true
+```
+
+Once the applications are stopped, each clone is reset to the `main` branch of its remote, which discards its commits that are not on the remote. They can be listed beforehand with `git fetch origin && git log origin/main..main` in the clone on the server, at the declared `path` relative to the collection directory, and remain recoverable from its reflog.
 
 ## Migrations
 
