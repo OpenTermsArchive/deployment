@@ -6,15 +6,15 @@ All changes that impact users of this module are documented in this file, in the
 
 > Development of this release was supported by [User Rights](https://www.user-rights.org) and by the [NGI0 Commons Fund](https://nlnet.nl/project/Modular-OTA/), a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's [Next Generation Internet](https://www.ngi.eu) programme, under the aegis of DG CNECT under grant agreement N°101069594.
 
-### Added
-
-- Set up the tracking-results repository declared in the `config/production.json` file of the collection, as done for versions and snapshots; to publish tracking results, see [how to create and declare this repository](https://docs.opentermsarchive.org/collections/how-to/create-repositories/#create-tracking-results-repository)
-
 ### Changed
 
-- **Breaking:** Stop resetting the Git-based databases to the state of their remote at each deployment, which discarded the commits that the engine had not published yet, such as those of a tracking interrupted by the deployment; to align the databases with their remote, for example after rewriting the history of a repository, deploy with `-e ota_git_database_reset=true` as described in the [README](./README.md#git-based-databases)
-- **Breaking:** Stop removing at each deployment the `index.lock` file left in the Git-based databases by an interrupted Git operation, as the engine removes it itself at each tracking run since v16.2.0; update the engine of the collection to v16.2.0 or later, as older versions fail at every restart with `index.lock: File exists` when such a file is left
-- Stop the applications before installing their dependencies instead of just before restarting them, so that running applications no longer see `npm ci` replace their dependencies, which could make them fail; the applications are therefore unavailable while their dependencies are installed, and restarted even if the deployment fails
+- **Breaking:** Stop resetting the Git-based databases to their remote at each deployment, which discarded the commits the engine had not published yet; to realign them, for example after rewriting a history, deploy with `-e ota_git_database_reset=true` (see the [README](./README.md#git-based-databases))
+- **Breaking:** Stop removing stale `index.lock` files from the Git-based databases at each deployment, as the engine does it itself since v16.2.0; update the engine of the collection to v16.2.0 or later
+- Stop the applications before installing their dependencies rather than just before restarting them, and restart them even if the deployment fails; they are thus unavailable while `npm ci` runs
+
+### Added
+
+- Set up the tracking-results repository declared in `config/production.json`, as done for versions and snapshots; see [how to create and declare it](https://docs.opentermsarchive.org/collections/how-to/create-repositories/#create-tracking-results-repository)
 
 ## 4.0.0 - 2026-06-23
 
