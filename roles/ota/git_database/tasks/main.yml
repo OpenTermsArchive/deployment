@@ -19,6 +19,13 @@
     dest: "{{ ota_git_database_directory }}"
     key_file: "{{ ota_github_bot_key_path }}"
 
+- name: Configure {{ ota_git_database_directory }} repository to push to {{ ota_git_database_repository }}
+  community.general.git_config:
+    name: remote.origin.url
+    value: "{{ ota_git_database_repository }}"
+    scope: local
+    repo: "{{ ota_git_database_directory }}"
+
 - name: Configure {{ ota_git_database_directory }} repository to use the GitHub Bot SSH Key
   community.general.git_config:
     name: core.sshCommand
@@ -26,16 +33,19 @@
     scope: local
     repo: "{{ ota_git_database_directory }}"
 
-- name: Remove existing locks in {{ ota_git_database_directory }}
-  ansible.builtin.file:
-    path: "{{ ota_git_database_directory }}/.git/index.lock"
-    state: absent
+- name: Reset {{ ota_git_database_directory }} to the state of {{ ota_git_database_repository }}
+  when: ota_git_database_reset | bool
+  block:
+    - name: Remove the index lock left in {{ ota_git_database_directory }} by an interrupted Git operation
+      ansible.builtin.file:
+        path: "{{ ota_git_database_directory }}/.git/index.lock"
+        state: absent
 
-- name: Get latest data from {{ ota_git_database_repository }}
-  ansible.builtin.git:
-    repo: "{{ ota_git_database_repository }}"
-    version: "{{ ota_git_database_branch }}"
-    dest: "{{ ota_git_database_directory }}"
-    update: true
-    force: true # discard any modified files
-    key_file: "{{ ota_github_bot_key_path }}"
+    - name: Reset {{ ota_git_database_directory }} to branch {{ ota_git_database_branch }} of {{ ota_git_database_repository }}
+      ansible.builtin.git:
+        repo: "{{ ota_git_database_repository }}"
+        version: "{{ ota_git_database_branch }}"
+        dest: "{{ ota_git_database_directory }}"
+        update: true # Resets the branch to its state on the remote, discarding the commits that are not on the remote
+        force: true # Also discards uncommitted changes
+        key_file: "{{ ota_github_bot_key_path }}"

@@ -101,7 +101,7 @@ The `pm2.config.cjs` file is used to configure the [PM2](https://pm2.keymetrics.
 
 - ### GitHub Bot Private Key — `github-bot-private-key`
 
-The `github-bot-private-key` file contains a private SSH key for accessing and pushing to SSH Git URLs. This file is required if `ota_collection_repository` is an SSH Git URL or if the URLs for versions and/or snapshots repositories in the `config/production.json` file of the source repository are SSH Git URLs.
+The `github-bot-private-key` file contains a private SSH key for accessing and pushing to SSH Git URLs. This file is required if `ota_collection_repository` is an SSH Git URL or if the URLs for versions, snapshots and/or tracking-results repositories in the `config/production.json` file of the source repository are SSH Git URLs.
 
 It is strongly recommended to [encrypt this file](#file-encryption) if it is checked in to a public repository.
 
@@ -136,6 +136,20 @@ ansible-playbook playbook.yml --vault-password-file vault.key
 ```
 
 Please note that encrypted files will be decrypted and stored in plaintext on the deployment server. Always protect access to your production server.
+
+## Git-based databases
+
+The playbook clones on the server the versions, snapshots and tracking-results repositories declared with a `repository` and a `path` in the `config/production.json` file of the collection, when they are not there yet. As their `main` branch is checked out, these repositories must contain at least one commit.
+
+The engine then records its changes in these clones and publishes them itself, so deployments leave their content untouched: the commits that the engine has not published yet, for example because a deployment interrupted a tracking or because a push failed, are published at the end of its next run.
+
+To align these clones with their remote, for example after rewriting the history of a repository, deploy with the `ota_git_database_reset` variable:
+
+```sh
+ansible-playbook opentermsarchive.deployment.deploy -e ota_git_database_reset=true
+```
+
+Once the applications are stopped, each clone is reset to the `main` branch of its remote, which discards its commits that are not on the remote. They can be listed beforehand with `git fetch origin && git log origin/main..main` in the clone on the server, at the declared `path` relative to the collection directory, and remain recoverable from its reflog.
 
 ## Migrations
 
@@ -184,7 +198,7 @@ All following commands must be executed from the `tests` folder:
 vagrant up
 ```
 
-> With an Apple Silicon processor or to use Docker instead of VirtualBox, use `vagrant up --provider=docker`.
+> With an Apple Silicon processor or to use Docker instead of VirtualBox, use `vagrant up --provider=docker`. The first launch builds the container image from `tests/docker/Dockerfile`.
 
 Then the code can be deployed to the running machine with all the options described before.
 

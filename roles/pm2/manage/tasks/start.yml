@@ -1,0 +1,64 @@
+---
+- name: Ensure PM2_HOME directory exists
+  ansible.builtin.file:
+    path: "{{ ota_pm2_home }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+  become: true
+  tags:
+    - start
+    - restart
+
+- name: Copy pm2.config.cjs file
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/pm2.config.cjs"
+    dest: /home/{{ ansible_user }}/{{ ota_pm2_app_directory }}/pm2.config.cjs
+    force: true
+    mode: "0644"
+  tags:
+    - restart
+    - start
+
+- name: Generate and enable PM2 startup script
+  ansible.builtin.shell: |
+    export PM2_HOME="{{ ota_pm2_home }}"
+    sudo env PATH=$PATH:/usr/bin PM2_HOME="{{ ota_pm2_home }}" pm2 startup systemd --user {{ ansible_user }} --hp /home/{{ ansible_user }}
+  tags:
+    - restart
+    - start
+
+- name: Fix PM2_HOME ownership after startup script generation
+  ansible.builtin.file:
+    path: "{{ ota_pm2_home }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+    recurse: true
+  become: true
+  tags:
+    - restart
+    - start
+
+- name: Start Open Terms Archive applications
+  ansible.builtin.command:
+    cmd: pm2 startOrRestart pm2.config.cjs
+    chdir: /home/{{ ansible_user }}/{{ ota_pm2_app_directory }}
+  environment:
+    NODE_ENV: production
+    PM2_HOME: "{{ ota_pm2_home }}"
+  tags:
+    - restart
+    - start
+
+- name: Save PM2 process list for auto-restart
+  ansible.builtin.command:
+    cmd: pm2 save
+    chdir: /home/{{ ansible_user }}/{{ ota_pm2_app_directory }}
+  environment:
+    PM2_HOME: "{{ ota_pm2_home }}"
+  tags:
+    - restart
+    - start
