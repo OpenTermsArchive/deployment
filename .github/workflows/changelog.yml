@@ -6,4 +6,4 @@ on:
 
 jobs:
   validate:
-    uses: OpenTermsArchive/shared-workflows/.github/workflows/changelog.yml@72065aa0a4fb63ef824928409da14caf989c9d22 # pending v0.3.0
+    uses: OpenTermsArchive/shared-workflows/.github/workflows/changelog.yml@56599daff47c9d22e417c076825c390de67be18e # v0.3.0

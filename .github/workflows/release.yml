@@ -14,17 +14,17 @@ permissions:
 
 jobs:
   release-decision:
-    uses: OpenTermsArchive/shared-workflows/.github/workflows/release-decision.yml@72065aa0a4fb63ef824928409da14caf989c9d22 # pending v0.3.0
+    uses: OpenTermsArchive/shared-workflows/.github/workflows/release-decision.yml@56599daff47c9d22e417c076825c390de67be18e # v0.3.0
 
   changelog:
     needs: release-decision
     if: ${{ needs.release-decision.outputs.should-release == 'true' }}
-    uses: OpenTermsArchive/shared-workflows/.github/workflows/changelog.yml@72065aa0a4fb63ef824928409da14caf989c9d22 # pending v0.3.0
+    uses: OpenTermsArchive/shared-workflows/.github/workflows/changelog.yml@56599daff47c9d22e417c076825c390de67be18e # v0.3.0
 
   release:
     needs: changelog
     if: ${{ needs.changelog.outputs.release-type != 'no-release' }}
-    uses: OpenTermsArchive/shared-workflows/.github/workflows/release.yml@72065aa0a4fb63ef824928409da14caf989c9d22 # pending v0.3.0
+    uses: OpenTermsArchive/shared-workflows/.github/workflows/release.yml@56599daff47c9d22e417c076825c390de67be18e # v0.3.0
     with:
       npm: none
       galaxy: publish
@@ -33,5 +33,5 @@ jobs:
   clean-changelog:
     needs: changelog
     if: ${{ needs.changelog.outputs.release-type == 'no-release' }}
-    uses: OpenTermsArchive/shared-workflows/.github/workflows/clean-changelog.yml@72065aa0a4fb63ef824928409da14caf989c9d22 # pending v0.3.0
+    uses: OpenTermsArchive/shared-workflows/.github/workflows/clean-changelog.yml@56599daff47c9d22e417c076825c390de67be18e # v0.3.0
     secrets: inherit
