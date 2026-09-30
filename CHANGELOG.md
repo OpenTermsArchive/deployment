@@ -12,9 +12,9 @@ All changes that impact users of this module are documented in this file, in the
 
 ### Changed
 
-- **Breaking:** Stop resetting the Git-based databases to the state of their remote at each deployment, which discarded the commits that the engine had not published yet, such as those of a tracking interrupted by the deployment; to align a database with its remote, for example after rewriting its history, follow the [dedicated procedure](./README.md#git-based-databases)
+- **Breaking:** Stop resetting the Git-based databases to the state of their remote at each deployment, which discarded the commits that the engine had not published yet, such as those of a tracking interrupted by the deployment; to align the databases with their remote, for example after rewriting the history of a repository, deploy with `-e ota_git_database_reset=true` as described in the [README](./README.md#git-based-databases)
 - **Breaking:** Stop removing at each deployment the `index.lock` file left in the Git-based databases by an interrupted Git operation, as the engine removes it itself at each tracking run since v16.2.0; update the engine of the collection to v16.2.0 or later, as older versions fail at every restart with `index.lock: File exists` when such a file is left
-- Stop the applications before updating their code and dependencies instead of just before restarting them, so that running applications no longer see `npm ci` replace their dependencies, which could make them fail; the applications are therefore unavailable while their dependencies are installed
+- Stop the applications before installing their dependencies instead of just before restarting them, so that running applications no longer see `npm ci` replace their dependencies, which could make them fail; the applications are therefore unavailable while their dependencies are installed, and restarted even if the deployment fails
 
 ## 4.0.0 - 2026-06-23
 
