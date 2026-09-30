@@ -32,8 +32,3 @@
     value: ssh -i '{{ ota_github_bot_key_path }}'
     scope: local
     repo: "{{ ota_git_database_directory }}"
-
-- name: Remove existing locks in {{ ota_git_database_directory }}
-  ansible.builtin.file:
-    path: "{{ ota_git_database_directory }}/.git/index.lock"
-    state: absent
