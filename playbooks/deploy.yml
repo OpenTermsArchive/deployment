@@ -179,7 +179,7 @@
       when: ota_mongo_required
 
     # Process management (common)
-    - name: Stop application processes # Before their code and dependencies are updated, as running applications may still load them
+    - name: Stop application processes # Before their dependencies are installed, as running applications may still load them
       ansible.builtin.include_role:
         name: pm2/manage
         tasks_from: stop
