@@ -178,79 +178,81 @@
           become: true
       when: ota_mongo_required
 
-    # Process management (common)
-    - name: Stop application processes # Before their dependencies are installed, as running applications may still load them
-      ansible.builtin.include_role:
-        name: pm2/manage
-        tasks_from: stop
-      vars:
-        ota_pm2_app_directory: "{{ ota_app_directory }}"
-        ota_pm2_home: "{{ ota_app_pm2_home }}"
-      tags: [stop]
-
-    # OTA-collection: application deployment
-    - name: Deploy OTA collection application
-      when: ota_app_type == 'ota-collection'
+    # Process management & application deployment (common)
+    - name: Deploy applications
       block:
-        - name: Setup Git-based versions database
+        - name: Stop application processes # Before their dependencies are installed, as running applications may still load them
           ansible.builtin.include_role:
-            name: ota/git_database
+            name: pm2/manage
+            tasks_from: stop
           vars:
-            ota_git_database_repository: "{{ ota_versions_repository }}"
-            ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_versions_relative_path }}
-            ota_git_database_branch: main
-          when: ota_versions_repository and ota_versions_relative_path
+            ota_pm2_app_directory: "{{ ota_app_directory }}"
+            ota_pm2_home: "{{ ota_app_pm2_home }}"
+          tags: [stop]
 
-        - name: Setup Git-based snapshots database
+        # OTA-collection: application deployment
+        - name: Deploy OTA collection application
+          when: ota_app_type == 'ota-collection'
+          block:
+            - name: Setup Git-based versions database
+              ansible.builtin.include_role:
+                name: ota/git_database
+              vars:
+                ota_git_database_repository: "{{ ota_versions_repository }}"
+                ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_versions_relative_path }}
+                ota_git_database_branch: main
+              when: ota_versions_repository and ota_versions_relative_path
+
+            - name: Setup Git-based snapshots database
+              ansible.builtin.include_role:
+                name: ota/git_database
+              vars:
+                ota_git_database_repository: "{{ ota_snapshots_repository }}"
+                ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_snapshots_relative_path }}
+                ota_git_database_branch: main
+              when: ota_snapshots_repository and ota_snapshots_relative_path
+
+            - name: Setup Git-based tracking-results database
+              ansible.builtin.include_role:
+                name: ota/git_database
+              vars:
+                ota_git_database_repository: "{{ ota_tracking_results_repository }}"
+                ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_tracking_results_relative_path }}
+                ota_git_database_branch: main
+              when: ota_tracking_results_repository and ota_tracking_results_relative_path
+
+            - name: Setup OTA collection
+              ansible.builtin.include_role:
+                name: ota/collection
+
+        # Contribution-tool: application deployment
+        - name: Deploy contribution-tool application
+          when: ota_app_type == 'contribution-tool'
+          block:
+            - name: Setup contribution-tool
+              ansible.builtin.include_role:
+                name: ota/contribution_tool
+                public: true
+
+        # Federation-api: application deployment
+        - name: Deploy federation-api application
+          when: ota_app_type == 'federation-api'
+          block:
+            - name: Setup federation-api
+              ansible.builtin.include_role:
+                name: ota/federation_api
+                public: true
+      always:
+        - name: Start application processes # Also after a failed deployment, so that the failure does not leave the applications stopped
           ansible.builtin.include_role:
-            name: ota/git_database
+            name: pm2/manage
+            tasks_from: start
           vars:
-            ota_git_database_repository: "{{ ota_snapshots_repository }}"
-            ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_snapshots_relative_path }}
-            ota_git_database_branch: main
-          when: ota_snapshots_repository and ota_snapshots_relative_path
+            ota_pm2_app_directory: "{{ ota_app_directory }}"
+            ota_pm2_home: "{{ ota_app_pm2_home }}"
+          tags: [start, restart]
 
-        - name: Setup Git-based tracking-results database
-          ansible.builtin.include_role:
-            name: ota/git_database
-          vars:
-            ota_git_database_repository: "{{ ota_tracking_results_repository }}"
-            ota_git_database_directory: /home/{{ ansible_user }}/{{ ota_directory }}/{{ ota_tracking_results_relative_path }}
-            ota_git_database_branch: main
-          when: ota_tracking_results_repository and ota_tracking_results_relative_path
-
-        - name: Setup OTA collection
-          ansible.builtin.include_role:
-            name: ota/collection
-
-    # Contribution-tool: application deployment
-    - name: Deploy contribution-tool application
-      when: ota_app_type == 'contribution-tool'
-      block:
-        - name: Setup contribution-tool
-          ansible.builtin.include_role:
-            name: ota/contribution_tool
-            public: true
-
-    # Federation-api: application deployment
-    - name: Deploy federation-api application
-      when: ota_app_type == 'federation-api'
-      block:
-        - name: Setup federation-api
-          ansible.builtin.include_role:
-            name: ota/federation_api
-            public: true
-
-    # Process management & web server (common)
-    - name: Start application processes
-      ansible.builtin.include_role:
-        name: pm2/manage
-        tasks_from: start
-      vars:
-        ota_pm2_app_directory: "{{ ota_app_directory }}"
-        ota_pm2_home: "{{ ota_app_pm2_home }}"
-      tags: [start, restart]
-
+    # Web server (common)
     - name: Configure NGINX
       ansible.builtin.include_role:
         name: nginx/configure
