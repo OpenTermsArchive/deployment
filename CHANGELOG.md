@@ -10,7 +10,7 @@ _Modifications made in this changeset do not add, remove or alter any behavior, 
 
 _Full changeset and discussions: [#68](https://github.com/OpenTermsArchive/deployment/pull/68)._
 
-> Development of this release was supported by [User Rights](https://www.user-rights.org) and by the [NGI0 Commons Fund](https://nlnet.nl/project/Modular-OTA/), a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's [Next Generation Internet](https://www.ngi.eu) programme, under the aegis of DG CNECT under grant agreement N°101069594.
+> Development of this release was supported by the [NGI0 Commons Fund](https://nlnet.nl/project/Modular-OTA/), a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's [Next Generation Internet](https://www.ngi.eu) programme, under the aegis of DG CNECT under grant agreement N°101069594.
 
 ### Added
 
