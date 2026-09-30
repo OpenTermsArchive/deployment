@@ -198,7 +198,7 @@ All following commands must be executed from the `tests` folder:
 vagrant up
 ```
 
-> With an Apple Silicon processor or to use Docker instead of VirtualBox, use `vagrant up --provider=docker`.
+> With an Apple Silicon processor or to use Docker instead of VirtualBox, use `vagrant up --provider=docker`. The first launch builds the container image from `tests/docker/Dockerfile`.
 
 Then the code can be deployed to the running machine with all the options described before.
 
