@@ -1,4 +1,15 @@
 ---
+- name: Ensure PM2_HOME directory exists
+  ansible.builtin.file:
+    path: "{{ ota_pm2_home }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+  become: true
+  tags:
+    - stop
+
 - name: Check if pm2.config.cjs file is present
   ansible.builtin.stat:
     path: /home/{{ ansible_user }}/{{ ota_pm2_app_directory }}/pm2.config.cjs
