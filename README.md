@@ -137,6 +137,18 @@ ansible-playbook playbook.yml --vault-password-file vault.key
 
 Please note that encrypted files will be decrypted and stored in plaintext on the deployment server. Always protect access to your production server.
 
+## Git-based databases
+
+The playbook clones on the server the versions, snapshots and tracking-results repositories declared with a `repository` and a `path` in the `config/production.json` file of the collection, when they are not there yet. As their `main` branch is checked out, these repositories must contain at least one commit.
+
+The engine then records its changes in these clones and publishes them itself, so deployments leave their content untouched: the commits that the engine has not published yet, for example because a deployment interrupted a tracking or because a push failed, are published at the end of its next run.
+
+To align a clone with its remote, for example after rewriting the history of the repository:
+
+1. Stop the applications with `ansible-playbook opentermsarchive.deployment.deploy --tags stop`
+2. On the server, in the clone (the declared `path`, relative to the collection directory), fetch the remote with `git fetch origin`, check the commits that will be discarded with `git log origin/main..main`, and reset the clone with `git reset --hard origin/main`
+3. Start the applications with `ansible-playbook opentermsarchive.deployment.deploy --tags start`
+
 ## Migrations
 
 Some updates require changes on existing servers before deploying. Run the `migrate` playbook before `deploy` when needed:
