@@ -43,6 +43,21 @@
       tags: [always]
       when: ota_app_type == 'ota-collection'
       block:
+        - name: Set OTA collection identifier # Derived from the repository URL as in the ota/collection role defaults, which are not loaded yet
+          ansible.builtin.set_fact:
+            ota_app_collection_id: >-
+              {{ ota_collection_repository | ansible.builtin.urlsplit('path') | ansible.builtin.basename
+                 | ansible.builtin.splitext | first | regex_replace('-declarations$', '') }}
+
+        - name: Set GitHub bot SSH key path
+          ansible.builtin.set_fact:
+            ota_github_bot_key_path: "/home/{{ ansible_user }}/.ssh/ota-github-bot-key-{{ ota_app_collection_id }}"
+          when: ota_github_bot_key_path is not defined
+
+        - name: Setup GitHub bot SSH key # Before the repository is cloned, as cloning a private repository requires the key and the GitHub host keys
+          ansible.builtin.include_role:
+            name: github
+
         - name: Load OTA collection config
           ansible.builtin.include_role:
             name: ota/collection
@@ -82,10 +97,6 @@
               - name: "collection-api"
                 basePath: "{{ ota_collection_config['@opentermsarchive/engine']['collection-api'].basePath | default(None) }}"
                 port: "{{ ota_collection_config['@opentermsarchive/engine']['collection-api'].port | default(None) }}"
-
-        - name: Setup GitHub bot SSH key
-          ansible.builtin.include_role:
-            name: github
 
     # Contribution-tool: configuration & setup
     - name: Configure contribution-tool
