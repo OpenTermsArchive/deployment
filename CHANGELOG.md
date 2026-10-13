@@ -4,6 +4,8 @@ All changes that impact users of this module are documented in this file, in the
 
 ## Unreleased [patch]
 
+> Development of this release was supported by [Anthelia](https://anthelia.tech).
+
 ### Fixed
 
 - Install the GitHub bot SSH key and the GitHub host keys before cloning the collection repository, so that a private repository can be deployed on a new server
