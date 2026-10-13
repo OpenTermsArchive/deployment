@@ -8,6 +8,7 @@
       - gnupg
       - git
       - zip
+      - unzip # Required by Puppeteer to extract the browser it downloads during `npm ci`
     update_cache: true
     state: latest
   become: true

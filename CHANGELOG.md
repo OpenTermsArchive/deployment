@@ -2,6 +2,15 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [patch]
+
+> Development of this release was supported by [Anthelia](https://anthelia.tech).
+
+### Fixed
+
+- Install the GitHub bot SSH key and the GitHub host keys before cloning the collection repository, so that a private repository can be deployed on a new server
+- Install `unzip`, required by Puppeteer to extract the browser it downloads, so that `npm ci` succeeds on a minimal Debian image
+
 ## 5.0.0 - 2026-09-30
 
 _Full changeset and discussions: [#68](https://github.com/OpenTermsArchive/deployment/pull/68)._
