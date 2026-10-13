@@ -7,6 +7,7 @@ All changes that impact users of this module are documented in this file, in the
 ### Fixed
 
 - Install the GitHub bot SSH key and the GitHub host keys before cloning the collection repository, so that a private repository can be deployed on a new server
+- Install `unzip`, required by Puppeteer to extract the browser it downloads, so that `npm ci` succeeds on a minimal Debian image
 
 ## 5.0.0 - 2026-09-30
 
