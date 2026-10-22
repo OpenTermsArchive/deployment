@@ -199,6 +199,7 @@
           vars:
             ota_pm2_app_directory: "{{ ota_app_directory }}"
             ota_pm2_home: "{{ ota_app_pm2_home }}"
+            ota_pm2_app_id: "{{ ota_app_collection_id }}"
           tags: [stop]
 
         # OTA-collection: application deployment
@@ -261,6 +262,7 @@
           vars:
             ota_pm2_app_directory: "{{ ota_app_directory }}"
             ota_pm2_home: "{{ ota_app_pm2_home }}"
+            ota_pm2_app_id: "{{ ota_app_collection_id }}"
           tags: [start, restart]
 
     # Web server (common)

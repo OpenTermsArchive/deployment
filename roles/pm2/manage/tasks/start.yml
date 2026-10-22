@@ -22,14 +22,16 @@
     - start
 
 - name: Generate and enable PM2 startup unit # Without `--hp`, as PM2 would then derive the home from it and ignore `PM2_HOME`
-  ansible.builtin.shell: sudo env PATH=$PATH:/usr/bin PM2_HOME="{{ ota_pm2_home }}" pm2 startup systemd --user {{ ansible_user }}
+  ansible.builtin.shell: >-
+    sudo env PATH=$PATH:/usr/bin PM2_HOME="{{ ota_pm2_home }}"
+    pm2 startup systemd --user {{ ansible_user }} --service-name pm2-{{ ota_pm2_app_id }}
   tags:
     - restart
     - start
 
 - name: Read generated PM2 startup unit
   ansible.builtin.slurp:
-    src: /etc/systemd/system/pm2-{{ ansible_user }}.service
+    src: /etc/systemd/system/pm2-{{ ota_pm2_app_id }}.service
   register: ota_pm2_unit
   tags:
     - restart
