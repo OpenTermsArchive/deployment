@@ -44,6 +44,14 @@
     - restart
     - start
 
+- name: Reload systemd # As PM2 rewrites the unit file on every deployment without reloading systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  become: true
+  tags:
+    - restart
+    - start
+
 - name: Read generated PM2 startup unit
   ansible.builtin.slurp:
     src: /etc/systemd/system/pm2-{{ ota_pm2_app_id }}.service
