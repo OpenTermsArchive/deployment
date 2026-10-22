@@ -2,6 +2,14 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [patch]
+
+> Development of this release was supported by [Anthelia](https://anthelia.tech).
+
+### Fixed
+
+- Generate a PM2 startup unit per application, named `pm2-<application id>` and using the application PM2 home, so that applications are restarted after a reboot; redeploy every application of each server to replace the previous `pm2-<user>` unit, and if applications are already down after a reboot restore them with `PM2_HOME=~/.pm2-<collection> pm2 resurrect` before redeploying
+
 ## 5.0.1 - 2026-10-13
 
 > Development of this release was supported by [Anthelia](https://anthelia.tech).

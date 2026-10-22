@@ -231,6 +231,11 @@ vagrant ssh # use "vagrant" as password
 PM2_HOME=~/.pm2-demo pm2 logs
 ```
 
+The systemd unit that restarts the applications after a reboot can be checked with:
+```sh
+systemctl cat pm2-demo
+```
+
 #### Troubleshooting
 
 If you encounter a `Permission denied` error at the “Gathering Facts” step of the playbook, this most likely means the Vagrant-managed SSH key is not loaded in your SSH agent.
