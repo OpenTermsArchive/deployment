@@ -21,10 +21,8 @@
     - restart
     - start
 
-- name: Generate and enable PM2 startup script
-  ansible.builtin.shell: |
-    export PM2_HOME="{{ ota_pm2_home }}"
-    sudo env PATH=$PATH:/usr/bin PM2_HOME="{{ ota_pm2_home }}" pm2 startup systemd --user {{ ansible_user }} --hp /home/{{ ansible_user }}
+- name: Generate and enable PM2 startup unit # Without `--hp`, as PM2 would then derive the home from it and ignore `PM2_HOME`
+  ansible.builtin.shell: sudo env PATH=$PATH:/usr/bin PM2_HOME="{{ ota_pm2_home }}" pm2 startup systemd --user {{ ansible_user }}
   tags:
     - restart
     - start
