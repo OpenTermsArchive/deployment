@@ -29,6 +29,23 @@
     - restart
     - start
 
+- name: Read generated PM2 startup unit
+  ansible.builtin.slurp:
+    src: /etc/systemd/system/pm2-{{ ansible_user }}.service
+  register: ota_pm2_unit
+  tags:
+    - restart
+    - start
+
+- name: Ensure PM2 startup unit uses the application PM2 home
+  ansible.builtin.assert:
+    that: "'Environment=PM2_HOME=' ~ ota_pm2_home in (ota_pm2_unit.content | b64decode)"
+    fail_msg: "The PM2 startup unit does not use {{ ota_pm2_home }}; applications would not be restarted after a reboot"
+    quiet: true
+  tags:
+    - restart
+    - start
+
 - name: Fix PM2_HOME ownership after startup script generation
   ansible.builtin.file:
     path: "{{ ota_pm2_home }}"
