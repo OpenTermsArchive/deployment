@@ -2,6 +2,12 @@
 
 All changes that impact users of this module are documented in this file, in the [Common Changelog](https://common-changelog.org) format with some additional specifications defined in the CONTRIBUTING file. This codebase adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased [minor]
+
+### Added
+
+- Install the updates of the distribution release every day with `unattended-upgrades`, so that servers get security fixes without waiting for a deployment; installed updates are logged in `/var/log/unattended-upgrades/unattended-upgrades.log` (see the [`common` role](./roles/common/README.md))
+
 ## 5.0.1 - 2026-10-13
 
 > Development of this release was supported by [Anthelia](https://anthelia.tech).

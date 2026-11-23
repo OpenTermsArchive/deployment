@@ -12,3 +12,20 @@
     update_cache: true
     state: latest
   become: true
+
+- name: Install unattended-upgrades
+  ansible.builtin.apt:
+    name: unattended-upgrades
+    state: present
+  become: true
+
+- name: Enable automatic updates # Installs every day the updates selected by the default configuration of the distribution, including security updates, without waiting for a deployment
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
