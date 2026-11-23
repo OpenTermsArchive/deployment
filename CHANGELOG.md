@@ -4,6 +4,8 @@ All changes that impact users of this module are documented in this file, in the
 
 ## Unreleased [minor]
 
+> Development of this release was supported by [Anthelia](https://anthelia.tech).
+
 ### Added
 
 - Install the updates of the distribution release every day with `unattended-upgrades`, so that servers get security fixes without waiting for a deployment; installed updates are logged in `/var/log/unattended-upgrades/unattended-upgrades.log` (see the [`common` role](./roles/common/README.md))
